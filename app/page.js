@@ -21,15 +21,18 @@ export default function Home() {
         <div className="sp"></div>
         <p>Warming up the database...</p>
       </div>
-      <aside className="sidebar">
+      <aside className="sidebar" id="sidebar">
         <div className="brand">
           <h1>SQL<span>ingo</span></h1>
           <p>SQL explained the way a senior would, over chai.</p>
+          <div className="course-prog" id="courseProg"></div>
         </div>
         <nav id="nav"></nav>
       </aside>
+      <div className="nav-overlay" id="navOverlay" onClick={() => window.closeMenu && window.closeMenu()}></div>
       <div className="main">
         <div className="topbar">
+          <button className="menu-btn" id="menuBtn" onClick={() => window.toggleMenu && window.toggleMenu()} aria-label="Open chapter menu">&#9776;</button>
           <div className="crumb" id="crumb"></div>
           <div className="progress-mini">
             <span className="label" id="progLabel">0 / 5</span>

@@ -18,7 +18,7 @@ INSERT INTO orders VALUES
  (7,2,6,720,'2024-06-13',4),(8,1,1,500,'2024-06-15',5),(9,6,2,420,'2024-06-17',NULL),(10,3,6,690,'2024-06-19',4);
 `;
 initSqlJs({ locateFile:f=>`https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/${f}` })
- .then(SQL=>{ SQLDB=new SQL.Database(); SQLDB.run(SEED); dbReady=true; document.getElementById('loader').style.display='none'; go('00'); })
+ .then(SQL=>{ SQLDB=new SQL.Database(); SQLDB.run(SEED); dbReady=true; document.getElementById('loader').style.display='none'; computeTotals(); go('00'); })
  .catch(()=>{ document.getElementById('loader').innerHTML='<p style="color:var(--rose)">Could not load the SQL engine. Check your connection and refresh.</p>'; });
 
 function runSQL(raw){
@@ -95,7 +95,7 @@ let solved=0;
 function check(id){ const e=document.getElementById('ed-'+id),res=runSQL(e.value),info=grid(id,res),fb=document.getElementById('fb-'+id),m=answers[id];
   if(!info.ok){ fb.className='q-fb no'; fb.innerHTML='✗ There is an error — read the message above the grid and adjust.'; return; }
   let pass=false; try{ pass=m.checker(info,e.value); }catch(_){ pass=false; }
-  if(pass){ fb.className='q-fb ok'; fb.innerHTML='✓ Correct. That returns exactly what was asked.'; if(!m.solved){ m.solved=true; solved++; updateProg(); } }
+  if(pass){ fb.className='q-fb ok'; fb.innerHTML='✓ Correct. That returns exactly what was asked.'; if(!m.solved){ m.solved=true; solved++; markProg(curCh,id); updateProg(); } }
   else { fb.className='q-fb no'; fb.innerHTML='✗ It runs, but the result is not what was asked. Re-read the question and check your columns, order, or conditions.'; } }
 function reveal(id){ const e=document.getElementById('ed-'+id); e.value=answers[id].sol; gutter(id); grid(id,runSQL(e.value)); const fb=document.getElementById('fb-'+id); fb.className='q-fb ok'; fb.innerHTML='Here is one correct version. Read each part, then try writing it yourself next time.'; }
 
@@ -114,11 +114,22 @@ function checkM(id){ const m=answers[id],e=document.getElementById('ed-'+id),fb=
   if(after.error){ fb.className='q-fb no'; fb.innerHTML='✗ It ran, but the expected table is not there afterwards. Re-read the task.'; return; }
   runSQL(m.reset); runSQL(m.sol); const exp=runSQL(m.verify);
   const pass=JSON.stringify({c:after.cols,r:after.rows})===JSON.stringify({c:exp.cols,r:exp.rows});
-  if(pass){ fb.className='q-fb ok'; fb.innerHTML='✓ Correct. Afterwards the table holds exactly the right data.'; if(!m.solved){ m.solved=true; solved++; updateProg(); } }
+  if(pass){ fb.className='q-fb ok'; fb.innerHTML='✓ Correct. Afterwards the table holds exactly the right data.'; if(!m.solved){ m.solved=true; solved++; markProg(curCh,id); updateProg(); } }
   else { fb.className='q-fb no'; fb.innerHTML='✗ Not quite. After your statement the table does not match what was asked. Re-run to reset and try again.'; }
   runSQL(m.reset); }
 function revealM(id){ const m=answers[id],e=document.getElementById('ed-'+id); e.value=m.sol; gutter(id); runSQL(m.reset); runSQL(m.sol); grid(id,runSQL(m.verify)); runSQL(m.reset); const fb=document.getElementById('fb-'+id); fb.className='q-fb ok'; fb.innerHTML='Here is one correct version, with the resulting table shown above.'; }
 function updateProg(){ if(qCount===0){ document.getElementById('progLabel').textContent='Read'; document.getElementById('progFill').style.width='0%'; return; } document.getElementById('progLabel').textContent=`${solved} / ${qCount}`; document.getElementById('progFill').style.width=((solved/qCount)*100)+'%'; }
+
+/* persistent progress (saved in the browser so it survives navigation and reloads) */
+let curCh=null, TOTAL_Q=0, PROG={};
+try{ PROG=JSON.parse(localStorage.getItem('sqlingo_progress')||'{}'); }catch(_){ PROG={}; }
+function markProg(ch,id){ if(!ch)return; if(!PROG[ch])PROG[ch]={}; PROG[ch][id]=true; try{ localStorage.setItem('sqlingo_progress',JSON.stringify(PROG)); }catch(_){} updateCourse(); }
+function overallSolved(){ let n=0; for(const c in PROG){ n+=Object.keys(PROG[c]).length; } return n; }
+function updateCourse(){ const el=document.getElementById('courseProg'); if(el) el.textContent = TOTAL_Q ? ('Overall: '+overallSolved()+' / '+TOTAL_Q+' solved') : ''; }
+function computeTotals(){ const sq=qCount; TOTAL_Q=0; for(const k in lessons){ qCount=0; try{ lessons[k].render(); }catch(_){} TOTAL_Q+=qCount; } qCount=sq; edCount=0; tryEds.length=0; for(const kk in answers) delete answers[kk]; updateCourse(); }
+function resetProgress(){ PROG={}; try{ localStorage.removeItem('sqlingo_progress'); }catch(_){} updateCourse(); if(curCh) go(curCh); }
+function toggleMenu(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('navOverlay').classList.toggle('show'); }
+function closeMenu(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('navOverlay').classList.remove('show'); }
 
 /* ---------- navigation ---------- */
 const manifest=[
@@ -143,14 +154,18 @@ function foot(cur){ const i=order.indexOf(cur); const prev=i>0?order[i-1]:null; 
   </div>`; }
 
 function go(num){ const L=lessons[num]; if(!L) return;
+  curCh=num;
   edCount=0; tryEds.length=0; qCount=0; solved=0; for(const k in answers) delete answers[k];
   document.getElementById('content').innerHTML = L.render() + foot(num);
   document.getElementById('crumb').innerHTML = L.where;
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   const el=document.getElementById('nav-'+num); if(el) el.classList.add('active');
+  const done=PROG[num]||{};
+  Object.keys(answers).forEach(id=>{ if(done[id] && !answers[id].solved){ answers[id].solved=true; solved++; const fb=document.getElementById('fb-'+id); if(fb){ fb.className='q-fb ok'; fb.innerHTML='✓ Solved earlier. Run it again any time to practise.'; } } });
   updateProg();
   tryEds.forEach(id=>{ try{ exec(id); }catch(_){} });
   document.querySelectorAll('.pg-ed').forEach(t=>gutter(t.id.replace('ed-','')));
+  closeMenu();
   window.scrollTo({top:0});
 }
 
