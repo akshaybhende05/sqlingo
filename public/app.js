@@ -56,7 +56,7 @@ const glossary={
   constraint:{short:"A rule the data in a column must obey.",long:"A <b>constraint</b> is a rule enforced by the database, such as NOT NULL (must have a value) or UNIQUE (no repeats). Constraints keep bad data out at the source."},
   primary_key:{short:"The column that uniquely identifies each row.",long:"A <b>primary key</b> is the column whose value is unique for every row, like id. It is how a row is pinpointed and what foreign keys point at."},
 };
-function term(w,label){ const g=glossary[w]; return `<span class="term" onclick="more('${w}',this)">${label||w}<span class="tip">${g.short}<br><span style="color:#7fd8cb;font-size:11px">click to read more</span></span></span>`; }
+function term(w,label){ const g=glossary[w]; return `<span class="term" tabindex="0" role="button" aria-label="${label||w}, glossary term, press Enter to read more" onclick="more('${w}',this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();more('${w}',this)}">${label||w}<span class="tip">${g.short}<br><span style="color:#7fd8cb;font-size:11px">press Enter or click to read more</span></span></span>`; }
 function more(w,el){ const g=glossary[w]; let b=el.closest('p,.lead,.txt'); if(!b)b=el.parentElement; let ex=b.parentElement.querySelector('.term-more[data-w="'+w+'"]'); if(ex){ ex.classList.toggle('show'); if(!ex.classList.contains('show'))ex.remove(); return; } const d=document.createElement('div'); d.className='term-more show'; d.setAttribute('data-w',w); d.innerHTML=`<b style="text-transform:capitalize">${w}</b>. ${g.long}`; b.insertAdjacentElement('afterend',d); }
 
 let edCount=0; const tryEds=[];
@@ -125,9 +125,24 @@ let curCh=null, TOTAL_Q=0, PROG={};
 try{ PROG=JSON.parse(localStorage.getItem('sqlingo_progress')||'{}'); }catch(_){ PROG={}; }
 function markProg(ch,id){ if(!ch)return; if(!PROG[ch])PROG[ch]={}; PROG[ch][id]=true; try{ localStorage.setItem('sqlingo_progress',JSON.stringify(PROG)); }catch(_){} updateCourse(); }
 function overallSolved(){ let n=0; for(const c in PROG){ n+=Object.keys(PROG[c]).length; } return n; }
-function updateCourse(){ const el=document.getElementById('courseProg'); if(el) el.textContent = TOTAL_Q ? ('Overall: '+overallSolved()+' / '+TOTAL_Q+' solved') : ''; }
+function updateCourse(){ const el=document.getElementById('courseProg'); const fill=document.getElementById('courseProgFill'); const n=overallSolved();
+  const done = TOTAL_Q>0 && n>=TOTAL_Q;
+  if(el) el.textContent = TOTAL_Q ? (done ? `Course complete — ${n} / ${TOTAL_Q} solved` : `Overall: ${n} / ${TOTAL_Q} solved`) : '';
+  if(fill) fill.style.width = TOTAL_Q ? ((n/TOTAL_Q)*100)+'%' : '0%';
+  if(done) celebrateOnce(); }
+function celebrateOnce(){
+  let shown=false; try{ shown=localStorage.getItem('sqlingo_celebrated')==='1'; }catch(_){}
+  if(shown) return;
+  try{ localStorage.setItem('sqlingo_celebrated','1'); }catch(_){}
+  const t=document.createElement('div');
+  t.className='celebrate-toast';
+  t.innerHTML='<b>All 115 questions solved.</b><br>You have worked through the whole handbook. Well done.';
+  document.body.appendChild(t);
+  setTimeout(()=>{ t.classList.add('show'); },30);
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),500); },6000);
+}
 function computeTotals(){ const sq=qCount; TOTAL_Q=0; for(const k in lessons){ qCount=0; try{ lessons[k].render(); }catch(_){} TOTAL_Q+=qCount; } qCount=sq; edCount=0; tryEds.length=0; for(const kk in answers) delete answers[kk]; updateCourse(); }
-function resetProgress(){ PROG={}; try{ localStorage.removeItem('sqlingo_progress'); }catch(_){} updateCourse(); if(curCh) go(curCh); }
+function resetProgress(){ if(!window.confirm('Reset all solved progress across every chapter? This cannot be undone.')) return; PROG={}; try{ localStorage.removeItem('sqlingo_progress'); }catch(_){} updateCourse(); if(curCh) go(curCh); }
 function toggleMenu(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('navOverlay').classList.toggle('show'); }
 function closeMenu(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('navOverlay').classList.remove('show'); }
 
@@ -144,10 +159,30 @@ const manifest=[
  {p:'Part VIII · Theory & craft',items:[['24','Command families',1],['25','Normalization & design',1],['26','Best practices & scaling',1]]},
 ];
 const order=[]; manifest.forEach(g=>g.items.forEach(it=>{ if(it[2]) order.push(it[0]); }));
-function buildNav(){ let h=''; manifest.forEach(g=>{ h+=`<div class="nav-group"><div class="nav-label">${g.p}</div>`; g.items.forEach(it=>{ const n=it[0],t=it[1],built=it[2]; h+= built ? `<div class="nav-item" id="nav-${n}" onclick="go('${n}')"><span class="ch">${n}</span> ${t}</div>` : `<div class="nav-item soon"><span class="ch">${n}</span> ${t}</div>`; }); h+=`</div>`; }); document.getElementById('nav').innerHTML=h; }
+function buildNav(){ let h=''; manifest.forEach(g=>{ h+=`<div class="nav-group"><div class="nav-label">${g.p}</div>`; g.items.forEach(it=>{ const n=it[0],t=it[1],built=it[2]; const key=(n+' '+t).toLowerCase(); h+= built ? `<div class="nav-item" id="nav-${n}" onclick="go('${n}')" data-search="${key}"><span class="ch">${n}</span> ${t}</div>` : `<div class="nav-item soon" data-search="${key}"><span class="ch">${n}</span> ${t}</div>`; }); h+=`</div>`; }); document.getElementById('nav').innerHTML=h; }
 buildNav();
 
-function foot(cur){ const i=order.indexOf(cur); const prev=i>0?order[i-1]:null; const next=i<order.length-1?order[i+1]:null;
+/* ---------- sidebar chapter search ---------- */
+function filterNav(qstr){
+  const q=(qstr||'').trim().toLowerCase();
+  const groups=document.querySelectorAll('.nav-group');
+  groups.forEach(g=>{
+    let any=false;
+    g.querySelectorAll('.nav-item').forEach(item=>{
+      const hay=item.getAttribute('data-search')||item.textContent.toLowerCase();
+      const match=!q || hay.includes(q);
+      item.style.display = match ? '' : 'none';
+      if(match) any=true;
+    });
+    g.style.display = any ? '' : 'none';
+  });
+  const empty=document.getElementById('navEmpty');
+  if(empty) empty.style.display = groups.length && ![...groups].some(g=>g.style.display!=='none') ? '' : 'none';
+}
+
+function foot(cur){
+  if(cur==='cheatsheet') return `<div class="foot"><span></span><button class="f-btn f-next" onclick="go('${order[0]}')">Start the course →</button></div>`;
+  const i=order.indexOf(cur); const prev=i>0?order[i-1]:null; const next=i<order.length-1?order[i+1]:null;
   return `<div class="foot">
     ${prev?`<button class="f-btn f-prev" onclick="go('${prev}')">← ${lessons[prev].short}</button>`:'<span></span>'}
     ${next?`<button class="f-btn f-next" onclick="go('${next}')">${lessons[next].short} →</button>`:`<button class="f-btn f-next" disabled>More coming soon</button>`}
@@ -171,6 +206,56 @@ function go(num){ const L=lessons[num]; if(!L) return;
 
 /* ---------- lessons ---------- */
 const lessons={};
+
+/* ---------- cheat sheet (quick syntax reference, all chapters) ---------- */
+const CHEATS={
+ '00':{note:'SQL (say it "sequel" or spell it out) is the language you use to ask a database for exactly the data you want, in the form of short, almost-English queries.'},
+ '0b':{note:'Relational databases (SQL) store data in tables linked by keys, with a strict schema. NoSQL stores (document, key-value, graph) trade some structure for flexibility and scale. Most everyday business data still fits SQL best.'},
+ '0i':{code:"customers(id, name, city, joined)\nrestaurants(id, name, city, cuisine, rating, cost_for_two)\norders(id, customer_id, restaurant_id, amount, order_date, rating_given)"},
+ '01':{code:"SELECT name, city FROM customers;\nSELECT cost_for_two / 2 AS per_person FROM restaurants;"},
+ '02':{code:"SELECT DISTINCT city FROM customers;\nSELECT COUNT(DISTINCT cuisine) FROM restaurants;"},
+ '03':{code:"SELECT * FROM restaurants\nWHERE city = 'Mumbai' AND rating >= 4.5;"},
+ '04':{code:"SELECT name, rating FROM restaurants\nORDER BY city ASC, rating DESC;"},
+ '05':{code:"SELECT * FROM restaurants\nORDER BY id LIMIT 2 OFFSET 2;"},
+ '06':{code:"WHERE name LIKE 'B%'   -- starts with B\nWHERE name LIKE '%ing%' -- contains ing\nWHERE city LIKE 'P___'  -- P + exactly 3 chars"},
+ '07':{code:"WHERE city IN ('Mumbai', 'Delhi')\nWHERE rating BETWEEN 4.0 AND 4.5"},
+ '08':{code:"WHERE rating_given IS NULL\nWHERE rating_given IS NOT NULL", note:'Never write = NULL or != NULL, it never matches.'},
+ '09':{code:"SELECT COUNT(*), SUM(amount), ROUND(AVG(rating),2), MIN(cost_for_two), MAX(cost_for_two)\nFROM restaurants;"},
+ '10':{code:"SELECT city, COUNT(*) AS n FROM customers GROUP BY city;"},
+ '11':{code:"SELECT city, COUNT(*) AS n FROM customers\nGROUP BY city HAVING COUNT(*) > 1;", note:'WHERE filters rows before grouping, HAVING filters groups after.'},
+ '12':{code:"SELECT o.id, c.name, o.amount\nFROM orders o JOIN customers c ON o.customer_id = c.id;\n\nFROM customers c LEFT JOIN orders o ON c.id = o.customer_id;"},
+ '13':{code:"SELECT city FROM customers\nUNION\nSELECT city FROM restaurants;", note:'UNION drops duplicates; UNION ALL keeps them and is faster.'},
+ '14':{code:"CASE WHEN rating >= 4.5 THEN 'top' WHEN rating >= 4.2 THEN 'good' ELSE 'ok' END\nCOALESCE(rating_given, 0)"},
+ '15':{code:"SELECT name FROM restaurants\nWHERE rating > (SELECT AVG(rating) FROM restaurants);", note:'ANY/ALL are standard SQL for comparing to a whole set of values; SQLite lacks them, use MAX()/MIN() instead.'},
+ '16':{code:"ROW_NUMBER() OVER (ORDER BY rating DESC)\nRANK() OVER (PARTITION BY city ORDER BY rating DESC)\nSUM(amount) OVER (ORDER BY order_date)"},
+ '17':{code:"INSERT INTO t (a,b) VALUES (1,2);\nUPDATE t SET a = 1 WHERE id = 3;\nDELETE FROM t WHERE active = 0;"},
+ '18':{code:"CREATE TABLE t (id INTEGER PRIMARY KEY, name TEXT NOT NULL, city TEXT);\nALTER TABLE t ADD COLUMN active INTEGER DEFAULT 1;\nDROP TABLE t;"},
+ '19':{code:"CREATE VIEW mumbai_restaurants AS\n  SELECT name, cuisine, rating FROM restaurants WHERE city='Mumbai';\nCREATE INDEX idx_restaurants_city ON restaurants (city);"},
+ '20':{code:"typeof(name)\nCAST(rating AS INTEGER)\n-- a comment", note:'Always use parameterised queries in real apps; never paste user input straight into SQL text (SQL injection).'},
+ '21':{code:"UPPER(name) | LENGTH(name) | SUBSTR(name,1,3)\nname || ' from ' || city\nROUND(x) | CAST(x AS INTEGER) | x % 100\nstrftime('%Y', order_date)\nGROUP_CONCAT(name)"},
+ '22':{code:"WITH spend AS (\n  SELECT customer_id, SUM(amount) AS total FROM orders GROUP BY customer_id\n)\nSELECT * FROM spend WHERE total > 1000;"},
+ '23':{code:"BEGIN;\nUPDATE demo SET balance = balance - 200 WHERE id = 2;\nUPDATE demo SET balance = balance + 200 WHERE id = 1;\nCOMMIT;   -- or ROLLBACK;", note:'ACID: Atomicity, Consistency, Isolation, Durability.'},
+ '24':{code:"DDL: CREATE, ALTER, DROP\nDML: INSERT, UPDATE, DELETE\nDQL: SELECT\nTCL: BEGIN, COMMIT, ROLLBACK\nDCL: GRANT, REVOKE"},
+ '25':{code:"Primary key: uniquely identifies a row\nForeign key: points at another table's primary key\nComposite key: a key made of more than one column", note:'Normalization removes repeated/duplicated data by splitting it into linked tables.'},
+ '26':{code:"EXPLAIN QUERY PLAN\nSELECT * FROM orders WHERE customer_id = 1;", note:'Add an index on columns you filter or join on often; avoid SELECT * in real apps; keep transactions short.'},
+};
+function renderCheatsheet(){
+  let h=`<div class="eyebrow">Quick reference</div>
+  <h2 class="title">Cheat sheet</h2>
+  <p class="lead">Every chapter's core syntax on one page. Use it to jog your memory, not to skip the lessons themselves.</p>
+  <button class="pg-btn pg-ghost" style="margin:6px 0 10px" onclick="window.print()">Print / save as PDF</button>
+  <hr class="rule">`;
+  manifest.forEach(g=>{
+    h+=`<div class="cheat-group"><h3 class="section-h" style="margin-top:26px">${g.p}</h3>`;
+    g.items.forEach(it=>{
+      const n=it[0],t=it[1]; const c=CHEATS[n]; if(!c) return;
+      h+=`<div class="cheat-card"><div class="cheat-card-h"><span class="ch">${n}</span> ${t}</div>${c.code?`<pre class="code">${c.code.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</pre>`:''}${c.note?`<div class="q-hint">${c.note}</div>`:''}</div>`;
+    });
+    h+=`</div>`;
+  });
+  return h;
+}
+lessons['cheatsheet']={ short:'Cheat sheet', where:'<b>Cheat sheet</b>', render:renderCheatsheet };
 
 lessons['01']={ short:'SELECT', where:'Part I · <b>SELECT</b>', render:()=>`
   <div class="eyebrow">Part I · Chapter 01</div>
