@@ -9,7 +9,7 @@ const STEPS = [
   {
     n: "01",
     title: "Pick a course",
-    body: "SQL today, Business Analyst right alongside it, QA and Developer tracks on the way. No prerequisites, no signup.",
+    body: "SQL, Business Analyst, and QA are ready now, with the Developer track on the way. No prerequisites, no signup.",
   },
   {
     n: "02",
@@ -24,9 +24,9 @@ const STEPS = [
 ];
 
 const STATS = [
-  { n: "61", label: "chapters across both courses" },
-  { n: "200+", label: "graded practice questions" },
-  { n: "2", label: "real, hands-on courses (more coming)" },
+  { n: "93", label: "chapters across all courses" },
+  { n: "300+", label: "graded practice questions" },
+  { n: "3", label: "real, hands-on courses (more coming)" },
   { n: "0", label: "signups, paywalls, or dark patterns" },
 ];
 
