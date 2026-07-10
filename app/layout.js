@@ -1,7 +1,7 @@
 import "./globals.css";
 
-const title = "SQLingo — Learn SQL, properly";
-const description = "A free, interactive SQL handbook. Learn SQL from first principles with a real database running in your browser, no signup needed.";
+const title = "CareerLadder — Free, hands-on IT courses";
+const description = "Learn the skills real IT jobs need, one hands-on course at a time. SQL today, Business Analysis and more on the way. Free, no signup.";
 
 export const metadata = {
   title,
@@ -10,7 +10,7 @@ export const metadata = {
     title,
     description,
     type: "website",
-    siteName: "SQLingo",
+    siteName: "CareerLadder",
   },
   twitter: {
     card: "summary",

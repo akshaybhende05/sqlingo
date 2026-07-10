@@ -1,67 +1,108 @@
-"use client";
-import { useEffect } from "react";
+import Link from "next/link";
+import SiteHeader from "../components/SiteHeader";
+import SiteFooter from "../components/SiteFooter";
+import CourseCard from "../components/CourseCard";
+import HeroVisual from "../components/HeroVisual";
+import { courses } from "../lib/courses";
 
-export default function Home() {
-  useEffect(() => {
-    if (typeof window === "undefined" || window.__sqlingoBooted) return;
-    window.__sqlingoBooted = true;
-    const s1 = document.createElement("script");
-    s1.src = "https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/sql-wasm.js";
-    s1.onload = () => {
-      const s2 = document.createElement("script");
-      s2.src = "/app.js";
-      document.body.appendChild(s2);
-    };
-    document.body.appendChild(s1);
-  }, []);
+const STEPS = [
+  {
+    n: "01",
+    title: "Pick a course",
+    body: "SQL today, Business Analyst right alongside it, QA and Developer tracks on the way. No prerequisites, no signup.",
+  },
+  {
+    n: "02",
+    title: "Learn by doing",
+    body: "Every chapter mixes a plain-English explanation with practice you actually do yourself, right in the browser, and check yourself.",
+  },
+  {
+    n: "03",
+    title: "Track real progress",
+    body: "A running progress bar and per-chapter checkpoints, so you always know exactly how far through the course you are.",
+  },
+];
 
+const STATS = [
+  { n: "61", label: "chapters across both courses" },
+  { n: "200+", label: "graded practice questions" },
+  { n: "2", label: "real, hands-on courses (more coming)" },
+  { n: "0", label: "signups, paywalls, or dark patterns" },
+];
+
+export default function LandingPage() {
   return (
     <>
-      <a href="#content" className="skip-link">Skip to content</a>
-      <div className="loader" id="loader">
-        <div className="sp"></div>
-        <p>Warming up the database...</p>
-      </div>
-      <aside className="sidebar" id="sidebar">
-        <div className="brand">
-          <h1>SQL<span>ingo</span></h1>
-          <p>SQL explained the way a senior would, over chai.</p>
-          <div className="course-prog">
-            <div className="course-prog-label" id="courseProg"></div>
-            <div className="course-prog-bar"><div className="course-prog-fill" id="courseProgFill" style={{ width: "0%" }}></div></div>
-            <button type="button" className="course-prog-reset" onClick={() => window.resetProgress && window.resetProgress()}>Reset progress</button>
+      <SiteHeader />
+      <main className="hub-main">
+        <section className="hero">
+          <div className="hero-inner">
+            <div className="hero-copy">
+              <div className="eyebrow">Free · No signup · Hands-on</div>
+              <h1 className="hero-title">Learn the skills IT jobs actually need.</h1>
+              <p className="hero-lead">
+                Real practice, not video lectures. Start with SQLingo, our free, hands-on SQL handbook, then move on
+                to the Business Analyst track, with QA and Developer tracks on the way.
+              </p>
+              <div className="hero-cta-row">
+                <Link href="/courses/sql" className="btn-primary">Start SQLingo →</Link>
+                <Link href="/courses" className="btn-secondary">Browse all courses</Link>
+              </div>
+            </div>
+            <HeroVisual />
           </div>
-        </div>
-        <div className="nav-search-wrap">
-          <input
-            type="text"
-            id="navSearch"
-            className="nav-search"
-            placeholder="Search chapters..."
-            onInput={(e) => window.filterNav && window.filterNav(e.target.value)}
-            aria-label="Search chapters"
-          />
-        </div>
-        <div className="nav-pinned">
-          <div className="nav-item nav-pinned-item" id="nav-cheatsheet" onClick={() => window.go && window.go("cheatsheet")}>
-            <span className="ch">≡</span> Cheat sheet
+        </section>
+
+        <section className="stats-bar">
+          <div className="stats-bar-inner">
+            {STATS.map((s) => (
+              <div className="stat" key={s.label}>
+                <div className="stat-n">{s.n}</div>
+                <div className="stat-label">{s.label}</div>
+              </div>
+            ))}
           </div>
-        </div>
-        <nav id="nav"></nav>
-        <div className="nav-empty" id="navEmpty" style={{ display: "none" }}>No chapters match.</div>
-      </aside>
-      <div className="nav-overlay" id="navOverlay" onClick={() => window.closeMenu && window.closeMenu()}></div>
-      <div className="main">
-        <div className="topbar">
-          <button className="menu-btn" id="menuBtn" onClick={() => window.toggleMenu && window.toggleMenu()} aria-label="Open chapter menu">&#9776;</button>
-          <div className="crumb" id="crumb"></div>
-          <div className="progress-mini">
-            <span className="label" id="progLabel">0 / 5</span>
-            <div className="bar"><div className="fill" id="progFill" style={{ width: "0%" }}></div></div>
+        </section>
+
+        <section className="hub-section">
+          <h2 className="section-h">How it works</h2>
+          <div className="steps-grid">
+            {STEPS.map((s) => (
+              <div className="step-card" key={s.n}>
+                <div className="step-n">{s.n}</div>
+                <h3>{s.title}</h3>
+                <p>{s.body}</p>
+              </div>
+            ))}
           </div>
-        </div>
-        <div className="content" id="content" tabIndex={-1}></div>
-      </div>
+        </section>
+
+        <section className="hub-section">
+          <h2 className="section-h">Courses</h2>
+          <div className="course-grid">
+            {courses.map((c) => <CourseCard course={c} key={c.slug} />)}
+          </div>
+        </section>
+
+        <section className="hub-section why-section">
+          <h2 className="section-h">Why CareerLadder</h2>
+          <div className="why-grid">
+            <div className="why-card">
+              <h3>Actually hands-on</h3>
+              <p>SQLingo runs a real database in your browser. You write real queries and see real results, every chapter.</p>
+            </div>
+            <div className="why-card">
+              <h3>Built at real depth</h3>
+              <p>30+ chapters per course, from first principles to the topics that come up in real interviews and real jobs.</p>
+            </div>
+            <div className="why-card">
+              <h3>Free, always</h3>
+              <p>No signup, no paywall, no dark patterns. Just the material, built for people changing careers into tech.</p>
+            </div>
+          </div>
+        </section>
+      </main>
+      <SiteFooter />
     </>
   );
 }

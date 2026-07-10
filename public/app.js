@@ -18,8 +18,20 @@ INSERT INTO orders VALUES
  (7,2,6,720,'2024-06-13',4),(8,1,1,500,'2024-06-15',5),(9,6,2,420,'2024-06-17',NULL),(10,3,6,690,'2024-06-19',4);
 `;
 initSqlJs({ locateFile:f=>`https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/${f}` })
- .then(SQL=>{ SQLDB=new SQL.Database(); SQLDB.run(SEED); dbReady=true; document.getElementById('loader').style.display='none'; computeTotals(); go('00'); })
+ .then(SQL=>{ SQLDB=new SQL.Database(); SQLDB.run(SEED); dbReady=true; document.getElementById('loader').style.display='none'; buildNav(); computeTotals(); go('00'); })
  .catch(()=>{ document.getElementById('loader').innerHTML='<p style="color:var(--rose)">Could not load the SQL engine. Check your connection and refresh.</p>'; });
+
+/* Re-entry hook: the course lives inside a multi-page hub now, so a learner can navigate away
+   and back via client-side routing without a full page reload. React remounts fresh, empty
+   sidebar/content DOM nodes each time, but this script only ever runs once per browser tab
+   (the database itself must not be reloaded). If we already booted once, the page just needs
+   to be re-rendered against the new DOM, not reloaded from scratch. */
+window.__sqlingoReinit = function () {
+  const loader = document.getElementById('loader'); if (loader) loader.style.display = 'none';
+  buildNav();
+  computeTotals();
+  go(curCh || (typeof order !== 'undefined' && order[0]) || '00');
+};
 
 function runSQL(raw){
   const q=raw.trim().replace(/;+\s*$/,'');
