@@ -17,6 +17,13 @@ export const metadata = {
   },
 };
 
+import CourseSchema from "../../../components/CourseSchema";
+
 export default function QaLayout({ children }) {
-  return children;
+  return (
+    <>
+      {children}
+      <CourseSchema slug="qa" />
+    </>
+  );
 }

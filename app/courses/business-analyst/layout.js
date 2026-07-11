@@ -17,6 +17,13 @@ export const metadata = {
   },
 };
 
+import CourseSchema from "../../../components/CourseSchema";
+
 export default function BaLayout({ children }) {
-  return children;
+  return (
+    <>
+      {children}
+      <CourseSchema slug="business-analyst" />
+    </>
+  );
 }

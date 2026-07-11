@@ -148,7 +148,7 @@ function celebrateOnce(){
   try{ localStorage.setItem('sqlingo_celebrated','1'); }catch(_){}
   const t=document.createElement('div');
   t.className='celebrate-toast';
-  t.innerHTML='<b>All 115 questions solved.</b><br>You have worked through the whole handbook. Well done.';
+  t.innerHTML=`<b>All ${TOTAL_Q} questions solved.</b><br>You have worked through the whole handbook. Well done.`;
   document.body.appendChild(t);
   setTimeout(()=>{ t.classList.add('show'); },30);
   setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),500); },6000);

@@ -4,7 +4,12 @@ import { useEffect, useState } from "react";
 const SLIDES = [
   { url: "careerladder.io/courses/sql", label: "SQL" },
   { url: "careerladder.io/courses/business-analyst", label: "Business Analyst" },
-  { url: "careerladder.io/courses/developer", label: "Developer" },
+  { url: "careerladder.io/courses/dev-python", label: "Python" },
+  { url: "careerladder.io/courses/dev-django", label: "Django" },
+  { url: "careerladder.io/courses/dev-fastapi", label: "FastAPI" },
+  { url: "careerladder.io/courses/dev-devops", label: "DevOps" },
+  { url: "careerladder.io/courses/dev-capstone", label: "Capstone" },
+  { url: "careerladder.io/courses/dev-fundamentals", label: "Developer" },
   { url: "careerladder.io/courses/qa", label: "QA" },
 ];
 
@@ -50,6 +55,75 @@ function BaSlide() {
   );
 }
 
+function PythonSlide() {
+  return (
+    <>
+      <pre className="mockup-code"><span className="tok-k">def</span> per_person_cost(total, people):
+    <span className="tok-k">return</span> total / people
+
+print(per_person_cost(<span className="tok-k">600</span>, <span className="tok-k">3</span>))</pre>
+      <div className="mockup-test-row"><span className="mockup-pass">PASS</span> per_person_cost(600, 3) == 200</div>
+      <div className="mockup-status"><span className="mockup-status-dot"></span>Run &amp; Check · real Python, in your browser</div>
+    </>
+  );
+}
+
+function DjangoSlide() {
+  return (
+    <>
+      <pre className="mockup-code"><span className="tok-k">class</span> Restaurant(models.Model):
+    name = models.CharField(max_length=<span className="tok-k">100</span>)
+    rating = models.FloatField()</pre>
+      <table className="mockup-table">
+        <thead><tr><th>Name</th><th>City</th><th>Rating</th></tr></thead>
+        <tbody>
+          <tr><td>Domino's</td><td>Mumbai</td><td>4.8</td></tr>
+          <tr><td>KFC</td><td>Bangalore</td><td>4.3</td></tr>
+        </tbody>
+      </table>
+      <div className="mockup-status"><span className="mockup-status-dot"></span>Admin panel · generated from the model</div>
+    </>
+  );
+}
+
+function FastApiSlide() {
+  return (
+    <>
+      <pre className="mockup-code"><span className="tok-k">class</span> OrderCreate(BaseModel):
+    restaurant_id: <span className="tok-k">int</span>
+    amount: <span className="tok-k">int</span> = Field(gt=<span className="tok-k">0</span>)</pre>
+      <div className="mockup-test-row"><span className="mockup-pass">201</span> POST /orders → created</div>
+      <div className="mockup-test-row"><span className="mockup-fail">422</span> amount: -50 → validation error</div>
+      <div className="mockup-status"><span className="mockup-status-dot"></span>/docs · generated automatically</div>
+    </>
+  );
+}
+
+function DevOpsSlide() {
+  return (
+    <>
+      <pre className="mockup-code"><span className="tok-k">upstream</span> tastygo_api {"{"}
+    server app1:8000;
+    server app2:8000;
+    server app3:8000;
+{"}"}</pre>
+      <div className="mockup-test-row"><span className="mockup-pass">UP</span> app1:8000 · app2:8000 · app3:8000</div>
+      <div className="mockup-status"><span className="mockup-status-dot"></span>nginx · load balanced · TLS terminated</div>
+    </>
+  );
+}
+
+function CapstoneSlide() {
+  return (
+    <>
+      <pre className="mockup-code"><span className="tok-k">def</span> order_total(items):
+    <span className="tok-k">return</span> sum(i[<span className="tok-k">"price"</span>] * i[<span className="tok-k">"quantity"</span>] <span className="tok-k">for</span> i <span className="tok-k">in</span> items)</pre>
+      <div className="mockup-test-row"><span className="mockup-pass">PASS</span> order_total([...]) == 600</div>
+      <div className="mockup-status"><span className="mockup-status-dot"></span>Run &amp; Check · real Python · your own backend logic</div>
+    </>
+  );
+}
+
 function CodeSlide() {
   return (
     <>
@@ -79,7 +153,7 @@ function QaSlide() {
   );
 }
 
-const RENDERERS = [SqlSlide, BaSlide, CodeSlide, QaSlide];
+const RENDERERS = [SqlSlide, BaSlide, PythonSlide, DjangoSlide, FastApiSlide, DevOpsSlide, CapstoneSlide, CodeSlide, QaSlide];
 
 export default function HeroVisual() {
   const [i, setI] = useState(0);

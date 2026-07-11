@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
 
-export default function QaCourse() {
+export default function PythonCourse() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     // Course engines share one global script scope and each declares the same top-level
@@ -9,17 +9,18 @@ export default function QaCourse() {
     // loaded in this tab (e.g. via the Back button, then opening another course), loading
     // this one throws a redeclaration error and the page hangs on the loader. Reload once
     // so this engine boots into a clean scope.
-    if (window.__ccEngine && window.__ccEngine !== "qa") { window.location.reload(); return; }
-    window.__ccEngine = "qa";
-    if (window.__qaBooted) {
-      // Returning to this route via client-side navigation: the engine script is already
-      // loaded in this tab, it just needs to re-render into the freshly mounted DOM.
-      window.__qaReinit && window.__qaReinit();
+    if (window.__ccEngine && window.__ccEngine !== "python") { window.location.reload(); return; }
+    window.__ccEngine = "python";
+    if (window.__pythonBooted) {
+      // Returning to this route via client-side navigation: the engine script (and the
+      // Pyodide runtime it loaded) is already alive in this tab, it just needs to
+      // re-render into the freshly mounted DOM, not reload the Python engine itself.
+      window.__pythonReinit && window.__pythonReinit();
       return;
     }
-    window.__qaBooted = true;
+    window.__pythonBooted = true;
     const s = document.createElement("script");
-    s.src = "/qa.js";
+    s.src = "/python.js";
     document.body.appendChild(s);
   }, []);
 
@@ -28,14 +29,14 @@ export default function QaCourse() {
       <a href="#content" className="skip-link">Skip to content</a>
       <div className="loader" id="loader">
         <div className="sp"></div>
-        <p>Loading the course...</p>
+        <p>Loading the course... (starting the Python engine, this can take a few seconds the first time)</p>
       </div>
       <div className="course-shell">
         <aside className="sidebar" id="sidebar">
           <div className="brand">
             <a href="/courses" className="back-to-hub">&larr; All courses</a>
-            <h1>QA <span>Track</span></h1>
-            <p>Software testing, taught the same hands-on way as SQLingo.</p>
+            <h1>Dev <span>Python</span></h1>
+            <p>Real Python, running live in your browser, building toward Django and FastAPI.</p>
             <div className="course-prog">
               <div className="course-prog-label" id="courseProg"></div>
               <div className="course-prog-bar"><div className="course-prog-fill" id="courseProgFill" style={{ width: "0%" }}></div></div>

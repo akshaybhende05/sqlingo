@@ -4,6 +4,13 @@ import { useEffect } from "react";
 export default function SqlCourse() {
   useEffect(() => {
     if (typeof window === "undefined") return;
+    // Course engines share one global script scope and each declares the same top-level
+    // names (manifest, lessons, order, go, ...). If a different course engine is already
+    // loaded in this tab (e.g. via the Back button, then opening another course), loading
+    // this one throws a redeclaration error and the page hangs on the loader. Reload once
+    // so this engine boots into a clean scope.
+    if (window.__ccEngine && window.__ccEngine !== "sql") { window.location.reload(); return; }
+    window.__ccEngine = "sql";
     if (window.__sqlingoBooted) {
       // Returning to this route via client-side navigation: the engine script is already
       // loaded in this tab, it just needs to re-render into the freshly mounted DOM.
@@ -38,6 +45,7 @@ export default function SqlCourse() {
               <div className="course-prog-label" id="courseProg"></div>
               <div className="course-prog-bar"><div className="course-prog-fill" id="courseProgFill" style={{ width: "0%" }}></div></div>
               <button type="button" className="course-prog-reset" onClick={() => window.resetProgress && window.resetProgress()}>Reset progress</button>
+              <p className="course-prog-note">Saved to this device only.</p>
             </div>
           </div>
           <div className="nav-search-wrap">

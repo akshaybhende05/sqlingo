@@ -5,7 +5,7 @@ import { courses } from "../../lib/courses";
 
 export const metadata = {
   title: "Courses — CareerLadder",
-  description: "Free, hands-on IT courses: SQL today, with Business Analyst, QA, and Developer tracks on the way.",
+  description: "Nine free, hands-on IT courses: SQL, Business Analyst, QA, and a full six-course Developer track (Fundamentals, Python, Django, FastAPI, DevOps, and a Capstone). Graded practice, no signup.",
 };
 
 export default function CoursesPage() {

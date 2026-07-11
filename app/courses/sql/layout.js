@@ -17,6 +17,13 @@ export const metadata = {
   },
 };
 
+import CourseSchema from "../../../components/CourseSchema";
+
 export default function SqlLayout({ children }) {
-  return children;
+  return (
+    <>
+      {children}
+      <CourseSchema slug="sql" />
+    </>
+  );
 }

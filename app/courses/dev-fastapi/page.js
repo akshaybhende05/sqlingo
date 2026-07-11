@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
 
-export default function QaCourse() {
+export default function FastApiCourse() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     // Course engines share one global script scope and each declares the same top-level
@@ -9,17 +9,17 @@ export default function QaCourse() {
     // loaded in this tab (e.g. via the Back button, then opening another course), loading
     // this one throws a redeclaration error and the page hangs on the loader. Reload once
     // so this engine boots into a clean scope.
-    if (window.__ccEngine && window.__ccEngine !== "qa") { window.location.reload(); return; }
-    window.__ccEngine = "qa";
-    if (window.__qaBooted) {
+    if (window.__ccEngine && window.__ccEngine !== "fastapi") { window.location.reload(); return; }
+    window.__ccEngine = "fastapi";
+    if (window.__fastapiBooted) {
       // Returning to this route via client-side navigation: the engine script is already
       // loaded in this tab, it just needs to re-render into the freshly mounted DOM.
-      window.__qaReinit && window.__qaReinit();
+      window.__fastapiReinit && window.__fastapiReinit();
       return;
     }
-    window.__qaBooted = true;
+    window.__fastapiBooted = true;
     const s = document.createElement("script");
-    s.src = "/qa.js";
+    s.src = "/fastapi.js";
     document.body.appendChild(s);
   }, []);
 
@@ -34,8 +34,8 @@ export default function QaCourse() {
         <aside className="sidebar" id="sidebar">
           <div className="brand">
             <a href="/courses" className="back-to-hub">&larr; All courses</a>
-            <h1>QA <span>Track</span></h1>
-            <p>Software testing, taught the same hands-on way as SQLingo.</p>
+            <h1>Dev <span>FastAPI</span></h1>
+            <p>Build TastyGo's API: validation, async, dependency injection, auth, and automatic docs.</p>
             <div className="course-prog">
               <div className="course-prog-label" id="courseProg"></div>
               <div className="course-prog-bar"><div className="course-prog-fill" id="courseProgFill" style={{ width: "0%" }}></div></div>
