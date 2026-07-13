@@ -119,6 +119,114 @@ limit (it compiled without errors but didn't finish) — **worth running
 
 ---
 
+## 3b. New features built (phased plan)
+
+All client-side, no backend — consistent with the free / no-signup model. Each
+phase was syntax-validated (esbuild, 0 errors); a real-browser pass is still
+worth doing.
+
+- ✅ **Phase 1 — Cross-course progress dashboard.** Added `questions` +
+  `progressKey` to every course in `lib/courses.js` (totals sum to 469, matching
+  the landing stat). New `components/MyProgress.js` reads each course's
+  `localStorage` progress, computes solved/total + %, and renders per-course bars
+  with Resume/Review links. Shown on the landing page ("Pick up where you left
+  off", appears only once a learner has started something) and on a new
+  `/progress` page (full view + a "Progress" nav link).
+- ✅ **Phase 2 — Completion certificates.** New `/certificate` page detects
+  completed courses, takes the learner's name (saved locally), and renders a
+  printable certificate (Print / Save as PDF via the browser). Honest by design:
+  a decorative reference code, and a note that completion is tracked in the
+  learner's browser (no server verification).
+- ✅ **Phase 3 — Offline PWA.** `public/sw.js` service worker: network-first for
+  navigations (new deploys always win), stale-while-revalidate for engine
+  scripts + CDN runtimes (sql.js, Pyodide, fonts), so a course opened once keeps
+  working offline. Registered by `components/ServiceWorkerRegistrar.js`,
+  **production only** (never interferes with dev/HMR). Bump `VERSION` in `sw.js`
+  to invalidate caches on deploy.
+- ✅ **Phase 4 — data controls + backup/restore.** `/progress` gets "Back up my
+  progress" (downloads a JSON file of all progress + name), "Restore from backup"
+  (file input, validates + only writes app-owned keys), and "Clear all my
+  progress". This is the no-account answer to cross-device / don't-lose-my-work.
+- ✅ **Resume-last-chapter.** All 9 engines now persist the current chapter to
+  `<stem>_last` in `go()` and boot into it (falling back to `'00'` if missing or
+  no longer a valid chapter). So "Resume" on the dashboard reopens where you
+  actually stopped. Works with the per-tab reload guard (each course boots fresh
+  and resumes its own last chapter).
+- ✅ **Light/dark theme toggle.** Dark theme for the hub/marketing pages via
+  `html[data-theme="dark"]` CSS-variable overrides; the in-course reading and
+  practice experience is explicitly reset to its designed light palette inside
+  `.course-shell`/`.loader` (the course UI has ~19 hardcoded light colors, so
+  theming it fully was intentionally out of scope). Toggle lives in the hub
+  header (`components/ThemeToggle.js`); a small inline script in the root layout
+  sets the theme before paint (no flash) and respects the OS preference on first
+  visit. Choice persists in `localStorage` (`cc_theme`).
+
+- ✅ **Interview Q&A tab.** A pinned "Interview Q&A" item in the course sidebar
+  next to the Cheat sheet: `iq()` helper + `renderInterview()` + a pinned
+  `lessons['interview']` in the engine, plus a nav pin in the course `page.js`.
+  Click-to-expand accordion, Beginner / Intermediate / Advanced, with code blocks
+  and figures. No graded questions, so the 469 total is unchanged. Shared styles
+  (`.iq`, `.iq-flow`, `.iq-table`) live in `globals.css`.
+  - **SQL** (`public/app.js`) — **deep: 58 Qs across 15 topics** (fundamentals,
+    filtering, aggregation, joins, set ops, subqueries/CTEs, window functions,
+    modifying data, keys/constraints, views/indexes, transactions, performance,
+    design, query puzzles); JOIN Venn + execution-order figure + isolation table.
+    This is the depth standard for the rest.
+  - **Python** (`public/python.js`) — **deep: 40 Qs** across core types, functions
+    & scope, iteration/comprehensions, OOP, errors/context managers, execution &
+    memory, concurrency (GIL), and performance/idioms; LEGB figure + Big-O table.
+  - **BA** (`public/ba.js`) — **deep: 41 Qs** across role/fundamentals,
+    elicitation, stakeholders, documentation & modelling, prioritisation & scope,
+    methodologies, analysis techniques, and delivery/behavioural; RACI table +
+    as-is/to-be figure.
+  - **QA** (`public/qa.js`) — **deep: 35 Qs** across fundamentals, test levels &
+    types, design techniques, defect management, automation, and process/metrics;
+    test-pyramid figure + severity-vs-priority table.
+  - **Dev Fundamentals** (`public/devfund.js`) — **deep: 36 Qs** across software/
+    SDLC, Git, how-the-web-works, servers/infra, containers/deployment, and core
+    concepts; URL-request flow, Git-areas flow, HTTP status table, VM-vs-container
+    table.
+  - **Django** (`public/django.js`) — 25 Qs; request-lifecycle flow.
+  - **FastAPI** (`public/fastapi.js`) — 20 Qs; request/validation flow.
+  - **DevOps** (`public/devops.js`) — 23 Qs; CI/CD pipeline flow + deployment-
+    strategy table.
+  - **Capstone** (`public/capstone.js`) — 20 Qs; system-design / project-
+    walkthrough + architecture flow.
+
+  **Complete across all 9 courses — 298 interview questions total** (SQL 58,
+  BA 41, Python 40, Dev Fundamentals 36, QA 35, Django 25, DevOps 23, FastAPI 20,
+  Capstone 20). None affect the 469 graded total (they use `iq()`, not `q()`).
+  All engines parse, all 9 pages compile, CSS balanced, 9 nav pins in place.
+
+## Progress sections — verified
+
+Automated cross-check (engine vs `lib/courses.js`) confirms all 9 courses agree
+on both the graded-question total and the `localStorage` progress key:
+
+| | declared | engine | key |
+|---|---|---|---|
+| sql | 115 | 115 | sqlingo_progress ✓ |
+| business-analyst | 91 | 91 | ba_progress ✓ |
+| qa | 60 | 60 | qa_progress ✓ |
+| dev-fundamentals | 39 | 39 | devfund_progress ✓ |
+| dev-python | 34 | 34 | python_progress ✓ |
+| dev-django | 33 | 33 | django_progress ✓ |
+| dev-fastapi | 32 | 32 | fastapi_progress ✓ |
+| dev-devops | 33 | 33 | devops_progress ✓ |
+| dev-capstone | 32 | 32 | capstone_progress ✓ |
+
+Totals sum to 469 (matches the landing stat). The dashboard, per-course bars,
+certificate completion detection, and backup/restore all read these keys with
+matching count semantics (engine writes `PROG[ch][id]=true`; the dashboard sums
+the same). The new Interview Q&A tabs use `iq()`, not the graded `q()` helpers,
+so they add 0 to the totals. Interview content verified not to change any count.
+
+Landing polish:
+- ✅ Hero trust-row (real SQL & Python in-browser · no signup · works offline).
+- ✅ New "Who it's for" section (career switchers / students / upskillers).
+- ✅ Course-card header redesign (status dot + single practice pill) and
+  consistent hover lift across landing cards.
+
 ## 4. Remaining real gaps (ranked)
 
 ### 4.1 Lesson content is still not server-rendered — HIGH (biggest open issue)
@@ -135,11 +243,75 @@ statically generated. This is the README's "Stage 2" refactor (move
 the highest-value remaining work but also the largest — best done deliberately,
 not blind, so it is **deferred**.
 
-**Partially mitigated this pass:** the landing FAQ adds real server-rendered
-body text, and the new `Organization`/`WebSite`/`ItemList`/`Course`/`FAQPage`
-JSON-LD gives crawlers accurate structured data for the site and every course.
-This meaningfully improves the SEO posture in the interim, but does not replace
-server-rendering the actual lesson prose.
+**Mitigated further (SEO pass):**
+- **Crawlable course outlines** — `lib/syllabus.js` (auto-extracted chapter
+  lists, 285 chapters) + `components/CourseOutline.js` render every course's full
+  chapter-by-chapter outline as real, indexable text with internal links on
+  `/courses` (in `<details>`, which Google still indexes). Course descriptions +
+  285 chapter titles are now in the server HTML.
+- **Canonical URLs** on all 14 indexable pages (landing, /courses, /about, and
+  all 9 course pages via their layouts).
+- **noindex** on `/progress` and `/certificate` (per-user utility pages) to focus
+  crawl budget; both excluded from the sitemap.
+- **BreadcrumbList JSON-LD** added per course (Home › Courses › Course), on top of
+  the existing Organization/WebSite/ItemList/Course/FAQPage schema.
+- **Sitemap** now sends `lastModified` and includes /about.
+
+**Per-chapter SSR — SQL proof of concept (built, needs `npm run build` to confirm):**
+- `scripts/extract-content.js` runs a course engine in a stubbed Node sandbox and
+  emits static per-chapter HTML. `node scripts/extract-content.js sql` produced
+  `lib/content/sql.json` (29 chapters, full prose). Re-run when content changes.
+- `app/courses/sql/[chapter]/page.js` — server component with
+  `generateStaticParams` (29 static pages), per-chapter `generateMetadata`
+  (title, description from the lead, canonical), `LearningResource` +
+  `BreadcrumbList` JSON-LD, breadcrumb, prev/next, and a full chapter index for
+  internal linking. Interactive-only controls are hidden via CSS (`.reading-content`);
+  example queries stay visible. A banner links to the interactive course.
+- `/courses` outline now links SQL chapters to their reading pages; the sitemap
+  includes all 29 chapter URLs.
+- **Verify:** run `npm run build` — it should statically generate
+  `/courses/sql/00 … /26`. Once confirmed, roll out to the other 8 courses by
+  running the extractor for each and generalizing the route to
+  `app/courses/[course]/[chapter]` (or one route per course).
+
+**Rolled out to all 9 courses (285 reading pages).** After the SQL build was
+confirmed working:
+- `node scripts/extract-content.js` (all courses) generates `lib/content/*.json`
+  for every course (285 chapters, ~1.5 MB total, committed).
+- Shared `components/ChapterReading.js` renders each reading page (breadcrumb,
+  banner to the interactive course, content, prev/next, chapter index, JSON-LD).
+- Each course has a thin `app/courses/<slug>/[chapter]/page.js` (9 total) with
+  `generateStaticParams` + `generateMetadata` → **285 statically generated,
+  individually indexable chapter pages** with unique titles/descriptions and
+  canonicals.
+- `/courses` outline links every chapter to its reading page; the sitemap lists
+  all 285 chapter URLs.
+- All routes/components pass syntax validation; SQL build already confirmed by
+  the user. Re-run `npm run build` to generate the full set across all courses.
+
+**Extended: Interview Q&A + Cheat sheet as indexable pages, and OG image.**
+- The extractor now also captures each course's pinned `interview` and
+  `cheatsheet` lessons into an `extras` array. The existing `[chapter]` route
+  generates them too (`/courses/<slug>/interview`, `/courses/<slug>/cheatsheet`),
+  so **18 more indexable pages** (9 interview banks, 9 cheat sheets) — the
+  interview pages are keyword-gold ("SQL interview questions", etc.).
+  `ChapterReading` links them in a "Reference & practice" section and keeps them
+  out of the chapter pager/index. Total server-rendered reading pages: **303**
+  (285 chapters + 18 extras). Sitemap includes all of them.
+- `app/opengraph-image.js` — a branded dynamic OG social card (`next/og`,
+  1200×630) for the whole site, so shared links show a real card instead of
+  text. **Needs `npm run build` to confirm** (edge runtime / `next/og`); if it
+  errors on build it can be removed without affecting anything else.
+
+Prior note — the biggest open lever was server-rendering each chapter's
+*body* (lesson prose + interview Q&A) into its own URL. The content lives in
+the client engines (`public/*.js`) and rendering it server-side with per-chapter
+routes is a real refactor that needs a running build to verify safely — best done
+as a dedicated, runtime-verified effort. Approach: a prebuild step executes the
+engines in a stubbed Node sandbox to emit static per-chapter HTML (committed as
+data), which new `app/courses/[course]/[chapter]/page.js` routes render as
+reading pages that link into the interactive app. The outline/data work this pass
+(`lib/syllabus.js`) is the first building block of that.
 
 ### 4.2 Progress is `localStorage`-only, per-course — MEDIUM
 Each course stores progress under its own key (`sqlingo_progress`, `qa_progress`,

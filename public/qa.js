@@ -161,6 +161,7 @@ function foot(cur) {
 function go(num) {
   const L = lessons[num]; if (!L) return;
   curCh = num;
+  try { localStorage.setItem('qa_last', num); } catch (_) {}
   qCount = 0; solved = 0; for (const k in answers) delete answers[k];
   document.getElementById('content').innerHTML = L.render() + foot(num);
   document.getElementById('crumb').innerHTML = L.where;
@@ -1126,10 +1127,78 @@ function renderCheatsheet() {
   return h;
 }
 lessons['cheatsheet'] = { short: 'Cheat sheet', where: '<b>Cheat sheet</b>', render: renderCheatsheet };
+/* ---------- interview questions & answers ---------- */
+function iq(level, q, a) { const cls = level === 'Beginner' ? 'lv-e' : level === 'Intermediate' ? 'lv-m' : 'lv-h'; return `<details class="iq"><summary><span class="q-lvl ${cls}">${level}</span><span class="iq-q">${q}</span></summary><div class="iq-a">${a}</div></details>`; }
+function renderInterview() {
+  const pyramid = `<div class="iq-pyramid"><div class="iq-pyr lvl3">UI / E2E &mdash; few, slow, brittle</div><div class="iq-pyr lvl2">Integration / API</div><div class="iq-pyr lvl1">Unit &mdash; many, fast, cheap</div></div>`;
+  const sevpri = `<table class="iq-table"><thead><tr><th>Case</th><th>Severity</th><th>Priority</th></tr></thead><tbody>
+    <tr><td>Checkout crashes for all users</td><td>High</td><td>High</td></tr>
+    <tr><td>Company logo misspelled on home page</td><td>Low</td><td>High</td></tr>
+    <tr><td>Crash in a rarely used admin export</td><td>High</td><td>Low</td></tr>
+    <tr><td>Minor padding off on a settings page</td><td>Low</td><td>Low</td></tr></tbody></table>
+    <p style="font-size:12.5px;color:var(--ink-faint);margin-top:2px">Severity = technical impact; priority = how soon to fix. They are independent.</p>`;
+  return `
+  <div class="eyebrow">Interview prep</div>
+  <h2 class="title">QA &amp; testing interview questions</h2>
+  <p class="lead">A deep, topic-by-topic bank of the QA questions asked in real interviews, from first-job screens to lead rounds. Every answer is short, correct, and points at the reasoning an interviewer wants to hear. Click any question to expand it.</p>
+  <button class="pg-btn pg-ghost" style="margin:6px 0 10px" onclick="window.print()">Print / save as PDF</button>
+  <hr class="rule">
+
+  <h3 class="section-h">Fundamentals</h3>
+  ${iq('Beginner','What is software testing, and why does it matter?',`<p>Checking that software behaves as intended and finding where it does not, to reduce risk before users are affected. Testing does not prove software is bug-free &mdash; it builds confidence and surfaces defects early, when they are cheapest to fix.</p>`)}
+  ${iq('Beginner','Verification vs validation?',`<p><b>Verification</b>: are we building the product right (meets the spec)? <b>Validation</b>: are we building the right product (meets the real user need)? Verification is reviews/static checks; validation is actual testing against expectations.</p>`)}
+  ${iq('Beginner','Error vs defect vs failure (vs bug)?',`<p>An <b>error</b> is a human mistake; it may introduce a <b>defect</b> (aka bug) in the code; a defect causes a <b>failure</b> when it is triggered and produces observably wrong behaviour. Not every defect has failed yet.</p>`)}
+  ${iq('Beginner','QA vs QC vs testing?',`<p><b>QA</b> is process-focused and preventive (improving how software is built). <b>QC</b> is product-focused and detective (checking the built product). <b>Testing</b> is one QC activity. QA is the umbrella; testing lives inside it.</p>`)}
+  ${iq('Intermediate','What is the STLC (software testing life cycle)?',`<p>Requirement analysis, test planning, test case design, environment setup, test execution, and test closure &mdash; each with entry/exit criteria. It runs alongside the SDLC.</p>`)}
+  ${iq('Intermediate','Static vs dynamic testing?',`<p><b>Static</b> testing examines artefacts without running code (reviews, walkthroughs, static analysis) &mdash; catches defects early. <b>Dynamic</b> testing runs the software with inputs and checks outputs.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Levels &amp; types of testing</h3>
+  ${iq('Beginner','Unit vs integration vs system vs acceptance testing?',`<ul><li><b>Unit</b> &mdash; a single function/component in isolation (usually by devs).</li><li><b>Integration</b> &mdash; how components work together.</li><li><b>System</b> &mdash; the whole application against requirements.</li><li><b>Acceptance</b> &mdash; the business/user confirms it meets their need (UAT).</li></ul>`)}
+  ${iq('Beginner','Functional vs non-functional testing?',`<p><b>Functional</b> checks what the system does (features against requirements). <b>Non-functional</b> checks how well &mdash; performance, security, usability, reliability, compatibility.</p>`)}
+  ${iq('Beginner','Smoke vs sanity testing?',`<p><b>Smoke</b>: a broad, shallow check that the build is stable enough to test at all (build-verification). <b>Sanity</b>: a narrow, deeper check that a specific fix or area works after a change. Smoke is wide; sanity is focused.</p>`)}
+  ${iq('Intermediate','Retesting vs regression testing?',`<p><b>Retesting</b> re-runs the exact failed cases on a fixed defect to confirm the fix. <b>Regression</b> re-runs existing tests around a change to ensure nothing else broke. Retesting is planned (known cases); regression guards against side effects.</p>`)}
+  ${iq('Intermediate','Black-box vs white-box vs grey-box testing?',`<p><b>Black-box</b> tests behaviour without seeing code (inputs/outputs). <b>White-box</b> uses knowledge of the internal code paths (branch/statement coverage). <b>Grey-box</b> mixes both &mdash; some internal knowledge (e.g. the DB or API) informing black-box tests.</p>`)}
+  ${iq('Beginner','Alpha vs beta testing?',`<p><b>Alpha</b>: in-house testing by internal teams before release. <b>Beta</b>: real users testing in their own environment before general availability. Beta surfaces real-world conditions you cannot fully reproduce in-house.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Test design techniques</h3>
+  ${iq('Intermediate','What is equivalence partitioning?',`<p>Divide inputs into groups that should be treated the same, then test one value per group instead of all of them &mdash; cutting cases while keeping coverage. E.g. for age 18-60: one value below, one within, one above.</p>`)}
+  ${iq('Intermediate','What is boundary value analysis?',`<p>Bugs cluster at edges, so test the boundaries and just inside/outside them. For a 1-100 field: test 0, 1, 2, 99, 100, 101. Often paired with equivalence partitioning.</p>`)}
+  ${iq('Advanced','When would you use a decision table?',`<p>When output depends on combinations of conditions (business rules). You tabulate every combination of conditions and the expected action, ensuring no rule is missed &mdash; great for complex eligibility/pricing logic.</p>`)}
+  ${iq('Advanced','What is state transition testing?',`<p>Model the system as states and the events that move between them, then test valid and invalid transitions. Useful for workflows and status-driven features (e.g. an order: placed &rarr; paid &rarr; shipped).</p>`)}
+  ${iq('Intermediate','What makes a good test case?',`<p>Clear title, preconditions, concrete steps, specific test data, and an unambiguous expected result &mdash; independent, repeatable, and traceable to a requirement. Anyone should be able to run it and get the same verdict.</p>`)}
+  ${iq('Beginner','Positive vs negative testing?',`<p><b>Positive</b>: valid inputs produce the expected result. <b>Negative</b>: invalid inputs are handled gracefully (validation errors, no crash). Good coverage needs both.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Defect management</h3>
+  ${iq('Beginner','What goes into a good bug report?',`<p>A clear title, steps to reproduce, expected vs actual result, environment (build, OS, browser), severity/priority, and evidence (screenshot, logs, video). The test: could a developer reproduce and fix it without asking you anything?</p>`)}
+  ${iq('Intermediate','Describe the defect life cycle.',`<p>New &rarr; Assigned &rarr; Open &rarr; Fixed &rarr; Retest &rarr; Closed, with side paths like Rejected, Duplicate, Deferred, or Reopened. States and names vary by tool but the flow is consistent.</p>`)}
+  ${iq('Intermediate','Severity vs priority?',`<p><b>Severity</b> is the technical impact; <b>priority</b> is how urgently it should be fixed. They are independent:</p>${sevpri}`)}
+  ${iq('Advanced','What do you do if a developer marks your bug "cannot reproduce" or "not a bug"?',`<p>Stay factual, not defensive. Re-verify on the exact build, add precise steps, data, environment and evidence (video/logs), and reference the requirement or acceptance criterion it violates. If it truly is intended behaviour, that itself may be a requirements gap worth raising.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Automation</h3>
+  ${iq('Intermediate','When should you automate, and what makes a good candidate?',`<p>Automate stable, repetitive, high-value, data-heavy or frequently-run tests (regression, smoke, cross-browser). Keep manual the exploratory, one-off, rapidly-changing, or usability-driven checks. Do not automate a feature that is still churning.</p>`)}
+  ${iq('Intermediate','What is the test pyramid?',`<p>A guide to the healthy shape of a test suite: many fast unit tests at the base, fewer integration/API tests, and a thin layer of slow UI/E2E tests on top. Inverting it (mostly UI tests) gives slow, brittle, flaky suites.</p>${pyramid}`)}
+  ${iq('Advanced','What causes flaky tests, and how do you reduce them?',`<p>Common causes: timing/race conditions (fixed sleeps), test interdependence and shared state, non-deterministic data/dates, and reliance on unstable locators or live external services. Fixes: explicit waits, isolated/idempotent tests, controlled test data, stable selectors, and mocking external dependencies.</p>`)}
+  ${iq('Advanced','What is the Page Object Model?',`<p>An automation design pattern that wraps each page/screen in a class exposing its elements and actions, so tests call intent (<code class="inl">loginPage.login(user, pass)</code>) instead of raw selectors. It reduces duplication and localises UI changes to one place.</p>`)}
+  ${iq('Intermediate','How do you test an API?',`<p>Send requests (Postman, REST-assured, etc.) and assert on the status code, response body/schema, headers and response time. Cover valid and invalid inputs, auth, and edge cases &mdash; API tests are faster and more stable than UI tests.</p>`)}
+  ${iq('Advanced','What is data-driven testing?',`<p>Running the same test logic against many input/expected-output sets from an external source (CSV, table). It widens coverage without duplicating scripts and separates test data from test code.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Process, non-functional &amp; metrics</h3>
+  ${iq('Intermediate','What is the QA role in Agile?',`<p>QA is embedded in the team, not a gate at the end: clarifying acceptance criteria, testing stories within the sprint, automating regression, and championing quality early (shift-left). Testing is continuous, not a final phase.</p>`)}
+  ${iq('Intermediate','What is shift-left testing?',`<p>Moving testing activities earlier &mdash; reviewing requirements, writing tests alongside (or before) code, and testing each increment &mdash; so defects are caught when they are cheapest, rather than at the end.</p>`)}
+  ${iq('Intermediate','Test plan vs test strategy?',`<p>A <b>test strategy</b> is the high-level, often organisation-wide approach (types, tools, environments, standards). A <b>test plan</b> is project-specific: scope, schedule, resources, entry/exit criteria, and what will and will not be tested.</p>`)}
+  ${iq('Beginner','What are entry and exit criteria?',`<p><b>Entry</b>: conditions that must be met before testing starts (stable build, environment ready, cases prepared). <b>Exit</b>: conditions to stop (coverage met, no open critical defects, criteria signed off).</p>`)}
+  ${iq('Advanced','Name the main types of performance testing.',`<ul><li><b>Load</b> &mdash; expected volume.</li><li><b>Stress</b> &mdash; beyond capacity, to find the breaking point.</li><li><b>Soak/endurance</b> &mdash; sustained load over time (leaks).</li><li><b>Spike</b> &mdash; sudden surges.</li></ul>`)}
+  ${iq('Intermediate','What is test coverage, and its limits?',`<p>A measure of how much of something (requirements, code branches, features) is exercised by tests. Useful as a gap-finder, but high coverage does not guarantee good tests &mdash; you can cover a line without asserting the right thing.</p>`)}
+  ${iq('Advanced','What is defect leakage / defect density?',`<p><b>Defect density</b> = defects per size unit (e.g. per KLOC or per module) &mdash; flags risky areas. <b>Defect leakage</b> = defects that escaped to a later stage or production divided by total &mdash; a measure of how effective earlier testing was.</p>`)}
+
+  <div class="foot" style="margin-top:30px"><span></span><button class="f-btn f-next" onclick="go('${order[0]}')">Back to the course &rarr;</button></div>`;
+}
+lessons['interview'] = { short: 'Interview Q&A', where: '<b>Interview Q&A</b>', render: renderInterview };
+
 
 /* ---------- boot ---------- */
 computeTotals();
-go('00');
+go((function(){try{var l=localStorage.getItem('qa_last');return (l&&lessons[l])?l:'00';}catch(e){return '00';}})());
 
 /* Re-entry hook: see the matching comment in public/app.js / public/ba.js. */
 window.__qaReinit = function () {

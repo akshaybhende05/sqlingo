@@ -57,6 +57,9 @@ export default function BusinessAnalystCourse() {
             <div className="nav-item nav-pinned-item" id="nav-cheatsheet" onClick={() => window.go && window.go("cheatsheet")}>
               <span className="ch">&equiv;</span> Cheat sheet
             </div>
+            <div className="nav-item nav-pinned-item" id="nav-interview" onClick={() => window.go && window.go("interview")}>
+              <span className="ch">?</span> Interview Q&amp;A
+            </div>
           </div>
           <nav id="nav"></nav>
           <div className="nav-empty" id="navEmpty" style={{ display: "none" }}>No chapters match.</div>

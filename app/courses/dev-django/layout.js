@@ -2,6 +2,7 @@ const title = "Django — build a full web application | CareerLadder";
 const description = "A free, hands-on Django course: models, the ORM, migrations, views, templates, the admin panel, and auth, building TastyGo's backend as a full Django web application.";
 
 export const metadata = {
+  alternates: { canonical: "/courses/dev-django" },
   title,
   description,
   openGraph: {

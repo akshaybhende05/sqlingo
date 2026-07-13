@@ -162,6 +162,7 @@ function foot(cur) {
 function go(num) {
   const L = lessons[num]; if (!L) return;
   curCh = num;
+  try { localStorage.setItem('fastapi_last', num); } catch (_) {}
   qCount = 0; solved = 0; for (const k in answers) delete answers[k];
   document.getElementById('content').innerHTML = L.render() + foot(num);
   document.getElementById('crumb').innerHTML = L.where;
@@ -1073,10 +1074,60 @@ function renderCheatsheet() {
   return h;
 }
 lessons['cheatsheet'] = { short: 'Cheat sheet', where: '<b>Cheat sheet</b>', render: renderCheatsheet };
+/* ---------- interview questions & answers ---------- */
+function iq(level, q, a) { const cls = level === 'Beginner' ? 'lv-e' : level === 'Intermediate' ? 'lv-m' : 'lv-h'; return `<details class="iq"><summary><span class="q-lvl ${cls}">${level}</span><span class="iq-q">${q}</span></summary><div class="iq-a">${a}</div></details>`; }
+function renderInterview() {
+  const flow = `<div class="iq-flow"><span>Request</span><i>&rarr;</i><span>Pydantic validation</span><i>&rarr;</i><span>Dependencies</span><i>&rarr;</i><span>Path operation</span><i>&rarr;</i><span>Response model</span></div>`;
+  return `
+  <div class="eyebrow">Interview prep</div>
+  <h2 class="title">FastAPI interview questions</h2>
+  <p class="lead">A deep, topic-by-topic bank of the FastAPI questions asked in real interviews, grouped by area, with concise answers and the reasoning interviewers listen for. Click any question to expand it.</p>
+  <button class="pg-btn pg-ghost" style="margin:6px 0 10px" onclick="window.print()">Print / save as PDF</button>
+  <hr class="rule">
+
+  <h3 class="section-h">Fundamentals</h3>
+  ${iq('Beginner','What is FastAPI, and why is it popular?',`<p>A modern Python web framework for building APIs, built on type hints. It gives automatic request validation, automatic interactive docs, and high performance (async, on top of Starlette and Pydantic).</p>`)}
+  ${iq('Intermediate','How does a request flow through FastAPI?',`<p>The request is routed to a path operation; parameters and body are validated by Pydantic; dependencies resolve; your function runs; and the result is serialised through the response model.</p>${flow}`)}
+  ${iq('Intermediate','WSGI vs ASGI &mdash; where does FastAPI sit?',`<p>WSGI is the synchronous standard; ASGI is the async standard supporting concurrency and WebSockets. FastAPI is ASGI-based (run by Uvicorn/Hypercorn), which is what enables its async endpoints.</p>`)}
+  ${iq('Beginner','Where do the automatic docs come from?',`<p>FastAPI generates an OpenAPI schema from your type hints and models, and serves interactive docs at <code class="inl">/docs</code> (Swagger UI) and <code class="inl">/redoc</code> &mdash; no extra work.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Validation &amp; parameters</h3>
+  ${iq('Beginner','How does FastAPI validate request data?',`<p>You declare a Pydantic model (or typed parameters); FastAPI parses and validates incoming data against it, coercing types and returning a clear <code class="inl">422</code> error automatically if it is invalid.</p><pre class="code">class OrderIn(BaseModel):
+    restaurant_id: int
+    amount: int = Field(gt=0)</pre>`)}
+  ${iq('Intermediate','Path vs query vs body parameters?',`<p><b>Path</b> params come from the URL (<code class="inl">/orders/{id}</code>); <b>query</b> params from the query string (<code class="inl">?limit=10</code>); <b>body</b> from the request payload (a Pydantic model). FastAPI infers which from your function signature.</p>`)}
+  ${iq('Intermediate','What is a response_model, and why use one?',`<p>A Pydantic model declaring the shape of the response. It filters/validates output (e.g. hiding a password field), documents the API, and keeps responses consistent.</p>`)}
+  ${iq('Beginner','How do you set the HTTP status code?',`<p>Via <code class="inl">status_code=</code> on the decorator (e.g. <code class="inl">201</code> for create) or by raising <code class="inl">HTTPException(status_code=..., detail=...)</code> for errors.</p>`)}
+  ${iq('Intermediate','What does a 422 response mean?',`<p>Unprocessable Entity &mdash; FastAPI returns it automatically when request data fails Pydantic validation, with a body detailing which fields failed and why.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Async &amp; performance</h3>
+  ${iq('Intermediate','When should an endpoint be async def vs def?',`<p>Use <code class="inl">async def</code> when you await non-blocking I/O (async DB driver, HTTP calls). Use plain <code class="inl">def</code> for blocking work &mdash; FastAPI runs it in a threadpool so it does not block the event loop. Never call blocking code directly inside an async endpoint.</p>`)}
+  ${iq('Advanced','Why can FastAPI handle high concurrency?',`<p>Its ASGI/async model lets one worker juggle many in-flight I/O-bound requests without a thread each, since awaiting frees the event loop to serve others. For CPU-bound work you still scale with more workers/processes.</p>`)}
+  ${iq('Intermediate','What are background tasks?',`<p><code class="inl">BackgroundTasks</code> lets you run work after returning the response (send an email, write a log) without making the client wait. For heavy/reliable jobs, use a real task queue (Celery/RQ) instead.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Dependency injection</h3>
+  ${iq('Intermediate','What is Depends() and why is DI useful?',`<p><code class="inl">Depends()</code> declares that an endpoint needs something (a DB session, the current user, common query params); FastAPI resolves and injects it. It centralises shared logic, aids testing (override dependencies), and keeps endpoints clean.</p>`)}
+  ${iq('Advanced','How would you provide a database session per request?',`<p>Write a dependency that yields a session and closes it after the request, then inject it with <code class="inl">Depends</code>. The <code class="inl">yield</code> form guarantees teardown even on errors.</p><pre class="code">def get_db():
+    db = SessionLocal()
+    try: yield db
+    finally: db.close()</pre>`)}
+  ${iq('Advanced','How do you protect a route (auth)?',`<p>Use a dependency that validates a token (OAuth2 bearer/JWT) and returns the current user, raising <code class="inl">401</code> if invalid. Add it via <code class="inl">Depends(get_current_user)</code> so protection is declarative and reusable.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Cross-cutting concerns</h3>
+  ${iq('Intermediate','How do you handle errors cleanly?',`<p>Raise <code class="inl">HTTPException</code> for expected errors (404, 403), and register custom exception handlers for app-specific exceptions so you return consistent, well-structured error responses.</p>`)}
+  ${iq('Intermediate','What is CORS and how do you enable it?',`<p>Cross-Origin Resource Sharing controls which browser origins may call your API. Add <code class="inl">CORSMiddleware</code> with the allowed origins/methods/headers &mdash; needed when a frontend on another domain calls the API.</p>`)}
+  ${iq('Intermediate','What is middleware in FastAPI?',`<p>Code that wraps every request/response &mdash; for logging, timing, CORS, or adding headers. It runs before the path operation and after the response is produced.</p>`)}
+  ${iq('Advanced','How do you manage configuration?',`<p>Use Pydantic <code class="inl">BaseSettings</code> to load typed config from environment variables (with validation and defaults), keeping secrets out of code and letting the same build run per environment.</p>`)}
+  ${iq('Intermediate','How do you test a FastAPI app?',`<p>Use the built-in <code class="inl">TestClient</code> (or async httpx) to call endpoints in tests and assert on status and JSON, and override dependencies (e.g. a test DB) via <code class="inl">app.dependency_overrides</code>.</p>`)}
+
+  <div class="foot" style="margin-top:30px"><span></span><button class="f-btn f-next" onclick="go('${order[0]}')">Back to the course &rarr;</button></div>`;
+}
+lessons['interview'] = { short: 'Interview Q&A', where: '<b>Interview Q&A</b>', render: renderInterview };
+
 
 /* ---------- boot ---------- */
 computeTotals();
-go('00');
+go((function(){try{var l=localStorage.getItem('fastapi_last');return (l&&lessons[l])?l:'00';}catch(e){return '00';}})());
 
 /* Re-entry hook: see the matching comment in public/app.js / public/ba.js / public/qa.js / public/devfund.js / public/django.js. */
 window.__fastapiReinit = function () {

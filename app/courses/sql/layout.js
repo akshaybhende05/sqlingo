@@ -2,6 +2,7 @@ const title = "SQLingo — Learn SQL, properly";
 const description = "A free, interactive SQL handbook. Learn SQL from first principles with a real database running in your browser, no signup needed.";
 
 export const metadata = {
+  alternates: { canonical: "/courses/sql" },
   title,
   description,
   openGraph: {

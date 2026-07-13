@@ -18,7 +18,7 @@ INSERT INTO orders VALUES
  (7,2,6,720,'2024-06-13',4),(8,1,1,500,'2024-06-15',5),(9,6,2,420,'2024-06-17',NULL),(10,3,6,690,'2024-06-19',4);
 `;
 initSqlJs({ locateFile:f=>`https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.2/${f}` })
- .then(SQL=>{ SQLDB=new SQL.Database(); SQLDB.run(SEED); dbReady=true; document.getElementById('loader').style.display='none'; buildNav(); computeTotals(); go('00'); })
+ .then(SQL=>{ SQLDB=new SQL.Database(); SQLDB.run(SEED); dbReady=true; document.getElementById('loader').style.display='none'; buildNav(); computeTotals(); go((function(){try{var l=localStorage.getItem('sqlingo_last');return (l&&lessons[l])?l:'00';}catch(e){return '00';}})()); })
  .catch(()=>{ document.getElementById('loader').innerHTML='<p style="color:var(--rose)">Could not load the SQL engine. Check your connection and refresh.</p>'; });
 
 /* Re-entry hook: the course lives inside a multi-page hub now, so a learner can navigate away
@@ -202,6 +202,7 @@ function foot(cur){
 
 function go(num){ const L=lessons[num]; if(!L) return;
   curCh=num;
+  try{localStorage.setItem('sqlingo_last',num);}catch(_){}
   edCount=0; tryEds.length=0; qCount=0; solved=0; for(const k in answers) delete answers[k];
   document.getElementById('content').innerHTML = L.render() + foot(num);
   document.getElementById('crumb').innerHTML = L.where;
@@ -268,6 +269,166 @@ function renderCheatsheet(){
   return h;
 }
 lessons['cheatsheet']={ short:'Cheat sheet', where:'<b>Cheat sheet</b>', render:renderCheatsheet };
+
+/* ---------- interview questions & answers ---------- */
+function iq(level,q,a){ const cls=level==='Beginner'?'lv-e':level==='Intermediate'?'lv-m':'lv-h'; return `<details class="iq"><summary><span class="q-lvl ${cls}">${level}</span><span class="iq-q">${q}</span></summary><div class="iq-a">${a}</div></details>`; }
+function renderInterview(){
+  const joinSvg = `<svg class="diagram" viewBox="0 0 680 118" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Venn diagrams of INNER, LEFT, RIGHT and FULL OUTER joins">
+    <defs><clipPath id="iqJoinClip"><circle cx="45" cy="46" r="28"/></clipPath></defs>
+    <g transform="translate(30,0)"><circle cx="75" cy="46" r="28" fill="#0f766e" clip-path="url(#iqJoinClip)"/><circle cx="45" cy="46" r="28" fill="none" stroke="#0f766e" stroke-width="2"/><circle cx="75" cy="46" r="28" fill="none" stroke="#0f766e" stroke-width="2"/><text x="60" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#1b2422">INNER</text></g>
+    <g transform="translate(200,0)"><circle cx="45" cy="46" r="28" fill="#0f766e"/><circle cx="45" cy="46" r="28" fill="none" stroke="#0f766e" stroke-width="2"/><circle cx="75" cy="46" r="28" fill="none" stroke="#0f766e" stroke-width="2"/><text x="60" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#1b2422">LEFT</text></g>
+    <g transform="translate(370,0)"><circle cx="75" cy="46" r="28" fill="#0f766e"/><circle cx="45" cy="46" r="28" fill="none" stroke="#0f766e" stroke-width="2"/><circle cx="75" cy="46" r="28" fill="none" stroke="#0f766e" stroke-width="2"/><text x="60" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#1b2422">RIGHT</text></g>
+    <g transform="translate(540,0)"><circle cx="45" cy="46" r="28" fill="#0f766e"/><circle cx="75" cy="46" r="28" fill="#0f766e"/><circle cx="45" cy="46" r="28" fill="none" stroke="#0f766e" stroke-width="2"/><circle cx="75" cy="46" r="28" fill="none" stroke="#0f766e" stroke-width="2"/><text x="60" y="96" text-anchor="middle" font-size="12" font-weight="700" fill="#1b2422">FULL OUTER</text></g>
+  </svg>`;
+  const orderFlow = `<div class="iq-flow"><span>FROM / JOIN</span><i>&rarr;</i><span>WHERE</span><i>&rarr;</i><span>GROUP BY</span><i>&rarr;</i><span>HAVING</span><i>&rarr;</i><span>SELECT</span><i>&rarr;</i><span>ORDER BY</span><i>&rarr;</i><span>LIMIT</span></div>`;
+  const isolation = `<table class="iq-table"><thead><tr><th>Isolation level</th><th>Dirty read</th><th>Non-repeatable read</th><th>Phantom read</th></tr></thead><tbody>
+    <tr><td>Read Uncommitted</td><td>Possible</td><td>Possible</td><td>Possible</td></tr>
+    <tr><td>Read Committed</td><td>No</td><td>Possible</td><td>Possible</td></tr>
+    <tr><td>Repeatable Read</td><td>No</td><td>No</td><td>Possible</td></tr>
+    <tr><td>Serializable</td><td>No</td><td>No</td><td>No</td></tr></tbody></table>`;
+  return `
+  <div class="eyebrow">Interview prep</div>
+  <h2 class="title">SQL interview questions</h2>
+  <p class="lead">A deep, topic-by-topic bank of the SQL questions that come up in real interviews, from first-job screens to senior rounds. Every answer is short, correct, and points at the reasoning an interviewer is listening for. Click any question to expand it &mdash; or use your browser's find to jump to a topic.</p>
+  <button class="pg-btn pg-ghost" style="margin:6px 0 10px" onclick="window.print()">Print / save as PDF</button>
+  <hr class="rule">
+
+  <h3 class="section-h">Fundamentals</h3>
+  ${iq('Beginner','What is SQL, and is it a database?',`<p>SQL (Structured Query Language) is the standard, <b>declarative</b> language for defining, querying and changing data in a relational database (data in tables of rows and columns). You describe <i>what</i> you want; the engine decides <i>how</i>. SQL is the language, not the database &mdash; SQLite, PostgreSQL, MySQL and SQL Server are engines that run it.</p>`)}
+  ${iq('Beginner','What are the sub-languages of SQL: DDL, DML, DQL, DCL, TCL?',`<ul><li><b>DDL</b> (structure): CREATE, ALTER, DROP, TRUNCATE.</li><li><b>DML</b> (change data): INSERT, UPDATE, DELETE.</li><li><b>DQL</b> (read): SELECT.</li><li><b>DCL</b> (permissions): GRANT, REVOKE.</li><li><b>TCL</b> (transactions): BEGIN, COMMIT, ROLLBACK, SAVEPOINT.</li></ul>`)}
+  ${iq('Beginner','CHAR vs VARCHAR, and why do data types matter?',`<p><code class="inl">CHAR(n)</code> is fixed length (padded); <code class="inl">VARCHAR(n)</code> is variable length up to n. Right types save space, keep data valid, and let the engine compare/sort correctly &mdash; e.g. storing dates as a real date type enables range queries and ordering that text can't do reliably.</p>`)}
+  ${iq('Intermediate','SQL vs NoSQL &mdash; when would you choose each?',`<p>Relational (SQL) suits structured data with clear relationships, strong consistency and ad-hoc queries/joins &mdash; most business/transactional systems. NoSQL (document, key-value, wide-column, graph) trades some structure/consistency for flexible schemas and horizontal scale &mdash; huge volumes, rapidly changing shapes, or specific access patterns. Many systems use both.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Querying &amp; filtering</h3>
+  ${iq('Beginner','WHERE vs HAVING?',`<p><code class="inl">WHERE</code> filters rows <b>before</b> grouping and can't use aggregates; <code class="inl">HAVING</code> filters groups <b>after</b> aggregation and can.</p><pre class="code">SELECT city, COUNT(*) AS n FROM customers
+WHERE city IS NOT NULL
+GROUP BY city
+HAVING COUNT(*) &gt; 1;</pre>`)}
+  ${iq('Beginner','What does DISTINCT do, including COUNT(DISTINCT ...)?',`<p><code class="inl">DISTINCT</code> removes duplicate rows from the result; across several columns it keeps unique <i>combinations</i>. <code class="inl">COUNT(DISTINCT col)</code> counts distinct non-null values.</p>`)}
+  ${iq('Beginner','How do the LIKE wildcards work?',`<p><code class="inl">%</code> matches any run of characters, <code class="inl">_</code> matches exactly one. <code class="inl">'B%'</code> starts with B; <code class="inl">'%ing'</code> ends with ing; <code class="inl">'P___'</code> is P plus three characters. Leading-wildcard searches (<code class="inl">'%x'</code>) usually can't use an index.</p>`)}
+  ${iq('Intermediate','IN vs EXISTS vs a JOIN?',`<p><code class="inl">IN</code> tests membership in a list/subquery; <code class="inl">EXISTS</code> tests whether a correlated subquery returns any row and can short-circuit. For "does a match exist", <code class="inl">EXISTS</code> or a join is often clearer and faster than <code class="inl">IN</code> on a large subquery. Watch out: <code class="inl">NOT IN</code> with a NULL in the list returns no rows &mdash; prefer <code class="inl">NOT EXISTS</code>.</p>`)}
+  ${iq('Intermediate','How do NULLs behave, and why does = NULL fail?',`<p><code class="inl">NULL</code> means "unknown", so SQL uses three-valued logic (true/false/unknown). Any comparison with NULL is unknown (never true), so <code class="inl">= NULL</code> matches nothing &mdash; use <code class="inl">IS NULL</code>/<code class="inl">IS NOT NULL</code>. Aggregates except <code class="inl">COUNT(*)</code> skip NULLs; arithmetic with NULL yields NULL. Use <code class="inl">COALESCE(x, default)</code>.</p>`)}
+  ${iq('Beginner','How do you sort by multiple columns and control NULL order?',`<pre class="code">SELECT name, city, rating
+FROM restaurants
+ORDER BY city ASC, rating DESC;</pre><p>Sorting is applied left to right. NULL ordering varies by engine (<code class="inl">NULLS FIRST/LAST</code> where supported).</p>`)}
+  ${iq('Advanced','How do you paginate, and why is OFFSET slow at scale?',`<p><code class="inl">LIMIT n OFFSET m</code> works but gets slower as the offset grows, because the engine still scans and discards the skipped rows. For large data use <b>keyset (seek) pagination</b>: remember the last row's sort key and use <code class="inl">WHERE id &gt; :last ORDER BY id LIMIT n</code>.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Aggregation &amp; grouping</h3>
+  ${iq('Beginner','What does GROUP BY do, and what may appear in SELECT with it?',`<p><code class="inl">GROUP BY</code> collapses rows into one row per group so you can aggregate. In standard SQL every non-aggregated column in <code class="inl">SELECT</code> must appear in <code class="inl">GROUP BY</code> (some engines relax this, which can give surprising results).</p>`)}
+  ${iq('Beginner','COUNT(*) vs COUNT(col) vs COUNT(DISTINCT col)?',`<p><code class="inl">COUNT(*)</code> counts rows; <code class="inl">COUNT(col)</code> counts rows where col is not NULL; <code class="inl">COUNT(DISTINCT col)</code> counts distinct non-null values.</p>`)}
+  ${iq('Intermediate','What is conditional aggregation?',`<p>Aggregating a <code class="inl">CASE</code> expression to build pivot-like summaries in one pass:</p><pre class="code">SELECT
+  SUM(CASE WHEN rating &gt;= 4.5 THEN 1 ELSE 0 END) AS top,
+  SUM(CASE WHEN rating &lt; 4.5 THEN 1 ELSE 0 END) AS rest
+FROM restaurants;</pre>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Joins</h3>
+  ${iq('Beginner','What are the main types of JOIN?',`<p>A join combines rows from two tables on a matching column.</p>${joinSvg}<ul><li><b>INNER</b> &mdash; only matches in both.</li><li><b>LEFT</b> &mdash; all left rows + matches (NULLs otherwise).</li><li><b>RIGHT</b> &mdash; mirror of LEFT. <b>FULL OUTER</b> &mdash; all rows from both.</li><li><b>CROSS</b> &mdash; every combination; <b>SELF</b> &mdash; a table joined to itself.</li></ul>`)}
+  ${iq('Intermediate','Why does a filter in WHERE turn my LEFT JOIN into an INNER JOIN?',`<p>A condition on the right table in <code class="inl">WHERE</code> discards the unmatched left rows (their right columns are NULL and fail the test). Keep them by putting the condition in <code class="inl">ON</code>:</p><pre class="code">FROM customers c
+LEFT JOIN orders o
+  ON o.customer_id = c.id AND o.order_date &gt;= '2024-01-01';</pre>`)}
+  ${iq('Intermediate','What is a self join, and when do you need one?',`<p>Joining a table to itself with aliases &mdash; used for hierarchical or same-table comparisons, e.g. matching employees to their manager in the same <code class="inl">employees</code> table, or finding pairs.</p><pre class="code">SELECT e.name, m.name AS manager
+FROM employees e
+JOIN employees m ON e.manager_id = m.id;</pre>`)}
+  ${iq('Intermediate','What is a CROSS JOIN and when is it useful?',`<p>It produces the Cartesian product (every left row paired with every right row). Useful for generating combinations or a calendar/number grid; dangerous by accident (a missing join condition) because it explodes row counts.</p>`)}
+  ${iq('Advanced','How does the engine actually execute a join?',`<p>Common physical strategies: <b>nested loop</b> (good for small inputs or indexed lookups), <b>hash join</b> (build a hash table on one side, probe with the other &mdash; great for large unsorted equi-joins), and <b>merge join</b> (both inputs sorted on the key, then merged). The optimizer picks based on size, indexes and statistics; <code class="inl">EXPLAIN</code> shows which.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Set operations</h3>
+  ${iq('Beginner','UNION vs UNION ALL?',`<p>Both stack result sets with matching columns/types. <code class="inl">UNION</code> removes duplicates (an extra sort/hash step); <code class="inl">UNION ALL</code> keeps everything and is faster. Prefer <code class="inl">UNION ALL</code> unless you truly need de-duplication.</p>`)}
+  ${iq('Intermediate','What do INTERSECT and EXCEPT (MINUS) do?',`<p><code class="inl">INTERSECT</code> returns rows in both queries; <code class="inl">EXCEPT</code> (called <code class="inl">MINUS</code> in Oracle) returns rows in the first but not the second. Both de-duplicate by default. SQLite supports INTERSECT/EXCEPT; MySQL historically did not.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Subqueries &amp; CTEs</h3>
+  ${iq('Intermediate','Subquery vs join, and what kinds of subquery are there?',`<p>A subquery is a query nested in another. <b>Scalar</b> (one value), <b>row</b>, or <b>table</b> (in FROM, aka derived table). Many subqueries can be rewritten as joins; joins are often easier for the optimizer, but subqueries can be clearer for existence/aggregate comparisons.</p>`)}
+  ${iq('Intermediate','What is a correlated subquery?',`<p>One that references the outer query and conceptually runs once per outer row &mdash; powerful but potentially slow.</p><pre class="code">SELECT name FROM restaurants r
+WHERE rating &gt; (SELECT AVG(rating) FROM restaurants
+                WHERE city = r.city);</pre>`)}
+  ${iq('Intermediate','EXISTS vs IN &mdash; the NULL trap?',`<p><code class="inl">NOT IN (subquery)</code> returns <b>no rows</b> if the subquery yields any NULL, because "x != NULL" is unknown. <code class="inl">NOT EXISTS</code> handles NULLs correctly, so prefer it for anti-joins.</p>`)}
+  ${iq('Intermediate','What is a CTE (WITH clause) and why use it?',`<p>A named temporary result set that makes a query readable and lets you reference the same sub-result more than once.</p><pre class="code">WITH spend AS (
+  SELECT customer_id, SUM(amount) AS total
+  FROM orders GROUP BY customer_id
+)
+SELECT * FROM spend WHERE total &gt; 1000;</pre>`)}
+  ${iq('Advanced','What is a recursive CTE?',`<p>A CTE that references itself to walk hierarchies (org charts, category trees, graphs): an <b>anchor</b> member, then a <b>recursive</b> member joined back to it via <code class="inl">UNION ALL</code>, until no new rows are produced.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Window functions</h3>
+  ${iq('Intermediate','What are window functions?',`<p>They compute across a set of rows related to the current row <b>without collapsing</b> them, via <code class="inl">OVER (PARTITION BY ... ORDER BY ...)</code>. Unlike GROUP BY you keep every row and add the computed column.</p>`)}
+  ${iq('Intermediate','ROW_NUMBER vs RANK vs DENSE_RANK?',`<p>They differ only on ties: <b>ROW_NUMBER</b> 1,2,3,4 (always unique); <b>RANK</b> 1,2,2,4 (gaps after ties); <b>DENSE_RANK</b> 1,2,2,3 (no gaps).</p><pre class="code">RANK() OVER (PARTITION BY city ORDER BY rating DESC)</pre>`)}
+  ${iq('Advanced','How do you compute a running total or moving average?',`<pre class="code">SELECT order_date, amount,
+  SUM(amount) OVER (ORDER BY order_date
+    ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS running_total
+FROM orders;</pre><p>The frame clause (<code class="inl">ROWS BETWEEN ...</code>) controls the window; swap in <code class="inl">AVG</code> over a fixed frame for a moving average.</p>`)}
+  ${iq('Advanced','What do LAG and LEAD do?',`<p>They read a value from a previous (<code class="inl">LAG</code>) or following (<code class="inl">LEAD</code>) row in the window &mdash; ideal for period-over-period change.</p><pre class="code">SELECT order_date, amount,
+  amount - LAG(amount) OVER (ORDER BY order_date) AS change
+FROM orders;</pre>`)}
+  ${iq('Advanced','How do you get the top N rows per group?',`<p>Rank within each partition, then filter:</p><pre class="code">SELECT * FROM (
+  SELECT r.*, ROW_NUMBER() OVER (
+    PARTITION BY city ORDER BY rating DESC) AS rn
+  FROM restaurants r
+) t WHERE rn &lt;= 2;   -- top 2 per city</pre>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Modifying data</h3>
+  ${iq('Beginner','INSERT, UPDATE and DELETE basics?',`<pre class="code">INSERT INTO t (a, b) VALUES (1, 2);
+UPDATE t SET a = 1 WHERE id = 3;    -- always use WHERE!
+DELETE FROM t WHERE active = 0;</pre><p>Forgetting <code class="inl">WHERE</code> on UPDATE/DELETE changes every row &mdash; a classic production incident.</p>`)}
+  ${iq('Intermediate','What is an UPSERT?',`<p>Insert, or update if the row already exists. Postgres/SQLite use <code class="inl">INSERT ... ON CONFLICT (key) DO UPDATE</code>; the SQL standard / SQL Server use <code class="inl">MERGE</code>.</p>`)}
+  ${iq('Beginner','DELETE vs TRUNCATE vs DROP?',`<ul><li><b>DELETE</b> removes rows, supports <code class="inl">WHERE</code>, is logged and rollbackable.</li><li><b>TRUNCATE</b> removes all rows fast, minimal logging, keeps the table.</li><li><b>DROP</b> removes the whole table.</li></ul>`)}
+  ${iq('Advanced','How do you delete duplicate rows, keeping one?',`<pre class="code">DELETE FROM restaurants
+WHERE id NOT IN (
+  SELECT MIN(id) FROM restaurants
+  GROUP BY name, city
+);</pre><p>Group by the columns that define a duplicate and keep the lowest id (or use <code class="inl">ROW_NUMBER()</code> and delete rn &gt; 1).</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Schema, keys &amp; constraints</h3>
+  ${iq('Beginner','Primary key vs foreign key?',`<p>A <b>primary key</b> uniquely identifies each row (unique, not null, one per table). A <b>foreign key</b> references another table's primary key and enforces referential integrity; it can repeat and be NULL.</p>`)}
+  ${iq('Beginner','What constraints can you put on a column?',`<p><code class="inl">NOT NULL</code>, <code class="inl">UNIQUE</code>, <code class="inl">PRIMARY KEY</code>, <code class="inl">FOREIGN KEY</code>, <code class="inl">CHECK</code> (a rule the value must satisfy) and <code class="inl">DEFAULT</code>. Constraints keep bad data out at the source rather than trusting application code.</p>`)}
+  ${iq('Intermediate','Composite key, and natural vs surrogate keys?',`<p>A <b>composite key</b> spans more than one column. A <b>natural</b> key is real-world data (e.g. email); a <b>surrogate</b> key is a system-generated id (auto-increment/UUID). Surrogates are stable and simple to join on; naturals can change, which is why most tables use a surrogate primary key.</p>`)}
+  ${iq('Beginner','What does ALTER TABLE do?',`<p>Changes an existing table's structure: add/drop/rename columns, change types, add constraints or indexes.</p><pre class="code">ALTER TABLE restaurants ADD COLUMN active INTEGER DEFAULT 1;</pre>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Views &amp; indexes</h3>
+  ${iq('Beginner','What is a view? What about a materialized view?',`<p>A <b>view</b> is a stored SELECT you query like a table; it holds no data and runs its query each time (good for reuse and hiding complexity). A <b>materialized view</b> stores the computed result and must be refreshed &mdash; faster reads, but potentially stale.</p>`)}
+  ${iq('Intermediate','What is an index and what does it cost?',`<p>Usually a <b>B-tree</b> that lets the engine jump to matching rows instead of scanning the whole table &mdash; speeding up <code class="inl">WHERE</code>, <code class="inl">JOIN</code> and <code class="inl">ORDER BY</code> on the indexed columns. Cost: extra storage and slower writes, since every INSERT/UPDATE/DELETE maintains the index.</p><pre class="code">CREATE INDEX idx_orders_customer ON orders (customer_id);</pre>`)}
+  ${iq('Advanced','In a composite index, does column order matter? What is a covering index?',`<p>Yes &mdash; the <b>leftmost-prefix</b> rule: an index on <code class="inl">(a, b)</code> helps queries filtering on <code class="inl">a</code> or <code class="inl">a, b</code>, but not <code class="inl">b</code> alone. A <b>covering index</b> includes every column a query needs, so the engine answers it from the index without touching the table.</p>`)}
+  ${iq('Advanced','Clustered vs non-clustered index?',`<p>A <b>clustered</b> index determines the physical row order (one per table; the table <i>is</i> the index &mdash; e.g. the primary key in InnoDB/SQL Server). A <b>non-clustered</b> index is a separate structure pointing back to rows. Range scans on the clustered key are very efficient.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Transactions &amp; concurrency</h3>
+  ${iq('Intermediate','Explain ACID and transactions.',`<p>A transaction wraps work in <code class="inl">BEGIN ... COMMIT</code> (or <code class="inl">ROLLBACK</code>). ACID: <b>Atomicity</b> (all-or-nothing), <b>Consistency</b> (only valid states), <b>Isolation</b> (concurrent transactions don't corrupt each other), <b>Durability</b> (committed data survives a crash).</p>`)}
+  ${iq('Advanced','What are isolation levels and the read phenomena they prevent?',`<p>Higher isolation prevents more anomalies but reduces concurrency:</p>${isolation}<p>Dirty read = reading uncommitted data; non-repeatable read = a row changes between reads; phantom = new rows appear for a repeated query.</p>`)}
+  ${iq('Advanced','Optimistic vs pessimistic locking, and what is a deadlock?',`<p><b>Pessimistic</b> locking takes locks up front (<code class="inl">SELECT ... FOR UPDATE</code>); <b>optimistic</b> assumes no conflict and checks a version column at write time. A <b>deadlock</b> is two transactions each holding a lock the other needs; the engine detects it and aborts one. Reduce it by acquiring locks in a consistent order and keeping transactions short.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Performance &amp; optimization</h3>
+  ${iq('Intermediate','A query is slow &mdash; how do you diagnose it?',`<p>Read the plan with <code class="inl">EXPLAIN</code> (or <code class="inl">EXPLAIN QUERY PLAN</code> in SQLite) to see index use vs full scans, join order, and row estimates. Then address the biggest cost: add/adjust indexes, rewrite predicates, reduce rows scanned early, and make sure statistics are current.</p>`)}
+  ${iq('Advanced','What makes a predicate "sargable", and why avoid functions on indexed columns?',`<p>Sargable = able to use an index. Wrapping an indexed column in a function or math (<code class="inl">WHERE UPPER(name) = 'X'</code>, <code class="inl">WHERE price*1.1 &gt; 100</code>) forces a scan because the index is on the raw column. Rewrite so the column stands alone (or add a functional index).</p>`)}
+  ${iq('Beginner','Why avoid SELECT * in application queries?',`<p>It pulls columns you don't need (more I/O and network), prevents covering-index-only reads, and can break code silently when columns are added or reordered. Name the columns you actually use.</p>`)}
+  ${iq('Advanced','When does an index NOT help?',`<p>When the query returns a large fraction of the table (a scan is cheaper), on low-selectivity columns (e.g. a boolean), with leading wildcards (<code class="inl">LIKE '%x'</code>), when a function hides the column, or on small tables. Indexes also slow down write-heavy tables.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Design &amp; normalization</h3>
+  ${iq('Intermediate','What is normalization (1NF, 2NF, 3NF)?',`<p><b>1NF</b>: atomic values, no repeating groups. <b>2NF</b>: 1NF plus no partial dependency on part of a composite key. <b>3NF</b>: 2NF plus no transitive dependency (non-key columns depend only on the key). The goal is to remove redundancy and update anomalies.</p>`)}
+  ${iq('Intermediate','What is denormalization, and when is it justified?',`<p>Deliberately adding redundancy (duplicated columns, pre-joined/aggregated tables) to speed up reads, at the cost of more complex writes and risk of inconsistency. Justified for read-heavy reporting/analytics or hot paths where joins are too expensive &mdash; usually after measuring, not by default.</p>`)}
+  ${iq('Advanced','OLTP vs OLAP, and what is a star schema?',`<p><b>OLTP</b> systems handle many small transactions (normalized, write-optimized). <b>OLAP</b> systems handle analytical queries over large history (denormalized, read-optimized). A <b>star schema</b> models OLAP data as a central <i>fact</i> table (measures) surrounded by <i>dimension</i> tables (context), which keeps analytical joins simple and fast.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Classic query puzzles</h3>
+  ${iq('Intermediate','Find the second-highest value (with ties in mind).',`<pre class="code">-- window function, handles ties explicitly
+SELECT rating FROM (
+  SELECT rating, DENSE_RANK() OVER (ORDER BY rating DESC) rk
+  FROM restaurants
+) t WHERE rk = 2;
+
+-- simple offset (duplicates count separately)
+SELECT DISTINCT rating FROM restaurants
+ORDER BY rating DESC LIMIT 1 OFFSET 1;</pre>`)}
+  ${iq('Intermediate','How do you find duplicate values?',`<pre class="code">SELECT name, city, COUNT(*) AS n
+FROM restaurants
+GROUP BY name, city
+HAVING COUNT(*) &gt; 1;</pre>`)}
+  ${iq('Advanced','Find the top earner (or latest row) per group.',`<p>Use <code class="inl">ROW_NUMBER()</code> partitioned by the group, ordered by the metric, then keep <code class="inl">rn = 1</code> (see "top N per group" above). Pre-window SQL used a correlated subquery: <code class="inl">WHERE x = (SELECT MAX(x) ... WHERE same group)</code>.</p>`)}
+  ${iq('Advanced','What is the "gaps and islands" problem?',`<p>Finding runs of consecutive values (islands) and the breaks between them (gaps) &mdash; e.g. consecutive login days. The classic trick: subtract <code class="inl">ROW_NUMBER()</code> from the sequence value; rows in the same run share a constant difference, so you group by that difference.</p>`)}
+  ${iq('Advanced','How do you pivot rows into columns?',`<p>Conditional aggregation with <code class="inl">CASE</code> (portable), or a dedicated <code class="inl">PIVOT</code> operator where supported:</p><pre class="code">SELECT
+  SUM(CASE WHEN city='Mumbai' THEN amount END) AS mumbai,
+  SUM(CASE WHEN city='Delhi'  THEN amount END) AS delhi
+FROM orders o JOIN customers c ON c.id=o.customer_id;</pre>`)}
+
+  <div class="foot" style="margin-top:30px"><span></span><button class="f-btn f-next" onclick="go('${order[0]}')">Back to the course &rarr;</button></div>`;
+}
+lessons['interview']={ short:'Interview Q&A', where:'<b>Interview Q&A</b>', render:renderInterview };
 
 lessons['01']={ short:'SELECT', where:'Part I · <b>SELECT</b>', render:()=>`
   <div class="eyebrow">Part I · Chapter 01</div>

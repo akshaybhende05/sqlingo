@@ -4,6 +4,7 @@ import SiteFooter from "../../components/SiteFooter";
 export const metadata = {
   title: "About — CareerLadder",
   description: "Why CareerLadder exists and how its courses are built.",
+  alternates: { canonical: "/about" },
 };
 
 export default function AboutPage() {

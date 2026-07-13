@@ -164,6 +164,7 @@ function foot(cur) {
 function go(num) {
   const L = lessons[num]; if (!L) return;
   curCh = num;
+  try { localStorage.setItem('django_last', num); } catch (_) {}
   qCount = 0; solved = 0; for (const k in answers) delete answers[k];
   document.getElementById('content').innerHTML = L.render() + foot(num);
   document.getElementById('crumb').innerHTML = L.where;
@@ -1110,10 +1111,62 @@ function renderCheatsheet() {
   return h;
 }
 lessons['cheatsheet'] = { short: 'Cheat sheet', where: '<b>Cheat sheet</b>', render: renderCheatsheet };
+/* ---------- interview questions & answers ---------- */
+function iq(level, q, a) { const cls = level === 'Beginner' ? 'lv-e' : level === 'Intermediate' ? 'lv-m' : 'lv-h'; return `<details class="iq"><summary><span class="q-lvl ${cls}">${level}</span><span class="iq-q">${q}</span></summary><div class="iq-a">${a}</div></details>`; }
+function renderInterview() {
+  const life = `<div class="iq-flow"><span>Request</span><i>&rarr;</i><span>URLconf</span><i>&rarr;</i><span>Middleware</span><i>&rarr;</i><span>View</span><i>&rarr;</i><span>Model / ORM</span><i>&rarr;</i><span>Template</span><i>&rarr;</i><span>Response</span></div>`;
+  return `
+  <div class="eyebrow">Interview prep</div>
+  <h2 class="title">Django interview questions</h2>
+  <p class="lead">A deep, topic-by-topic bank of the Django questions asked in real interviews, grouped by area, with concise answers and the reasoning interviewers listen for. Click any question to expand it.</p>
+  <button class="pg-btn pg-ghost" style="margin:6px 0 10px" onclick="window.print()">Print / save as PDF</button>
+  <hr class="rule">
+
+  <h3 class="section-h">Fundamentals</h3>
+  ${iq('Beginner','What is Django, and what does "batteries included" mean?',`<p>A high-level Python web framework that ships with an ORM, admin, auth, forms, templating, migrations and security defaults out of the box &mdash; so you build features instead of plumbing.</p>`)}
+  ${iq('Beginner','What is the MTV pattern (and how does it map to MVC)?',`<p>Django is <b>Model-Template-View</b>: Model = data, Template = presentation, View = logic that ties them together. It maps to MVC where Django "View" is the controller and the "Template" is the view.</p>`)}
+  ${iq('Intermediate','Walk through the request-response lifecycle.',`<p>The URLconf matches the path to a view, request middleware runs, the view executes (querying models via the ORM), a template renders the response, response middleware runs, and Django returns it.</p>${life}`)}
+  ${iq('Beginner','Project vs app in Django?',`<p>A <b>project</b> is the whole site and its settings; an <b>app</b> is a reusable, self-contained module of functionality (e.g. <code class="inl">orders</code>). A project contains many apps.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Models &amp; the ORM</h3>
+  ${iq('Beginner','What is the Django ORM?',`<p>An object-relational mapper: you define models as Python classes and query with Python instead of raw SQL. Django generates the SQL and returns model instances.</p>`)}
+  ${iq('Beginner','makemigrations vs migrate?',`<p><code class="inl">makemigrations</code> turns model changes into migration files (a versioned change plan); <code class="inl">migrate</code> applies those files to the database. One authors the change, the other executes it.</p>`)}
+  ${iq('Intermediate','QuerySets are lazy &mdash; what does that mean?',`<p>Building a QuerySet does not hit the database; the query runs only when you evaluate it (iterate, slice, <code class="inl">list()</code>, etc.). This lets you chain filters efficiently, but watch for accidental repeated evaluation.</p>`)}
+  ${iq('Advanced','select_related vs prefetch_related, and the N+1 problem?',`<p>The <b>N+1</b> problem is one query for a list plus one extra per row for a relation. <code class="inl">select_related</code> fixes it for FK/one-to-one via a SQL JOIN; <code class="inl">prefetch_related</code> fixes it for many-to-many/reverse FK with a second query joined in Python.</p>`)}
+  ${iq('Intermediate','Explain the model relationship fields.',`<p><code class="inl">ForeignKey</code> = many-to-one, <code class="inl">ManyToManyField</code> = many-to-many (via a join table), <code class="inl">OneToOneField</code> = one-to-one. Each defines how rows link across tables.</p>`)}
+  ${iq('Intermediate','null vs blank on a model field?',`<p><code class="inl">null</code> is database-level (is NULL allowed in the column); <code class="inl">blank</code> is validation-level (may the form field be empty). They are independent &mdash; a common gotcha.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Views, URLs &amp; middleware</h3>
+  ${iq('Intermediate','Function-based vs class-based views?',`<p><b>FBVs</b> are simple and explicit &mdash; good for one-off logic. <b>CBVs</b> use inheritance and mixins to reuse common patterns (list, detail, create) with less code, at the cost of a steeper learning curve.</p>`)}
+  ${iq('Beginner','How does URL routing work?',`<p><code class="inl">urls.py</code> maps URL patterns to views; Django tries them top to bottom and calls the first match, passing captured path parameters to the view.</p>`)}
+  ${iq('Intermediate','What is middleware?',`<p>Hooks that wrap every request/response &mdash; used for auth, sessions, CSRF, security headers, logging. Each middleware can act before the view (on the request) and after (on the response), in order.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Templates, forms &amp; security</h3>
+  ${iq('Beginner','What does the template system do?',`<p>It renders HTML from templates with context data, using tags/filters and auto-escaping output to prevent XSS. Logic is intentionally limited to keep presentation and business logic separate.</p>`)}
+  ${iq('Intermediate','Forms vs ModelForms?',`<p>A <code class="inl">Form</code> defines fields and validation manually; a <code class="inl">ModelForm</code> builds fields automatically from a model and can save directly to it. Both centralise validation and rendering.</p>`)}
+  ${iq('Intermediate','What is CSRF protection and how does Django handle it?',`<p>Cross-Site Request Forgery tricks a logged-in user into submitting an unwanted request. Django issues a per-session CSRF token that must accompany unsafe requests (POST/PUT/DELETE); the middleware rejects mismatches.</p>`)}
+  ${iq('Advanced','What security protections does Django provide by default?',`<p>Auto-escaped templates (XSS), CSRF tokens, ORM-parameterised queries (SQL injection), clickjacking protection (X-Frame-Options), secure password hashing, and settings for HTTPS/HSTS/secure cookies.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Admin, auth &amp; APIs</h3>
+  ${iq('Beginner','What is the Django admin?',`<p>An auto-generated, model-driven web interface for CRUD on your data &mdash; great for internal/staff tooling with almost no code. You register models and customise list/detail views.</p>`)}
+  ${iq('Intermediate','Authentication vs authorization in Django?',`<p><b>Authentication</b> = who you are (the auth system, login, sessions). <b>Authorization</b> = what you may do (permissions, groups, <code class="inl">@login_required</code>, object-level checks).</p>`)}
+  ${iq('Intermediate','What is Django REST Framework and a serializer?',`<p>DRF is a toolkit for building web APIs on Django. A <b>serializer</b> converts model instances to/from JSON and validates incoming data &mdash; the API equivalent of a form.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Advanced</h3>
+  ${iq('Advanced','What are signals, and when should you be cautious with them?',`<p>Signals let decoupled code react to events (e.g. <code class="inl">post_save</code>). Handy for cross-cutting side effects, but overuse hides control flow and makes debugging harder &mdash; prefer explicit calls when the logic belongs together.</p>`)}
+  ${iq('Advanced','Static files vs media files?',`<p><b>Static</b> files are code assets you ship (CSS, JS, images), collected via <code class="inl">collectstatic</code>. <b>Media</b> files are user-uploaded content stored at runtime. They are served and secured differently.</p>`)}
+  ${iq('Advanced','WSGI vs ASGI?',`<p><b>WSGI</b> is the traditional synchronous Python web-server interface. <b>ASGI</b> is its async successor, enabling async views, WebSockets and long-lived connections. Modern Django supports both.</p>`)}
+  ${iq('Intermediate','How do you manage settings across environments?',`<p>Keep secrets and environment-specific values out of code &mdash; read them from environment variables (dev/staging/prod), split settings modules, and never commit <code class="inl">SECRET_KEY</code> or credentials.</p>`)}
+  ${iq('Advanced','How do you improve Django performance?',`<p>Kill N+1 queries (<code class="inl">select_related</code>/<code class="inl">prefetch_related</code>), add DB indexes, cache expensive views/queries, use pagination, defer/only heavy columns, and profile with Django Debug Toolbar.</p>`)}
+
+  <div class="foot" style="margin-top:30px"><span></span><button class="f-btn f-next" onclick="go('${order[0]}')">Back to the course &rarr;</button></div>`;
+}
+lessons['interview'] = { short: 'Interview Q&A', where: '<b>Interview Q&A</b>', render: renderInterview };
+
 
 /* ---------- boot ---------- */
 computeTotals();
-go('00');
+go((function(){try{var l=localStorage.getItem('django_last');return (l&&lessons[l])?l:'00';}catch(e){return '00';}})());
 
 /* Re-entry hook: see the matching comment in public/app.js / public/ba.js / public/qa.js / public/devfund.js. */
 window.__djangoReinit = function () {

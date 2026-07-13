@@ -173,6 +173,7 @@ function foot(cur) {
 function go(num) {
   const L = lessons[num]; if (!L) return;
   curCh = num;
+  try { localStorage.setItem('ba_last', num); } catch (_) {}
   qCount = 0; solved = 0; for (const k in answers) delete answers[k];
   document.getElementById('content').innerHTML = L.render() + foot(num);
   document.getElementById('crumb').innerHTML = L.where;
@@ -1415,9 +1416,89 @@ function renderCheatsheet() {
 }
 lessons['cheatsheet'] = { short: 'Cheat sheet', where: '<b>Cheat sheet</b>', render: renderCheatsheet };
 
+/* ---------- interview questions & answers ---------- */
+function iq(level, q, a) { const cls = level === 'Beginner' ? 'lv-e' : level === 'Intermediate' ? 'lv-m' : 'lv-h'; return `<details class="iq"><summary><span class="q-lvl ${cls}">${level}</span><span class="iq-q">${q}</span></summary><div class="iq-a">${a}</div></details>`; }
+function renderInterview() {
+  const raci = `<table class="iq-table"><thead><tr><th>Task</th><th>Sponsor</th><th>BA</th><th>Dev team</th><th>End users</th></tr></thead><tbody>
+    <tr><td>Approve budget</td><td>A</td><td>C</td><td>I</td><td>I</td></tr>
+    <tr><td>Gather requirements</td><td>C</td><td>R</td><td>C</td><td>C</td></tr>
+    <tr><td>Build the feature</td><td>I</td><td>C</td><td>R / A</td><td>I</td></tr>
+    <tr><td>User acceptance testing</td><td>I</td><td>C</td><td>C</td><td>R</td></tr></tbody></table>
+    <p style="font-size:12.5px;color:var(--ink-faint);margin-top:2px">R = Responsible, A = Accountable, C = Consulted, I = Informed. Exactly one A per row.</p>`;
+  const flow = `<div class="iq-flow"><span>As-is process</span><i>&rarr;</i><span>Analyse gaps</span><i>&rarr;</i><span>To-be process</span><i>&rarr;</i><span>Requirements</span></div>`;
+  return `
+  <div class="eyebrow">Interview prep</div>
+  <h2 class="title">Business Analyst interview questions</h2>
+  <p class="lead">A deep, topic-by-topic bank of the questions BA interviews actually turn on, grouped by area, with concise answers and the frameworks interviewers want named. Click any question to expand it.</p>
+  <button class="pg-btn pg-ghost" style="margin:6px 0 10px" onclick="window.print()">Print / save as PDF</button>
+  <hr class="rule">
+
+  <h3 class="section-h">Role &amp; fundamentals</h3>
+  ${iq('Beginner','What does a Business Analyst actually do?',`<p>A BA sits between the people who need something and the people who build it: eliciting the real need, documenting it clearly as requirements, and making sure what gets built solves the problem. They describe the <b>what</b>, not dictate the <b>how</b>.</p>`)}
+  ${iq('Beginner','BA vs Product Owner vs Project Manager?',`<p>The <b>BA</b> defines and clarifies requirements; the <b>Product Owner</b> owns and prioritises the product backlog and the vision; the <b>Project Manager</b> owns scope, schedule, budget and risk. On small teams one person may wear more than one hat, but the accountabilities differ.</p>`)}
+  ${iq('Beginner','Functional vs non-functional requirements?',`<p><b>Functional</b>: what the system must do ("a user can reset a password"). <b>Non-functional</b>: how well it must do it &mdash; performance, security, availability, usability ("pages load under 2 seconds"). Interviewers listen for whether you remember the non-functionals.</p>`)}
+  ${iq('Beginner','BRD vs FRD vs SRS?',`<p><b>BRD</b> &mdash; high-level business needs and goals. <b>FRD</b> &mdash; detailed functional behaviour that satisfies the BRD. <b>SRS</b> &mdash; functional plus non-functional and technical detail for the build.</p>`)}
+  ${iq('Intermediate','What makes a good requirement?',`<p>Clear, unambiguous, testable, feasible, necessary, consistent with others, and traceable to a business need. If two readers could interpret it differently, it is not done. Describe the need, not a premature solution.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Eliciting requirements</h3>
+  ${iq('Intermediate','How do you elicit requirements?',`<p>Pick a mix: interviews, facilitated workshops (JAD), surveys, observation/job-shadowing, document analysis, and prototyping. Then model and play them back to confirm understanding.</p>`)}
+  ${iq('Intermediate','Interviews vs workshops?',`<p>Interviews go deep with one stakeholder and surface individual detail; workshops bring many stakeholders together to build shared understanding and resolve conflicts quickly. Workshops are efficient but need strong facilitation and preparation.</p>`)}
+  ${iq('Intermediate','How do you handle an unavailable or uncooperative stakeholder?',`<p>Escalate through the sponsor if needed, but first reduce the ask: use asynchronous methods (short surveys, review-by-email), lean on documents and proxies, and make the cost of their absence visible (decisions blocked, risk logged). Keep them informed so they stay engaged.</p>`)}
+  ${iq('Intermediate','What is the role of prototypes and wireframes?',`<p>They turn abstract requirements into something stakeholders can react to, surfacing misunderstandings early and cheaply. "I will know it when I see it" stakeholders especially benefit &mdash; a wireframe elicits far more than a paragraph.</p>`)}
+  ${iq('Advanced','How do you validate and verify requirements?',`<p><b>Verification</b>: are we building the requirement right (complete, consistent, testable)? <b>Validation</b>: are these the right requirements (do they meet the business need)? Techniques: reviews/walkthroughs, prototypes, traceability back to objectives, and stakeholder sign-off.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Stakeholders</h3>
+  ${iq('Beginner','What is stakeholder analysis?',`<p>Identifying everyone affected by or able to affect the project and planning how to engage them &mdash; commonly on a <b>power/interest grid</b>: manage closely (high/high), keep satisfied (high power, low interest), keep informed (low power, high interest), monitor (low/low).</p>`)}
+  ${iq('Intermediate','What is a RACI matrix?',`<p>A responsibility grid naming who is Responsible, Accountable, Consulted and Informed for each task, with exactly one Accountable per task.</p>${raci}`)}
+  ${iq('Intermediate','How do you handle conflicting stakeholder requirements?',`<p>Surface the conflict early, trace each requirement to a business objective, and facilitate a decision rather than pick sides &mdash; using prioritisation (MoSCoW), data, and the accountable owner (sponsor/PO). Document the decision and its trade-off.</p>`)}
+  ${iq('Intermediate','How do you tailor communication to different stakeholders?',`<p>Executives want outcomes, cost and risk in a page; developers want precise, testable detail; end users want workflows and screens. Match the medium and level of detail to the audience, and confirm understanding rather than assume it.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Documentation &amp; modelling</h3>
+  ${iq('Beginner','What is a user story and what makes a good one?',`<p>Format: <i>"As a &lt;role&gt;, I want &lt;goal&gt;, so that &lt;benefit&gt;."</i> A good one follows <b>INVEST</b> (Independent, Negotiable, Valuable, Estimable, Small, Testable) with clear acceptance criteria.</p>`)}
+  ${iq('Intermediate','How do you write good acceptance criteria?',`<p>Make them testable and unambiguous; the Gherkin Given/When/Then format works well:</p><pre class="code">Given an order is out for delivery
+When the customer opens the app
+Then they see a live status and an ETA</pre>`)}
+  ${iq('Intermediate','Use case vs user story?',`<p>A <b>user story</b> is a lightweight reminder to have a conversation; a <b>use case</b> fully describes the actor-system interaction including main, alternate and exception flows. Stories suit Agile; use cases suit detailed up-front analysis.</p>`)}
+  ${iq('Advanced','Which UML diagrams does a BA use?',`<p>Most often: <b>use case</b> diagrams (actors and system scope), <b>activity</b> diagrams (workflow/business process), and <b>sequence</b> diagrams (interaction over time). Class/ER diagrams help when modelling data.</p>`)}
+  ${iq('Intermediate','What is as-is vs to-be process mapping?',`<p>You map the current ("as-is") process to expose pain points, then design the improved ("to-be") process the solution enables. The gap between them drives the requirements.</p>${flow}`)}
+  ${iq('Advanced','What is BPMN?',`<p>Business Process Model and Notation &mdash; a standard visual language for process flows (events, activities, gateways, swimlanes). Its value is a shared, unambiguous notation that both business and technical readers understand.</p>`)}
+  ${iq('Advanced','What is an ERD, and why would a BA care?',`<p>An Entity-Relationship Diagram models data entities and their relationships (one-to-many, etc.). A BA uses it to agree what data the business needs, its rules and cardinality, before developers design tables.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Prioritisation &amp; scope</h3>
+  ${iq('Beginner','How do you prioritise requirements (MoSCoW)?',`<p><b>MoSCoW</b>: Must have, Should have, Could have, Will not have (this time). It forces explicit trade-offs and a shared view of what is essential versus nice-to-have.</p>`)}
+  ${iq('Intermediate','What is the Kano model?',`<p>It classifies features by how they affect satisfaction: <b>basic</b> (expected; absence angers), <b>performance</b> (more is better), and <b>delighters</b> (unexpected wins). It helps balance must-haves against differentiators.</p>`)}
+  ${iq('Intermediate','What is scope creep and how do you manage it?',`<p>Uncontrolled growth of scope after baseline. Prevent it with a clear signed-off baseline and traceability; manage it with a change-control process where new asks get impact-assessed (cost, time, risk) and approved by the accountable owner. Say yes to change, but make the trade-off explicit.</p>`)}
+  ${iq('Advanced','What is a requirements traceability matrix?',`<p>An RTM links each requirement forward to its design, build and test cases (and back to the business objective). It proves coverage and makes impact analysis easy when something changes.</p>`)}
+  ${iq('Intermediate','What is an MVP?',`<p>Minimum Viable Product &mdash; the smallest release that delivers real value and lets you learn from users. It is about validated learning and early value, not a half-built product.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Methodologies</h3>
+  ${iq('Intermediate','Waterfall vs Agile?',`<p>Waterfall gathers all requirements up front in sequential phases (predictable, rigid). Agile delivers iteratively and welcomes change (adaptive, needs engagement). Choice depends on how well requirements are understood and how much change is expected.</p>`)}
+  ${iq('Advanced','What is the BA role in Agile / Scrum?',`<p>Often working as or with the Product Owner: maintaining and refining the backlog, writing stories and acceptance criteria, clarifying scope during the sprint, and participating in planning, refinement, review and retrospective to keep the team aligned with business value.</p>`)}
+  ${iq('Intermediate','Epic vs feature vs user story?',`<p>An <b>epic</b> is a large body of work spanning many sprints; it breaks into <b>features</b>, which break into <b>user stories</b> small enough to deliver within a sprint. It is a hierarchy of decreasing size and increasing detail.</p>`)}
+  ${iq('Intermediate','What is backlog refinement (grooming)?',`<p>An ongoing activity where the team clarifies, estimates, splits and re-prioritises upcoming backlog items so they are "ready" before sprint planning. The BA/PO drives clarity and acceptance criteria.</p>`)}
+  ${iq('Beginner','What are the phases of the SDLC?',`<p>Planning, requirements/analysis, design, development, testing, deployment, and maintenance. Different models (Waterfall, iterative, Agile) sequence or repeat these differently, but the activities recur.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Analysis techniques</h3>
+  ${iq('Intermediate','What is gap analysis?',`<p>Comparing the current state to the desired state to identify the "gap" &mdash; the capabilities, processes or data that must change. The gaps become the requirements/initiatives.</p>`)}
+  ${iq('Intermediate','What is SWOT analysis?',`<p>A strategic scan of Strengths, Weaknesses (internal), Opportunities and Threats (external). A BA uses it to frame context and justify why a change is worth doing.</p>`)}
+  ${iq('Advanced','How do you do root-cause analysis?',`<p>Get past symptoms to the underlying cause. <b>5 Whys</b>: ask "why" repeatedly until you reach the root. <b>Fishbone (Ishikawa)</b>: categorise possible causes (people, process, tools, etc.) to structure the search. Fixing the root prevents recurrence.</p>`)}
+  ${iq('Advanced','What is a cost-benefit or feasibility analysis?',`<p>A cost-benefit analysis weighs the expected value of a change against its cost (often as ROI/payback). A feasibility study checks whether it is viable technically, operationally and economically before committing. Both support the go/no-go decision.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Delivery, testing &amp; behavioural</h3>
+  ${iq('Intermediate','What is the BA role in UAT?',`<p>The BA helps define acceptance criteria, plans UAT scenarios from the requirements, supports business users running them, and triages defects &mdash; confirming the solution actually meets the documented need before go-live.</p>`)}
+  ${iq('Intermediate','Acceptance criteria vs test cases?',`<p>Acceptance criteria define, in business terms, when a story is done and acceptable. Test cases are the concrete step-by-step checks (inputs, actions, expected results) QA runs to verify those criteria. Criteria are the "what"; test cases are the "how to prove it".</p>`)}
+  ${iq('Intermediate','Definition of Ready vs Definition of Done?',`<p><b>Ready</b>: the item is clear, estimated and has acceptance criteria, so the team can start it. <b>Done</b>: the agreed quality bar (built, tested, documented, accepted) for calling work complete. They guard the entry and exit of the sprint.</p>`)}
+  ${iq('Advanced','How do you handle requirements that change mid-project?',`<p>Treat change as normal, not failure. Assess impact (scope, cost, time, risk), route it through change control, re-prioritise with the owner, and update the requirements and traceability. In Agile, changes flow through the backlog for the next sprint rather than disrupting the current one.</p>`)}
+  ${iq('Advanced','How do you push back on a stakeholder request you disagree with?',`<p>Anchor on the business objective and data, not opinion. Clarify the underlying need (they may be proposing a solution), show the trade-off or evidence, offer an alternative, and let the accountable owner decide. Disagree respectfully, document the decision, and commit.</p>`)}
+  ${iq('Advanced','How would you structure a "tell me about a conflict you resolved" answer?',`<p>Use <b>STAR</b>: Situation (context), Task (your responsibility), Action (what you specifically did, emphasising facilitation and data), Result (the outcome, ideally quantified, and what you learned). Keep it concise and centred on your role.</p>`)}
+
+  <div class="foot" style="margin-top:30px"><span></span><button class="f-btn f-next" onclick="go('${order[0]}')">Back to the course &rarr;</button></div>`;
+}
+lessons['interview'] = { short: 'Interview Q&A', where: '<b>Interview Q&A</b>', render: renderInterview };
+
 /* ---------- boot ---------- */
 computeTotals();
-go('00');
+go((function(){try{var l=localStorage.getItem('ba_last');return (l&&lessons[l])?l:'00';}catch(e){return '00';}})());
 
 /* Re-entry hook: see the matching comment in public/app.js. The BA course now lives inside a
    multi-page hub, so a learner can navigate away and back via client-side routing without a

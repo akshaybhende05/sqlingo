@@ -167,6 +167,7 @@ function foot(cur) {
 function go(num) {
   const L = lessons[num]; if (!L) return;
   curCh = num;
+  try { localStorage.setItem('devfund_last', num); } catch (_) {}
   qCount = 0; solved = 0; for (const k in answers) delete answers[k];
   document.getElementById('content').innerHTML = L.render() + foot(num);
   document.getElementById('crumb').innerHTML = L.where;
@@ -1076,10 +1077,85 @@ function renderCheatsheet() {
   return h;
 }
 lessons['cheatsheet'] = { short: 'Cheat sheet', where: '<b>Cheat sheet</b>', render: renderCheatsheet };
+/* ---------- interview questions & answers ---------- */
+function iq(level, q, a) { const cls = level === 'Beginner' ? 'lv-e' : level === 'Intermediate' ? 'lv-m' : 'lv-h'; return `<details class="iq"><summary><span class="q-lvl ${cls}">${level}</span><span class="iq-q">${q}</span></summary><div class="iq-a">${a}</div></details>`; }
+function renderInterview() {
+  const urlFlow = `<div class="iq-flow"><span>Browser</span><i>&rarr;</i><span>DNS lookup</span><i>&rarr;</i><span>TCP + TLS</span><i>&rarr;</i><span>HTTP request</span><i>&rarr;</i><span>Server</span><i>&rarr;</i><span>Response</span><i>&rarr;</i><span>Render</span></div>`;
+  const gitFlow = `<div class="iq-flow"><span>Working dir</span><i>&mdash;add&rarr;</i><span>Staging</span><i>&mdash;commit&rarr;</i><span>Local repo</span><i>&mdash;push&rarr;</i><span>Remote</span></div>`;
+  const status = `<table class="iq-table"><thead><tr><th>Range</th><th>Meaning</th><th>Examples</th></tr></thead><tbody>
+    <tr><td>1xx</td><td>Informational</td><td>100 Continue</td></tr>
+    <tr><td>2xx</td><td>Success</td><td>200 OK, 201 Created, 204 No Content</td></tr>
+    <tr><td>3xx</td><td>Redirection</td><td>301 Moved, 304 Not Modified</td></tr>
+    <tr><td>4xx</td><td>Client error</td><td>400 Bad Request, 401, 403, 404</td></tr>
+    <tr><td>5xx</td><td>Server error</td><td>500 Internal, 502, 503</td></tr></tbody></table>`;
+  const vmc = `<table class="iq-table"><thead><tr><th></th><th>Virtual machine</th><th>Container</th></tr></thead><tbody>
+    <tr><td>Includes</td><td>A full guest OS</td><td>App + deps only (shares host kernel)</td></tr>
+    <tr><td>Size</td><td>Gigabytes</td><td>Megabytes</td></tr>
+    <tr><td>Start time</td><td>Minutes</td><td>Seconds</td></tr>
+    <tr><td>Isolation</td><td>Strong (own OS)</td><td>Process-level</td></tr></tbody></table>`;
+  return `
+  <div class="eyebrow">Interview prep</div>
+  <h2 class="title">Developer fundamentals interview questions</h2>
+  <p class="lead">A deep, topic-by-topic bank of the "how does software actually work" questions that come up in junior developer and DevOps-adjacent interviews. Every answer is short, correct, and points at the reasoning an interviewer wants to hear. Click any question to expand it.</p>
+  <button class="pg-btn pg-ghost" style="margin:6px 0 10px" onclick="window.print()">Print / save as PDF</button>
+  <hr class="rule">
+
+  <h3 class="section-h">Software &amp; the SDLC</h3>
+  ${iq('Beginner','What are the phases of the SDLC?',`<p>Planning, requirements/analysis, design, development, testing, deployment, and maintenance. Models like Waterfall run them once in sequence; Agile repeats them in short iterations.</p>`)}
+  ${iq('Beginner','Waterfall vs Agile?',`<p>Waterfall does all requirements and design up front in sequential phases &mdash; predictable but rigid. Agile delivers working software in short iterations and welcomes change &mdash; adaptive but needs continuous engagement.</p>`)}
+  ${iq('Beginner','Compiled vs interpreted languages?',`<p>A <b>compiled</b> language (C, Go, Rust) is translated to machine code ahead of time, then run &mdash; fast, errors caught at compile time. An <b>interpreted</b> language (Python, JavaScript) is executed line by line by a runtime &mdash; more flexible, errors often surface at run time. Many (Java, C#) compile to bytecode run by a VM.</p>`)}
+  ${iq('Beginner','Frontend vs backend?',`<p><b>Frontend</b> is what runs in the browser (UI, HTML/CSS/JS). <b>Backend</b> is the server side (business logic, database, APIs). They communicate over HTTP, usually via an API.</p>`)}
+  ${iq('Intermediate','What is an API?',`<p>An Application Programming Interface: a defined contract for how one piece of software talks to another. A web API exposes endpoints (URLs + methods) that return data (often JSON), hiding the internals behind that contract.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Version control &amp; Git</h3>
+  ${iq('Beginner','What is version control, and why Git?',`<p>It tracks changes to code over time, enabling history, collaboration, branching and rollback. Git is distributed &mdash; every clone is a full repository with its own history &mdash; which makes branching cheap and offline work easy.</p>`)}
+  ${iq('Beginner','Explain the working directory, staging area and repository.',`<p>You edit files in the <b>working directory</b>, choose what to include with <code class="inl">git add</code> (the <b>staging area</b>), record a snapshot with <code class="inl">git commit</code> (the local <b>repository</b>), and share with <code class="inl">git push</code>.</p>${gitFlow}`)}
+  ${iq('Intermediate','git merge vs git rebase?',`<p><b>Merge</b> combines branches and preserves history with a merge commit (non-linear but truthful). <b>Rebase</b> replays your commits on top of another branch for a clean, linear history. Rule of thumb: do not rebase commits that others have already pulled (rewriting shared history).</p>`)}
+  ${iq('Intermediate','git pull vs git fetch?',`<p><code class="inl">fetch</code> downloads remote changes but does not touch your working branch; <code class="inl">pull</code> is <code class="inl">fetch</code> + <code class="inl">merge</code> (or rebase) into your branch. Fetch to look first; pull to integrate.</p>`)}
+  ${iq('Advanced','git reset vs git revert?',`<p><code class="inl">revert</code> creates a new commit that undoes a previous one &mdash; safe for shared history. <code class="inl">reset</code> moves the branch pointer (and optionally changes the index/working tree), rewriting history &mdash; fine locally, dangerous on pushed commits.</p>`)}
+  ${iq('Intermediate','What is a pull request, and why review code?',`<p>A PR proposes merging one branch into another and is the place for review, discussion and automated checks (CI) before merge. Review catches bugs, spreads knowledge, and keeps standards consistent.</p>`)}
+  ${iq('Intermediate','How do you resolve a merge conflict?',`<p>Git marks the clashing regions; you open the file, choose the correct combination of both sides, remove the conflict markers, then <code class="inl">git add</code> and complete the merge/commit. Conflicts happen when two branches change the same lines.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">How the web works</h3>
+  ${iq('Intermediate','What happens when you type a URL and press enter?',`<p>The browser resolves the domain to an IP via <b>DNS</b>, opens a <b>TCP</b> connection (and a <b>TLS</b> handshake for HTTPS), sends an <b>HTTP</b> request, the server responds, and the browser renders the returned HTML/CSS/JS (making more requests for assets).</p>${urlFlow}`)}
+  ${iq('Beginner','What is DNS?',`<p>The Domain Name System &mdash; the internet's phone book. It translates a human name like <code class="inl">example.com</code> into the IP address a machine needs to connect to.</p>`)}
+  ${iq('Beginner','Name the main HTTP methods.',`<p><b>GET</b> (read), <b>POST</b> (create), <b>PUT</b> (replace), <b>PATCH</b> (partial update), <b>DELETE</b> (remove). GET should be safe and have no side effects; GET/PUT/DELETE are idempotent, POST is not.</p>`)}
+  ${iq('Beginner','What do the HTTP status code families mean?',`${status}`)}
+  ${iq('Intermediate','HTTP vs HTTPS &mdash; what does TLS add?',`<p>HTTPS is HTTP over <b>TLS</b>, which encrypts traffic (confidentiality), verifies the server via a certificate (authentication), and detects tampering (integrity). Without it, data travels in plain text.</p>`)}
+  ${iq('Intermediate','What is REST?',`<p>An architectural style for web APIs: resources identified by URLs, manipulated with standard HTTP methods, stateless requests, and representations (usually JSON). It is convention, not a strict protocol.</p>`)}
+  ${iq('Intermediate','HTTP is stateless &mdash; so how do sites remember you?',`<p>Each request is independent, so state is carried explicitly: a <b>cookie</b> holds a session id the server looks up (server-side session), or a signed <b>token</b> (e.g. JWT) carries identity/claims the server verifies without storing session state.</p>`)}
+  ${iq('Beginner','What is JSON?',`<p>JavaScript Object Notation &mdash; a lightweight, human-readable text format of key/value pairs and arrays, the common language for API request/response bodies.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Servers &amp; infrastructure</h3>
+  ${iq('Intermediate','Web server vs application server?',`<p>A <b>web server</b> (nginx, Apache) serves static files and forwards requests; an <b>application server</b> runs your code to generate dynamic responses. In practice a web server often sits in front of the app server.</p>`)}
+  ${iq('Intermediate','What is a reverse proxy, and why use one?',`<p>A server that sits in front of your app servers and forwards client requests to them. It centralises TLS termination, load balancing, caching, compression and routing &mdash; and hides the backend. nginx is a common choice.</p>`)}
+  ${iq('Intermediate','What is a load balancer?',`<p>It distributes incoming traffic across multiple servers so no single one is overwhelmed, improving throughput and availability (it routes around unhealthy instances). Strategies include round-robin and least-connections.</p>`)}
+  ${iq('Intermediate','What is caching, and what is a CDN?',`<p><b>Caching</b> stores expensive-to-produce results so repeat requests are served fast. A <b>CDN</b> is a network of edge servers that cache static assets close to users, cutting latency and origin load.</p>`)}
+  ${iq('Beginner','What is a port, and what is localhost?',`<p>A <b>port</b> is a numbered channel on a host so multiple services can share one IP (80 for HTTP, 443 for HTTPS). <b>localhost</b> (127.0.0.1) is your own machine &mdash; used to reach services running locally.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Containers &amp; deployment</h3>
+  ${iq('Intermediate','Container vs virtual machine?',`<p>A VM virtualises hardware and runs a full guest OS; a container shares the host kernel and packages just the app and its dependencies &mdash; lighter, faster to start, and denser, at the cost of weaker isolation.</p>${vmc}`)}
+  ${iq('Intermediate','What is Docker, and image vs container?',`<p>Docker packages an app and its dependencies into a portable <b>image</b> (a read-only template) that runs the same everywhere. A <b>container</b> is a running instance of an image. "Works on my machine" problems largely disappear.</p>`)}
+  ${iq('Advanced','What is serverless?',`<p>A model where you deploy functions and the cloud provider runs, scales and bills them per use &mdash; no servers to manage (e.g. AWS Lambda). Great for event-driven, bursty workloads; trade-offs include cold starts and vendor lock-in.</p>`)}
+  ${iq('Intermediate','What is CI/CD?',`<p><b>CI</b> (continuous integration) automatically builds and tests every change so problems surface early. <b>CD</b> (continuous delivery/deployment) automatically releases passing changes to staging/production. Together they make small, safe, frequent releases.</p>`)}
+  ${iq('Beginner','Why have separate dev, staging and production environments?',`<p>To test changes safely before they reach users: <b>dev</b> for building, <b>staging</b> as a production-like rehearsal, <b>production</b> for real users. Keeping them separate prevents experiments from breaking live systems.</p>`)}
+  ${iq('Intermediate','What are environment variables and secrets?',`<p>Configuration passed to an app from its environment (e.g. database URL, API keys) rather than hard-coded &mdash; so the same build runs differently per environment. Secrets (passwords, keys) are sensitive env config kept out of source control and injected securely.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Core concepts</h3>
+  ${iq('Intermediate','Synchronous vs asynchronous?',`<p><b>Synchronous</b> work blocks until it finishes; <b>asynchronous</b> work is started and the program continues, handling the result later (callback/promise/await). Async keeps apps responsive during slow I/O like network or disk.</p>`)}
+  ${iq('Advanced','Process vs thread?',`<p>A <b>process</b> is an independent program with its own memory; a <b>thread</b> is a unit of execution inside a process, sharing that process memory. Threads are lighter and share data easily, but shared memory needs careful synchronisation.</p>`)}
+  ${iq('Intermediate','What does an operating system do?',`<p>It manages hardware and resources for programs: scheduling the CPU, allocating memory, handling files and devices, and providing isolation and security between processes.</p>`)}
+  ${iq('Intermediate','Monolith vs microservices?',`<p>A <b>monolith</b> is one deployable application &mdash; simple to build and deploy, harder to scale and change in parts. <b>Microservices</b> split it into small independently deployable services &mdash; flexible and scalable, but with added network, data and operational complexity. Start simple; split when you must.</p>`)}
+  ${iq('Beginner','SQL vs NoSQL, briefly?',`<p><b>SQL</b> databases store structured data in related tables with a fixed schema and strong consistency. <b>NoSQL</b> (document, key-value, graph) trades some structure for flexible schemas and horizontal scale. Choose by data shape and access pattern.</p>`)}
+
+  <div class="foot" style="margin-top:30px"><span></span><button class="f-btn f-next" onclick="go('${order[0]}')">Back to the course &rarr;</button></div>`;
+}
+lessons['interview'] = { short: 'Interview Q&A', where: '<b>Interview Q&A</b>', render: renderInterview };
+
 
 /* ---------- boot ---------- */
 computeTotals();
-go('00');
+go((function(){try{var l=localStorage.getItem('devfund_last');return (l&&lessons[l])?l:'00';}catch(e){return '00';}})());
 
 /* Re-entry hook: see the matching comment in public/app.js / public/ba.js / public/qa.js. */
 window.__devfundReinit = function () {

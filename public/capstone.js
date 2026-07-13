@@ -20,7 +20,7 @@ function loadPyodideRuntime() {
       pyodide = await loadPyodide({ indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/' });
       pyReady = true;
       const loader = document.getElementById('loader'); if (loader) loader.style.display = 'none';
-      buildNav(); computeTotals(); go('00');
+      buildNav(); computeTotals(); go((function(){try{var l=localStorage.getItem('capstone_last');return (l&&lessons[l])?l:'00';}catch(e){return '00';}})());
     } catch (e) {
       const loader = document.getElementById('loader');
       if (loader) loader.innerHTML = '<p style="color:var(--rose)">Could not start the Python engine. Check your connection and refresh.</p>';
@@ -262,6 +262,7 @@ function foot(cur) {
 function go(num) {
   const L = lessons[num]; if (!L) return;
   curCh = num;
+  try { localStorage.setItem('capstone_last', num); } catch (_) {}
   qCount = 0; solved = 0; for (const k in answers) delete answers[k];
   document.getElementById('content').innerHTML = L.render() + foot(num);
   document.getElementById('crumb').innerHTML = L.where;
@@ -988,3 +989,46 @@ function renderCheatsheet() {
   return h;
 }
 lessons['cheatsheet'] = { short: 'Cheat sheet', where: '<b>Cheat sheet</b>', render: renderCheatsheet };
+/* ---------- interview questions & answers ---------- */
+function iq(level, q, a) { const cls = level === 'Beginner' ? 'lv-e' : level === 'Intermediate' ? 'lv-m' : 'lv-h'; return `<details class="iq"><summary><span class="q-lvl ${cls}">${level}</span><span class="iq-q">${q}</span></summary><div class="iq-a">${a}</div></details>`; }
+function renderInterview() {
+  const arch = `<div class="iq-flow"><span>Client</span><i>&rarr;</i><span>Load balancer</span><i>&rarr;</i><span>API (FastAPI/Django)</span><i>&rarr;</i><span>Business logic</span><i>&rarr;</i><span>Database</span></div>`;
+  return `
+  <div class="eyebrow">Interview prep</div>
+  <h2 class="title">Capstone &amp; system-design interview questions</h2>
+  <p class="lead">The capstone brings Python, a web framework and DevOps together to build a real backend &mdash; so its interview questions are about explaining what you built and reasoning about design at scale. Use these to rehearse your project walkthrough. Click any question to expand it.</p>
+  <button class="pg-btn pg-ghost" style="margin:6px 0 10px" onclick="window.print()">Print / save as PDF</button>
+  <hr class="rule">
+
+  <h3 class="section-h">Explaining your project</h3>
+  ${iq('Beginner','How should you walk an interviewer through a project you built?',`<p>Structure it: the <b>problem</b> and users, the <b>architecture</b> at a high level, your <b>role</b> and key decisions, the <b>trade-offs</b> you made, and the <b>outcome</b> plus what you learned. Lead with the why, then go deep where they probe.</p>`)}
+  ${iq('Intermediate','Describe the architecture of your backend.',`<p>A clear layered story: clients hit an API behind a load balancer; the API validates input and delegates to business-logic/service functions; those read and write a database; slow or async work goes to a queue.</p>${arch}`)}
+  ${iq('Intermediate','How did you design the REST API?',`<p>Resource-oriented URLs (nouns), correct HTTP methods and status codes, consistent JSON request/response shapes, validation with clear errors, pagination for lists, versioning, and auth on protected routes.</p>`)}
+  ${iq('Intermediate','How did you model the data?',`<p>Identify entities and relationships (customers, restaurants, orders), choose keys, normalise to avoid redundancy, then index the columns you filter/join on. Be ready to justify each foreign key and where you would denormalise for reads.</p>`)}
+  ${iq('Intermediate','How did you implement authentication?',`<p>Token-based (OAuth2 bearer / JWT): the user logs in, receives a signed token, and sends it on each request; a dependency/middleware verifies it and loads the user. Passwords are hashed; protected routes check permissions.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Designing for scale</h3>
+  ${iq('Advanced','How would you scale this backend?',`<p>Make the app stateless and run multiple instances behind a load balancer (horizontal scale); add read replicas and connection pooling for the database; cache hot reads; and move slow work to a background queue. Measure first, then scale the actual bottleneck.</p>`)}
+  ${iq('Advanced','What would you cache, and where?',`<p>Cache expensive, frequently-read, rarely-changing data (e.g. restaurant listings) in an in-memory store like Redis, with sensible TTLs and invalidation on writes. Also use HTTP/CDN caching for static responses. Beware stale data and cache stampedes.</p>`)}
+  ${iq('Advanced','How do you decide what to index?',`<p>Index columns you filter, join or sort on frequently, especially foreign keys. Weigh the read speedup against slower writes and storage, use composite indexes for multi-column filters (leftmost-prefix), and confirm with the query plan.</p>`)}
+  ${iq('Advanced','How do you prevent a duplicate or double-charged order?',`<p>Make the operation <b>idempotent</b>: accept a client-supplied idempotency key and ignore repeats; enforce uniqueness at the database (a unique constraint), and use a transaction so the charge and the order commit atomically. Never rely on the client not to double-submit.</p>`)}
+  ${iq('Advanced','What is idempotency and where does it matter?',`<p>An operation is idempotent if doing it twice has the same effect as once. It matters for retries and unreliable networks &mdash; payments, order creation, webhooks &mdash; so a retried request does not create duplicates.</p>`)}
+  ${iq('Advanced','How would you add rate limiting?',`<p>Cap requests per client/API key over a window (token-bucket or fixed-window), typically at the gateway/reverse proxy or with a shared store like Redis, returning <code class="inl">429</code> when exceeded. It protects the service from abuse and overload.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Quality &amp; delivery</h3>
+  ${iq('Intermediate','How did you test it?',`<p>Unit tests for business logic, API/integration tests for endpoints (with a test database and overridden dependencies), and a few end-to-end checks &mdash; following the test pyramid. Tests run in CI on every push.</p>`)}
+  ${iq('Intermediate','What does your CI/CD pipeline do?',`<p>On each commit: install, lint, run tests, build a container image, push it to a registry, deploy to staging, and (after checks/approval) promote the same image to production &mdash; with the ability to roll back.</p>`)}
+  ${iq('Intermediate','How did you containerize and deploy it?',`<p>A Dockerfile ordered for good layer caching (deps before source), a small base image, config via environment variables, a health-check endpoint, and deployment of the built image to the target (container platform / orchestrator) behind a reverse proxy.</p>`)}
+  ${iq('Intermediate','How do you manage configuration and secrets?',`<p>Twelve-factor style: all config from environment variables per environment, secrets from a secret store (never in code or the image), and the same artifact promoted across dev/staging/prod.</p>`)}
+  ${iq('Advanced','How do you monitor it in production?',`<p>Structured logs, metrics (latency, error rate, throughput), and traces, shipped to a dashboard; health checks for liveness/readiness; and alerts on SLO breaches so problems are caught before users report them.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Reflection</h3>
+  ${iq('Advanced','What trade-offs did you make?',`<p>Name real ones: a monolith over microservices for simplicity, synchronous over async where volume was low, denormalising a table for read speed, or shipping an MVP over gold-plating. Show you chose deliberately, given constraints.</p>`)}
+  ${iq('Advanced','What would you do differently or add next?',`<p>Have a credible answer: more test coverage, caching a hot path, async processing for a slow step, better observability, or splitting out a service once a bottleneck justified it. Shows growth and product sense.</p>`)}
+  ${iq('Advanced','Describe the hardest bug you hit and how you solved it.',`<p>Use a structured story: the symptom, how you reproduced and isolated it (logs, bisection, a minimal case), the root cause, the fix, and how you prevented recurrence (a test, an alert). Emphasise method over luck.</p>`)}
+  ${iq('Intermediate','How do you keep code quality high?',`<p>Code review via pull requests, automated linting/formatting and tests in CI, clear structure and naming, and small focused changes. Quality is a team habit enforced by the pipeline, not a one-off cleanup.</p>`)}
+
+  <div class="foot" style="margin-top:30px"><span></span><button class="f-btn f-next" onclick="go('${order[0]}')">Back to the course &rarr;</button></div>`;
+}
+lessons['interview'] = { short: 'Interview Q&A', where: '<b>Interview Q&A</b>', render: renderInterview };
+

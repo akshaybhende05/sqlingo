@@ -1,10 +1,12 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import ThemeToggle from "./ThemeToggle";
 
 const LINKS = [
   { href: "/", label: "Home" },
   { href: "/courses", label: "Courses" },
+  { href: "/progress", label: "Progress" },
   { href: "/about", label: "About" },
 ];
 
@@ -29,6 +31,7 @@ export default function SiteHeader() {
               </Link>
             );
           })}
+          <ThemeToggle />
         </nav>
       </div>
     </header>

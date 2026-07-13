@@ -164,6 +164,7 @@ function foot(cur) {
 function go(num) {
   const L = lessons[num]; if (!L) return;
   curCh = num;
+  try { localStorage.setItem('devops_last', num); } catch (_) {}
   qCount = 0; solved = 0; for (const k in answers) delete answers[k];
   document.getElementById('content').innerHTML = L.render() + foot(num);
   document.getElementById('crumb').innerHTML = L.where;
@@ -950,10 +951,64 @@ function renderCheatsheet() {
   return h;
 }
 lessons['cheatsheet'] = { short: 'Cheat sheet', where: '<b>Cheat sheet</b>', render: renderCheatsheet };
+/* ---------- interview questions & answers ---------- */
+function iq(level, q, a) { const cls = level === 'Beginner' ? 'lv-e' : level === 'Intermediate' ? 'lv-m' : 'lv-h'; return `<details class="iq"><summary><span class="q-lvl ${cls}">${level}</span><span class="iq-q">${q}</span></summary><div class="iq-a">${a}</div></details>`; }
+function renderInterview() {
+  const pipeline = `<div class="iq-flow"><span>Commit</span><i>&rarr;</i><span>Build</span><i>&rarr;</i><span>Test</span><i>&rarr;</i><span>Package</span><i>&rarr;</i><span>Deploy staging</span><i>&rarr;</i><span>Deploy prod</span></div>`;
+  const deploy = `<table class="iq-table"><thead><tr><th>Strategy</th><th>How</th><th>Trade-off</th></tr></thead><tbody>
+    <tr><td>Rolling</td><td>Replace instances a few at a time</td><td>No extra capacity; slow rollback</td></tr>
+    <tr><td>Blue-green</td><td>Two full environments; switch traffic</td><td>Instant rollback; double the infra</td></tr>
+    <tr><td>Canary</td><td>Send a small % to the new version first</td><td>Safest; needs good monitoring/routing</td></tr></tbody></table>`;
+  return `
+  <div class="eyebrow">Interview prep</div>
+  <h2 class="title">DevOps interview questions</h2>
+  <p class="lead">A deep, topic-by-topic bank of the DevOps questions asked in real interviews, grouped by area, with concise answers and the reasoning interviewers listen for. Click any question to expand it.</p>
+  <button class="pg-btn pg-ghost" style="margin:6px 0 10px" onclick="window.print()">Print / save as PDF</button>
+  <hr class="rule">
+
+  <h3 class="section-h">Culture &amp; CI/CD</h3>
+  ${iq('Beginner','What is DevOps?',`<p>A culture and set of practices that unite development and operations to ship software faster and more reliably &mdash; through automation, shared ownership, continuous integration/delivery, and fast feedback. It is a way of working, not a single tool.</p>`)}
+  ${iq('Beginner','CI vs CD (continuous delivery vs deployment)?',`<p><b>CI</b> automatically builds and tests every change. <b>Continuous delivery</b> keeps the app always releasable with a manual approval to ship; <b>continuous deployment</b> pushes every passing change to production automatically.</p>`)}
+  ${iq('Intermediate','What are the stages of a CI/CD pipeline?',`<p>Typically: commit triggers a build, automated tests run, the app is packaged (e.g. a container image), it deploys to staging for verification, then promotes to production &mdash; with gates and rollbacks along the way.</p>${pipeline}`)}
+  ${iq('Beginner','What is a build artifact?',`<p>The versioned output of the build (a container image, jar, zip, binary) that is stored and then deployed. Build once, promote the same artifact through environments &mdash; do not rebuild per environment.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Containers &amp; orchestration</h3>
+  ${iq('Beginner','Image vs container?',`<p>An <b>image</b> is an immutable, versioned template (app + dependencies); a <b>container</b> is a running instance of an image. One image, many identical containers.</p>`)}
+  ${iq('Advanced','How does Dockerfile layer caching work, and how do you exploit it?',`<p>Each instruction is a cached layer; if nothing above changes, Docker reuses it. Order the Dockerfile from least- to most-frequently-changing &mdash; e.g. copy the dependency manifest and install deps <i>before</i> copying source, so code changes do not bust the dependency layer.</p>`)}
+  ${iq('Intermediate','What is container orchestration / Kubernetes?',`<p>Orchestration automates deploying, scaling, networking and healing containers across many machines. Kubernetes is the leading orchestrator: it schedules containers (in pods), restarts failed ones, scales them, and routes traffic via services.</p>`)}
+  ${iq('Intermediate','What is a container registry?',`<p>A store for container images (Docker Hub, ECR, GHCR). CI pushes built images there; deployment targets pull them. It is the hand-off point between build and deploy.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Infrastructure as Code</h3>
+  ${iq('Intermediate','What is Infrastructure as Code?',`<p>Defining infrastructure (servers, networks, databases) in version-controlled declarative files instead of clicking consoles. Benefits: repeatable, reviewable, auditable, and easy to recreate or roll back.</p>`)}
+  ${iq('Intermediate','Terraform vs Ansible?',`<p><b>Terraform</b> provisions infrastructure declaratively (what resources should exist). <b>Ansible</b> is configuration management (bring a machine to a desired state, install/configure software). They are often used together: Terraform builds it, Ansible configures it.</p>`)}
+  ${iq('Advanced','What is immutable infrastructure?',`<p>Servers are never modified in place; to change something you build a new image/instance and replace the old one. It eliminates configuration drift and makes rollback a matter of redeploying the previous image.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Deployment &amp; reliability</h3>
+  ${iq('Advanced','Compare rolling, blue-green and canary deployments.',`${deploy}`)}
+  ${iq('Intermediate','How do you roll back a bad deployment?',`<p>Redeploy the previous known-good artifact (blue-green makes this a traffic switch). Because artifacts are versioned and immutable, rollback is fast and predictable &mdash; and database migrations should be backward-compatible so rollback does not corrupt data.</p>`)}
+  ${iq('Intermediate','Horizontal vs vertical scaling?',`<p><b>Vertical</b> = a bigger machine (simple, but a ceiling and a single point of failure). <b>Horizontal</b> = more machines behind a load balancer (scales further and adds redundancy, but needs statelessness and coordination).</p>`)}
+  ${iq('Intermediate','What is a health check?',`<p>An endpoint or probe the platform polls to know if an instance is alive/ready. Unhealthy instances are restarted or removed from the load balancer, so traffic only goes to working ones.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Observability &amp; security</h3>
+  ${iq('Intermediate','Monitoring vs observability?',`<p><b>Monitoring</b> watches known signals and alerts on thresholds ("is CPU high?"). <b>Observability</b> is the ability to ask new questions about a system you did not predict, from its outputs &mdash; crucial for debugging novel production issues.</p>`)}
+  ${iq('Intermediate','What are the three pillars of observability?',`<p><b>Logs</b> (discrete events), <b>metrics</b> (numeric time series like latency/error rate), and <b>traces</b> (the path of a request across services). Together they let you detect, diagnose and locate problems.</p>`)}
+  ${iq('Advanced','What are SLI, SLO and SLA?',`<p><b>SLI</b> = a measured indicator (e.g. % of requests under 200ms). <b>SLO</b> = the internal target for that indicator. <b>SLA</b> = the external, often contractual promise with consequences. SLIs drive SLOs; SLAs are looser than SLOs to leave headroom.</p>`)}
+  ${iq('Intermediate','How do you manage secrets?',`<p>Never in code or images. Use a secrets manager (Vault, cloud secret stores) or injected environment variables, scoped per environment, rotated regularly, and access-controlled &mdash; with least privilege.</p>`)}
+  ${iq('Intermediate','What is the principle of least privilege?',`<p>Give each user, service or process only the permissions it needs, nothing more. It limits the blast radius if credentials leak or a component is compromised.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Process</h3>
+  ${iq('Advanced','What is GitOps?',`<p>Using Git as the single source of truth for infrastructure and deployments: the desired state lives in a repo, and an agent continuously reconciles the live environment to match it. Changes happen via pull requests, giving review and an audit trail.</p>`)}
+  ${iq('Intermediate','What is trunk-based development?',`<p>Everyone integrates small changes into one main branch frequently (behind feature flags if needed), rather than long-lived branches. It reduces merge pain and pairs naturally with CI/CD.</p>`)}
+  ${iq('Beginner','Why promote a build through separate environments?',`<p>To catch problems before users do: the same artifact is validated in staging (production-like) before it reaches production, reducing the risk of each release.</p>`)}
+
+  <div class="foot" style="margin-top:30px"><span></span><button class="f-btn f-next" onclick="go('${order[0]}')">Back to the course &rarr;</button></div>`;
+}
+lessons['interview'] = { short: 'Interview Q&A', where: '<b>Interview Q&A</b>', render: renderInterview };
+
 
 /* ---------- boot ---------- */
 computeTotals();
-go('00');
+go((function(){try{var l=localStorage.getItem('devops_last');return (l&&lessons[l])?l:'00';}catch(e){return '00';}})());
 
 /* Re-entry hook: see the matching comment in public/app.js / public/ba.js / public/qa.js / public/devfund.js / public/django.js / public/fastapi.js. */
 window.__devopsReinit = function () {

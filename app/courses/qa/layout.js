@@ -2,6 +2,7 @@ const title = "QA Track — Software Testing course | CareerLadder";
 const description = "A free, hands-on QA course: test design, bug reports, API and SQL-backed testing, automation basics, and more, built the same way as SQLingo.";
 
 export const metadata = {
+  alternates: { canonical: "/courses/qa" },
   title,
   description,
   openGraph: {

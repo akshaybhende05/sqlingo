@@ -18,7 +18,7 @@ function loadPyodideRuntime() {
       pyodide = await loadPyodide({ indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/' });
       pyReady = true;
       const loader = document.getElementById('loader'); if (loader) loader.style.display = 'none';
-      buildNav(); computeTotals(); go('00');
+      buildNav(); computeTotals(); go((function(){try{var l=localStorage.getItem('python_last');return (l&&lessons[l])?l:'00';}catch(e){return '00';}})());
     } catch (e) {
       const loader = document.getElementById('loader');
       if (loader) loader.innerHTML = '<p style="color:var(--rose)">Could not start the Python engine. Check your connection and refresh.</p>';
@@ -262,6 +262,7 @@ function foot(cur) {
 function go(num) {
   const L = lessons[num]; if (!L) return;
   curCh = num;
+  try { localStorage.setItem('python_last', num); } catch (_) {}
   edCount = 0; tryEds.length = 0; qCount = 0; solved = 0; for (const k in answers) delete answers[k];
   document.getElementById('content').innerHTML = L.render() + foot(num);
   document.getElementById('crumb').innerHTML = L.where;
@@ -1481,3 +1482,99 @@ function renderCheatsheet() {
   return h;
 }
 lessons['cheatsheet'] = { short: 'Cheat sheet', where: '<b>Cheat sheet</b>', render: renderCheatsheet };
+
+/* ---------- interview questions & answers ---------- */
+function iq(level, q, a) { const cls = level === 'Beginner' ? 'lv-e' : level === 'Intermediate' ? 'lv-m' : 'lv-h'; return `<details class="iq"><summary><span class="q-lvl ${cls}">${level}</span><span class="iq-q">${q}</span></summary><div class="iq-a">${a}</div></details>`; }
+function renderInterview() {
+  const legb = `<div class="iq-flow"><span>Local</span><i>&rarr;</i><span>Enclosing</span><i>&rarr;</i><span>Global</span><i>&rarr;</i><span>Built-in</span></div>`;
+  const bigO = `<table class="iq-table"><thead><tr><th>Operation</th><th>list</th><th>dict / set</th></tr></thead><tbody>
+    <tr><td>Index / key lookup</td><td>O(1) by index</td><td>O(1) average</td></tr>
+    <tr><td>Membership (<code class="inl">x in ...</code>)</td><td>O(n)</td><td>O(1) average</td></tr>
+    <tr><td>Append / add</td><td>O(1) amortized</td><td>O(1) average</td></tr>
+    <tr><td>Insert / delete at front</td><td>O(n)</td><td>&mdash;</td></tr></tbody></table>`;
+  return `
+  <div class="eyebrow">Interview prep</div>
+  <h2 class="title">Python interview questions</h2>
+  <p class="lead">A deep, topic-by-topic bank of the Python questions asked in real interviews, from first-job screens to senior rounds. Every answer is short, correct, and points at the reasoning an interviewer wants to hear. Click any question to expand it.</p>
+  <button class="pg-btn pg-ghost" style="margin:6px 0 10px" onclick="window.print()">Print / save as PDF</button>
+  <hr class="rule">
+
+  <h3 class="section-h">Core types &amp; data structures</h3>
+  ${iq('Beginner','List vs tuple?',`<p>A <code class="inl">list</code> is mutable; a <code class="inl">tuple</code> is immutable and hashable (usable as a dict key or set member). Use lists for growing homogeneous collections, tuples for fixed records and safe "won't change" data.</p>`)}
+  ${iq('Beginner','Mutable vs immutable types, and the default-argument trap?',`<p>Immutable: <code class="inl">int, float, str, bool, tuple, frozenset</code>. Mutable: <code class="inl">list, dict, set</code>. A default is evaluated once at definition, so a mutable default is shared across calls:</p><pre class="code">def add(x, bucket=None):   # not bucket=[]
+    if bucket is None: bucket = []
+    bucket.append(x); return bucket</pre>`)}
+  ${iq('Beginner','List vs set vs dict &mdash; when to use each?',`<p><b>list</b>: ordered, allows duplicates, index access. <b>set</b>: unordered, unique, fast membership. <b>dict</b>: key&rarr;value map, fast lookup by key. Reach for a set/dict when you need fast <code class="inl">in</code> tests or de-duplication.</p>`)}
+  ${iq('Beginner','is vs == ?',`<p><code class="inl">==</code> compares values; <code class="inl">is</code> compares identity (same object). Use <code class="inl">==</code> for values and <code class="inl">is</code> only for singletons like <code class="inl">None</code>. Relying on <code class="inl">is</code> for ints/strings is a trap due to interning/caching.</p>`)}
+  ${iq('Beginner','Why are strings immutable, and what does that imply?',`<p>A <code class="inl">str</code> can't be changed in place; "modifying" one creates a new object. This makes strings hashable (dict keys) and safe to share, but means building a big string with repeated <code class="inl">+=</code> is O(n&sup2;) &mdash; use <code class="inl">"".join(parts)</code> instead.</p>`)}
+  ${iq('Intermediate','What numeric and truthiness rules are worth knowing?',`<p>Integers are arbitrary precision. Falsy values include <code class="inl">0, 0.0, "", [], {}, set(), None, False</code>; almost everything else is truthy. Prefer explicit checks (<code class="inl">if items:</code> for "non-empty", <code class="inl">if x is None:</code> for None).</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Functions &amp; scope</h3>
+  ${iq('Beginner','Explain *args and **kwargs.',`<p><code class="inl">*args</code> gathers extra positional args into a tuple; <code class="inl">**kwargs</code> gathers extra keyword args into a dict. They also unpack at call sites (<code class="inl">f(*nums, **opts)</code>).</p>`)}
+  ${iq('Intermediate','How does Python resolve a name (scope)?',`<p>It searches scopes in <b>LEGB</b> order:</p>${legb}<p>To reassign a name from an outer scope use <code class="inl">nonlocal</code> (enclosing) or <code class="inl">global</code>.</p>`)}
+  ${iq('Intermediate','What is a closure, and the late-binding loop trap?',`<p>A closure is an inner function that remembers variables from its enclosing scope. Closures capture the <b>variable</b>, not its value, so loops surprise people:</p><pre class="code">fns = [lambda i=i: i for i in range(3)]  # 0,1,2 via default-arg capture</pre>`)}
+  ${iq('Intermediate','What is a decorator?',`<p>A callable that takes a function and returns a wrapped one, adding behaviour (logging, timing, auth) without editing the original. Use <code class="inl">functools.wraps</code> to preserve metadata.</p><pre class="code">from functools import wraps
+def timed(fn):
+    @wraps(fn)
+    def inner(*a, **k): return fn(*a, **k)
+    return inner</pre>`)}
+  ${iq('Intermediate','What is a lambda, and when should you avoid it?',`<p>A small anonymous single-expression function, handy as a <code class="inl">key=</code> for sorting or a quick callback. Avoid assigning a lambda to a name (use <code class="inl">def</code>) or writing complex logic in one &mdash; readability suffers.</p>`)}
+  ${iq('Advanced','What does "functions are first-class objects" mean?',`<p>Functions can be passed as arguments, returned from other functions, and stored in data structures &mdash; which is exactly what enables decorators, callbacks, and higher-order functions like <code class="inl">map</code>/<code class="inl">filter</code>/<code class="inl">sorted(key=...)</code>.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Iteration &amp; comprehensions</h3>
+  ${iq('Beginner','What are list, dict and set comprehensions?',`<pre class="code">squares = [n*n for n in range(5)]
+evens   = [n for n in range(10) if n % 2 == 0]
+by_id   = {u.id: u for u in users}
+uniq    = {w.lower() for w in words}</pre>`)}
+  ${iq('Intermediate','Iterable vs iterator?',`<p>An <b>iterable</b> can be looped over (has <code class="inl">__iter__</code>); an <b>iterator</b> produces items one at a time (has <code class="inl">__next__</code> and raises <code class="inl">StopIteration</code>). <code class="inl">for</code> calls <code class="inl">iter()</code> on an iterable to get an iterator.</p>`)}
+  ${iq('Intermediate','What is a generator, and why use yield?',`<p>A generator produces values lazily, one at a time, in constant memory &mdash; ideal for large or infinite streams. Each <code class="inl">yield</code> pauses and resumes on the next request.</p><pre class="code">def first_n(n):
+    i = 0
+    while i &lt; n:
+        yield i; i += 1</pre>`)}
+  ${iq('Intermediate','Generator expression vs list comprehension?',`<p>Same syntax, but <code class="inl">(x for x in ...)</code> is lazy and memory-light, while <code class="inl">[x for x in ...]</code> builds the whole list. Use a generator when you only iterate once or the data is large (e.g. <code class="inl">sum(x*x for x in nums)</code>).</p>`)}
+  ${iq('Beginner','What do enumerate and zip do?',`<p><code class="inl">enumerate(xs)</code> yields <code class="inl">(index, value)</code> pairs; <code class="inl">zip(a, b)</code> yields tuples pairing items from several iterables. Both are lazy and more Pythonic than manual indexing.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Object-oriented Python</h3>
+  ${iq('Beginner','Class attribute vs instance attribute?',`<p>A class attribute is shared by all instances (defined in the class body); an instance attribute is per-object (usually set in <code class="inl">__init__</code>). A mutable class attribute shared accidentally is a common bug.</p>`)}
+  ${iq('Intermediate','staticmethod vs classmethod vs instance method?',`<pre class="code">class C:
+    def m(self): ...          # instance (self)
+    @classmethod
+    def make(cls): ...         # class (cls) - factories
+    @staticmethod
+    def util(x): ...           # no implicit first arg</pre>`)}
+  ${iq('Intermediate','__init__ vs __new__?',`<p><code class="inl">__new__</code> creates and returns the instance; <code class="inl">__init__</code> initialises the already-created instance. You rarely override <code class="inl">__new__</code> &mdash; mainly for immutable types or singletons.</p>`)}
+  ${iq('Intermediate','__str__ vs __repr__?',`<p><code class="inl">__str__</code> is the friendly, user-facing string (<code class="inl">print</code>); <code class="inl">__repr__</code> is the unambiguous, developer-facing one (REPL, debugging) &mdash; ideally something that could recreate the object. Define <code class="inl">__repr__</code> at least.</p>`)}
+  ${iq('Advanced','How does inheritance and the MRO / super() work?',`<p>Python uses the C3 linearisation to order base classes (the <b>MRO</b>, visible via <code class="inl">Cls.__mro__</code>). <code class="inl">super()</code> follows that order, which is what makes cooperative multiple inheritance and mixins work correctly.</p>`)}
+  ${iq('Intermediate','What is a property?',`<p>The <code class="inl">@property</code> decorator exposes a method as a read-only (or managed) attribute, letting you add validation or computed values without changing the calling code.</p><pre class="code">class C:
+    @property
+    def area(self): return self.w * self.h</pre>`)}
+  ${iq('Advanced','What are dataclasses and __slots__ for?',`<p><code class="inl">@dataclass</code> auto-generates <code class="inl">__init__</code>, <code class="inl">__repr__</code>, <code class="inl">__eq__</code> from typed fields &mdash; less boilerplate for data-holding classes. <code class="inl">__slots__</code> replaces the per-instance <code class="inl">__dict__</code> to save memory and speed attribute access, at the cost of dynamic attributes.</p>`)}
+  ${iq('Advanced','What is duck typing?',`<p>"If it walks like a duck..." &mdash; Python cares about whether an object has the needed methods/behaviour, not its declared type. This favours protocols/ABCs over rigid type checks and underpins Python's flexibility.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Errors &amp; context managers</h3>
+  ${iq('Beginner','How does try/except/else/finally work?',`<p><code class="inl">try</code> runs code; <code class="inl">except</code> handles specific exceptions; <code class="inl">else</code> runs if no exception; <code class="inl">finally</code> always runs (cleanup). Catch specific exceptions, not a bare <code class="inl">except:</code>.</p>`)}
+  ${iq('Intermediate','EAFP vs LBYL?',`<p><b>EAFP</b> ("easier to ask forgiveness than permission") &mdash; try the operation and catch failure &mdash; is the Pythonic default (e.g. <code class="inl">try: d[k] except KeyError</code>). <b>LBYL</b> ("look before you leap") checks first (<code class="inl">if k in d</code>) but can race and be more verbose.</p>`)}
+  ${iq('Intermediate','What is a context manager?',`<p>An object with <code class="inl">__enter__</code>/<code class="inl">__exit__</code> used via <code class="inl">with</code>, guaranteeing setup/teardown even on exceptions (closing files, releasing locks). Build one easily with <code class="inl">contextlib.contextmanager</code>.</p><pre class="code">with open('f.txt') as f:   # close guaranteed
+    data = f.read()</pre>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Execution, modules &amp; memory</h3>
+  ${iq('Beginner','What does if __name__ == "__main__" do?',`<p>Run directly, a file's <code class="inl">__name__</code> is <code class="inl">"__main__"</code>; imported, it's the module name. The guard runs script code only on direct execution, so importing the module stays side-effect free.</p>`)}
+  ${iq('Intermediate','Is Python pass-by-value or pass-by-reference?',`<p>Neither exactly &mdash; it's "pass by object reference". The function gets a reference to the same object; mutating a mutable argument is visible to the caller, but rebinding the name inside the function is not.</p>`)}
+  ${iq('Intermediate','Shallow vs deep copy?',`<p>A shallow copy (<code class="inl">list(x)</code>, <code class="inl">copy.copy</code>) duplicates the outer object but shares nested objects; <code class="inl">copy.deepcopy</code> recursively copies everything so the two are fully independent.</p>`)}
+  ${iq('Advanced','How does Python manage memory?',`<p>Objects are reference-counted; when a count hits zero the memory is freed immediately. A cyclic garbage collector handles reference cycles. Small objects are pooled/arena-allocated by CPython for speed.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Concurrency</h3>
+  ${iq('Advanced','What is the GIL and how does it affect concurrency?',`<p>CPython's Global Interpreter Lock lets only one thread run Python bytecode at a time, so threads don't parallelise <b>CPU-bound</b> work &mdash; use <code class="inl">multiprocessing</code> for that. Threads and <code class="inl">asyncio</code> still shine for <b>I/O-bound</b> work that spends time waiting.</p>`)}
+  ${iq('Advanced','threading vs multiprocessing vs asyncio?',`<ul><li><b>threading</b> &mdash; concurrent I/O within one process (limited by the GIL for CPU work).</li><li><b>multiprocessing</b> &mdash; true parallelism via separate processes; best for CPU-bound.</li><li><b>asyncio</b> &mdash; single-threaded cooperative concurrency for many I/O tasks via <code class="inl">async/await</code>.</li></ul>`)}
+  ${iq('Advanced','What do async and await mean?',`<p>An <code class="inl">async def</code> function is a coroutine; <code class="inl">await</code> suspends it while an awaitable (e.g. a network call) is pending, letting the event loop run other tasks. Great for high-concurrency I/O, not for CPU-bound crunching.</p>`)}
+
+  <h3 class="section-h" style="margin-top:26px">Performance, idioms &amp; tooling</h3>
+  ${iq('Advanced','Time complexity of common operations?',`${bigO}<p>The headline: use a <code class="inl">set</code>/<code class="inl">dict</code> for membership tests, not a list.</p>`)}
+  ${iq('Intermediate','How should you build a big string efficiently?',`<p>Collect parts in a list and <code class="inl">"".join(parts)</code> once (O(n)), rather than repeated <code class="inl">+=</code> which creates a new string each time (O(n&sup2;)).</p>`)}
+  ${iq('Beginner','Name a few Pythonic idioms interviewers like.',`<ul><li><code class="inl">for i, x in enumerate(xs)</code> instead of manual counters.</li><li>Tuple unpacking: <code class="inl">a, b = b, a</code>.</li><li><code class="inl">d.get(k, default)</code> / <code class="inl">collections.defaultdict</code>.</li><li>Comprehensions over manual loops; context managers over manual close.</li></ul>`)}
+  ${iq('Intermediate','What are type hints, and do they affect runtime?',`<p>Annotations like <code class="inl">def f(x: int) -&gt; str:</code> document intent and enable static checkers (mypy) and IDEs. They are <b>not enforced</b> at runtime by default &mdash; Python stays dynamically typed.</p>`)}
+  ${iq('Intermediate','How do you test Python code and isolate dependencies?',`<p>Write tests with <code class="inl">pytest</code> or <code class="inl">unittest</code> (arrange/act/assert), and isolate each project's packages in a <b>virtual environment</b> (<code class="inl">python -m venv</code>) with dependencies pinned via <code class="inl">pip</code>/requirements.</p>`)}
+
+  <div class="foot" style="margin-top:30px"><span></span><button class="f-btn f-next" onclick="go('${order[0]}')">Back to the course &rarr;</button></div>`;
+}
+lessons['interview'] = { short: 'Interview Q&A', where: '<b>Interview Q&A</b>', render: renderInterview };

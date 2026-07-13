@@ -3,7 +3,10 @@ import SiteHeader from "../components/SiteHeader";
 import SiteFooter from "../components/SiteFooter";
 import CourseCard from "../components/CourseCard";
 import HeroVisual from "../components/HeroVisual";
+import MyProgress from "../components/MyProgress";
 import { courses } from "../lib/courses";
+
+export const metadata = { alternates: { canonical: "/" } };
 
 const SITE_URL = "https://careerladder.io";
 
@@ -30,6 +33,24 @@ const STATS = [
   { n: "469", label: "graded practice questions" },
   { n: "9", label: "real, hands-on courses" },
   { n: "0", label: "signups, paywalls, or dark patterns" },
+];
+
+const AUDIENCE = [
+  {
+    icon: "→",
+    title: "Career switchers",
+    body: "Coming from a non-tech job and want a real, practical way in — without a bootcamp's price tag or a year of your life.",
+  },
+  {
+    icon: "★",
+    title: "Students & new grads",
+    body: "Bridging the gap between what college covered and what the job interview and the first week actually demand.",
+  },
+  {
+    icon: "↑",
+    title: "Professionals upskilling",
+    body: "Adding SQL, Python, or DevOps to the role you already have, on your own schedule, one chapter at a time.",
+  },
 ];
 
 const FAQS = [
@@ -129,6 +150,16 @@ export default function LandingPage() {
                 <Link href="/courses/sql" className="btn-primary">Start SQLingo →</Link>
                 <Link href="/courses" className="btn-secondary">Browse all courses</Link>
               </div>
+              <div className="hero-trust">
+                {["Real SQL & Python in your browser", "No signup, ever", "Works offline"].map((t) => (
+                  <span key={t}>
+                    <svg width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                      <path d="M5 10.5l3.2 3.2L15 7" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    {t}
+                  </span>
+                ))}
+              </div>
             </div>
             <HeroVisual />
           </div>
@@ -145,6 +176,8 @@ export default function LandingPage() {
           </div>
         </section>
 
+        <MyProgress variant="landing" />
+
         <section className="hub-section">
           <h2 className="section-h">How it works</h2>
           <div className="steps-grid">
@@ -153,6 +186,19 @@ export default function LandingPage() {
                 <div className="step-n">{s.n}</div>
                 <h3>{s.title}</h3>
                 <p>{s.body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="hub-section">
+          <h2 className="section-h">Who it&apos;s for</h2>
+          <div className="audience-grid">
+            {AUDIENCE.map((a) => (
+              <div className="audience-card" key={a.title}>
+                <div className="audience-icon" aria-hidden="true">{a.icon}</div>
+                <h3>{a.title}</h3>
+                <p>{a.body}</p>
               </div>
             ))}
           </div>
