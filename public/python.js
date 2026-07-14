@@ -264,7 +264,7 @@ function go(num) {
   curCh = num;
   try { localStorage.setItem('python_last', num); } catch (_) {}
   edCount = 0; tryEds.length = 0; qCount = 0; solved = 0; for (const k in answers) delete answers[k];
-  document.getElementById('content').innerHTML = L.render() + foot(num);
+  document.getElementById('content').innerHTML = inShort(num) + L.render() + foot(num);
   document.getElementById('crumb').innerHTML = L.where;
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const el = document.getElementById('nav-' + num); if (el) el.classList.add('active');
@@ -1463,6 +1463,7 @@ const CHEATS = {
   '28': { code: 'assert condition   # raises AssertionError if false; real projects use pytest to run many of these automatically' },
   '29': { code: 'Django = full-featured framework (models/admin/templates). FastAPI = lean, API-focused, JSON in/out. DevOps = deploying either.' },
 };
+function inShort(num){var c=(typeof CHEATS!=='undefined')?CHEATS[num]:null;if(!c)return '';var h='<div class="inshort"><div class="inshort-label">In short</div>';if(c.note)h+='<p>'+c.note+'</p>';if(c.code)h+='<pre class="code">'+String(c.code).replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>';return h+'</div>';}
 function renderCheatsheet() {
   let h = `<div class="eyebrow">Quick reference</div>
   <h2 class="title">Cheat sheet</h2>

@@ -227,6 +227,60 @@ Landing polish:
 - ✅ Course-card header redesign (status dot + single practice pill) and
   consistent hover lift across landing cards.
 
+## 3c. "Explained" — plain-English glossary section
+
+A dedicated `/explained` section: analogy-first definitions of confusing software
+terms (Docker, nginx, reverse proxy, gunicorn, API, backend, …) for
+career-switchers. High-mission-fit and high-SEO-value ("what is X" queries).
+- `lib/explained.js` — **61 terms across 7 categories** (Web basics, Backend &
+  servers, Security & auth, Infrastructure, Data, Under the hood, Dev workflow),
+  each with a plain one-liner, an everyday analogy, gentle detail, related terms,
+  and (where relevant) a course link. **12 terms have diagrams** (flows/tables via
+  the shared `iq-flow`/`iq-table` styles, rendered from an optional `figure`
+  field). Easy to extend — one object per term.
+  - **Writing standard (important):** beginner-first. One-liner uses no jargon;
+    the analogy carries the idea; detail never introduces a new unknown term
+    without explaining it or linking to its own entry. (The original API entry was
+    rewritten to meet this after review.)
+- `app/explained/page.js` — server-rendered hub grouped by category, with
+  `DefinedTermSet` JSON-LD.
+- `app/explained/[term]/page.js` — one statically-generated page per term (27
+  pages total incl. hub), each with unique title/description ("What is nginx?…"),
+  canonical, `DefinedTerm` + `BreadcrumbList` JSON-LD, related-term links, and a
+  course cross-link.
+- "Explained" added to the site nav; all pages in the sitemap.
+- Validated (syntax, no broken related links, CSS balanced). Needs `npm run build`
+  to generate the static pages like the rest.
+
+## 3d. Plain-language pass (user feedback: lessons felt harder than needed)
+
+Feedback: the SQL lessons read as wordy/literary vs. plainer sites (GeeksforGeeks)
+— the point arrives after several sentences. Two-part fix (both requested):
+- ✅ **"In short" summary box on every chapter, all 9 courses.** A shared
+  `inShort(num)` helper (added to all engines + the extractor) builds a plain box
+  from the existing cheat-sheet data and injects it at the top of each chapter, in
+  both the interactive app and the reading pages. So every chapter now opens with
+  a plain sentence + a worked example before any prose.
+- ✅ **Plain one-line definitions for SQL** — added `note` text to the ~19 SQL
+  cheat entries that only had code, so SQL's boxes lead with a simple definition
+  (e.g. "SELECT picks which columns you want to see. FROM says which table.").
+- ✅ **Prose tightening — SQL fully done.** All 29 SQL chapter leads rewritten to
+  plain, point-first openings; Groundwork + Part I opening paragraphs rewritten in
+  the confirmed voice; and the whole course swept for literary flourishes
+  ("genuinely" and "quietly" now 0 occurrences, plus "neat grid", "worth the
+  stretch", "boil it down", "sweeps down", etc. removed). Voice confirmed with the
+  user: plain standard textbook English, prefer the actual noun ("the database",
+  the command name) over "it/them", state what a command does in the first
+  sentence, analogies kept as a bonus underneath.
+- ✅ **Other courses reviewed — already plain.** BA, Python, Dev Fundamentals (and
+  the rest of the dev tracks, written later in the same plainer style) already
+  lead with the point (e.g. "A BRD is the document a stakeholder actually reads
+  and signs off on"). Bulk-rewriting them would risk making good content blander,
+  so they were left as-is. SQL was the outlier (oldest content). Any specific
+  chapter that still reads too advanced can be spot-fixed on request.
+  - **Writing standard:** lead with what it does + an example in short sentences;
+    keep analogies as a bonus underneath, not before the point.
+
 ## 4. Remaining real gaps (ranked)
 
 ### 4.1 Lesson content is still not server-rendered — HIGH (biggest open issue)

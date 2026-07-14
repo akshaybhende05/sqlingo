@@ -264,7 +264,7 @@ function go(num) {
   curCh = num;
   try { localStorage.setItem('capstone_last', num); } catch (_) {}
   qCount = 0; solved = 0; for (const k in answers) delete answers[k];
-  document.getElementById('content').innerHTML = L.render() + foot(num);
+  document.getElementById('content').innerHTML = inShort(num) + L.render() + foot(num);
   document.getElementById('crumb').innerHTML = L.where;
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   const el = document.getElementById('nav-' + num); if (el) el.classList.add('active');
@@ -970,6 +970,7 @@ const CHEATS = {
   '28': { note: 'Full architecture: client -> nginx (TLS/LB/rate limit) -> API instances (calling tested Part II logic) -> Postgres, plus CI/CD and monitoring.' },
   '29': { note: 'Next step: turn this into an actual repository — endpoints, Dockerfile, compose file, CI workflow, and a README explaining your real decisions.' },
 };
+function inShort(num){var c=(typeof CHEATS!=='undefined')?CHEATS[num]:null;if(!c)return '';var h='<div class="inshort"><div class="inshort-label">In short</div>';if(c.note)h+='<p>'+c.note+'</p>';if(c.code)h+='<pre class="code">'+String(c.code).replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>';return h+'</div>';}
 function renderCheatsheet() {
   let h = `<div class="eyebrow">Quick reference</div>
   <h2 class="title">Cheat sheet</h2>

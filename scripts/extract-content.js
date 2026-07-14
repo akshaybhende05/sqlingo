@@ -41,9 +41,9 @@ function loadEngine(engine) {
   ctx.window = ctx; ctx.globalThis = ctx; ctx.self = ctx;
   vm.createContext(ctx);
   let src = fs.readFileSync(path.join("public", engine + ".js"), "utf8");
-  src += '\n;globalThis.__L = (typeof lessons!=="undefined")?lessons:null; globalThis.__M = (typeof manifest!=="undefined")?manifest:null;';
+  src += '\n;globalThis.__L = (typeof lessons!=="undefined")?lessons:null; globalThis.__M = (typeof manifest!=="undefined")?manifest:null; globalThis.__inShort = (typeof inShort!=="undefined")?inShort:null;';
   vm.runInContext(src, ctx, { filename: engine + ".js" });
-  return { lessons: ctx.__L, manifest: ctx.__M };
+  return { lessons: ctx.__L, manifest: ctx.__M, inShort: ctx.__inShort };
 }
 
 function textOf(html, cls) {
@@ -54,7 +54,7 @@ function textOf(html, cls) {
 function extract(course) {
   const engine = MAP[course];
   if (!engine) throw new Error("unknown course " + course);
-  const { lessons, manifest } = loadEngine(engine);
+  const { lessons, manifest, inShort } = loadEngine(engine);
   const chapters = [];
   manifest.forEach((g) => g.items.forEach((it) => {
     const [n, navTitle, built] = it;
@@ -63,7 +63,8 @@ function extract(course) {
     try { html = lessons[n].render(); } catch (e) { console.log("  render " + n + " failed:", e.message); return; }
     const title = textOf(html, "title") || navTitle;
     const lead = textOf(html, "lead");
-    chapters.push({ n, part: g.p, title, navTitle, lead, html: html.trim(), kind: "chapter" });
+    const summary = inShort ? inShort(n) : "";
+    chapters.push({ n, part: g.p, title, navTitle, lead, html: (summary + html).trim(), kind: "chapter" });
   }));
   // Pinned reference/practice lessons (cheat sheet, interview Q&A) become their own pages.
   const extras = [];

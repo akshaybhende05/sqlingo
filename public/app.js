@@ -48,7 +48,7 @@ function friendly(m){
 }
 
 const glossary={
-  database:{short:"An organised store of information a computer can search fast.",long:"A <b>database</b> is a very tidy filing cabinet. Instead of paper in folders it keeps data in tables. Swiggy, your bank app, your office portal, all sit on one quietly."},
+  database:{short:"An organised store of information a computer can search fast.",long:"A <b>database</b> is a very tidy filing cabinet. Instead of paper in folders it keeps data in tables. Swiggy, your bank app, and your office portal all sit on one."},
   query:{short:"One request you send to the database.",long:"A <b>query</b> is a single question written in SQL, like 'give me the names of Mumbai customers'. You write it, the database reads it, and it hands back a grid of results."},
   table:{short:"A grid of data, like one sheet in Excel.",long:"A <b>table</b> holds one kind of thing, with columns across the top and rows down the side, exactly like an Excel sheet."},
   column:{short:"One kind of detail, running top to bottom.",long:"A <b>column</b> is one piece of information stored for every row, like 'city' or 'rating'."},
@@ -204,7 +204,7 @@ function go(num){ const L=lessons[num]; if(!L) return;
   curCh=num;
   try{localStorage.setItem('sqlingo_last',num);}catch(_){}
   edCount=0; tryEds.length=0; qCount=0; solved=0; for(const k in answers) delete answers[k];
-  document.getElementById('content').innerHTML = L.render() + foot(num);
+  document.getElementById('content').innerHTML = inShort(num) + L.render() + foot(num);
   document.getElementById('crumb').innerHTML = L.where;
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   const el=document.getElementById('nav-'+num); if(el) el.classList.add('active');
@@ -224,34 +224,35 @@ const lessons={};
 const CHEATS={
  '00':{note:'SQL (say it "sequel" or spell it out) is the language you use to ask a database for exactly the data you want, in the form of short, almost-English queries.'},
  '0b':{note:'Relational databases (SQL) store data in tables linked by keys, with a strict schema. NoSQL stores (document, key-value, graph) trade some structure for flexibility and scale. Most everyday business data still fits SQL best.'},
- '0i':{code:"customers(id, name, city, joined)\nrestaurants(id, name, city, cuisine, rating, cost_for_two)\norders(id, customer_id, restaurant_id, amount, order_date, rating_given)"},
- '01':{code:"SELECT name, city FROM customers;\nSELECT cost_for_two / 2 AS per_person FROM restaurants;"},
- '02':{code:"SELECT DISTINCT city FROM customers;\nSELECT COUNT(DISTINCT cuisine) FROM restaurants;"},
- '03':{code:"SELECT * FROM restaurants\nWHERE city = 'Mumbai' AND rating >= 4.5;"},
- '04':{code:"SELECT name, rating FROM restaurants\nORDER BY city ASC, rating DESC;"},
- '05':{code:"SELECT * FROM restaurants\nORDER BY id LIMIT 2 OFFSET 2;"},
- '06':{code:"WHERE name LIKE 'B%'   -- starts with B\nWHERE name LIKE '%ing%' -- contains ing\nWHERE city LIKE 'P___'  -- P + exactly 3 chars"},
- '07':{code:"WHERE city IN ('Mumbai', 'Delhi')\nWHERE rating BETWEEN 4.0 AND 4.5"},
+ '0i':{note:'The three tables you will practise on: customers, restaurants, and orders.',code:"customers(id, name, city, joined)\nrestaurants(id, name, city, cuisine, rating, cost_for_two)\norders(id, customer_id, restaurant_id, amount, order_date, rating_given)"},
+ '01':{note:'SELECT picks which columns you want to see. FROM says which table to read from.',code:"SELECT name, city FROM customers;\nSELECT cost_for_two / 2 AS per_person FROM restaurants;"},
+ '02':{note:'DISTINCT removes duplicate rows, so you get each value only once.',code:"SELECT DISTINCT city FROM customers;\nSELECT COUNT(DISTINCT cuisine) FROM restaurants;"},
+ '03':{note:'WHERE keeps only the rows that match a condition you give.',code:"SELECT * FROM restaurants\nWHERE city = 'Mumbai' AND rating >= 4.5;"},
+ '04':{note:'ORDER BY sorts the results — ASC for smallest first, DESC for largest first.',code:"SELECT name, rating FROM restaurants\nORDER BY city ASC, rating DESC;"},
+ '05':{note:'LIMIT caps how many rows come back; OFFSET skips some first.',code:"SELECT * FROM restaurants\nORDER BY id LIMIT 2 OFFSET 2;"},
+ '06':{note:'LIKE searches text by pattern: % matches any characters, _ matches exactly one.',code:"WHERE name LIKE 'B%'   -- starts with B\nWHERE name LIKE '%ing%' -- contains ing\nWHERE city LIKE 'P___'  -- P + exactly 3 chars"},
+ '07':{note:'IN checks if a value is in a list; BETWEEN checks if it falls in a range.',code:"WHERE city IN ('Mumbai', 'Delhi')\nWHERE rating BETWEEN 4.0 AND 4.5"},
  '08':{code:"WHERE rating_given IS NULL\nWHERE rating_given IS NOT NULL", note:'Never write = NULL or != NULL, it never matches.'},
- '09':{code:"SELECT COUNT(*), SUM(amount), ROUND(AVG(rating),2), MIN(cost_for_two), MAX(cost_for_two)\nFROM restaurants;"},
- '10':{code:"SELECT city, COUNT(*) AS n FROM customers GROUP BY city;"},
+ '09':{note:'Aggregate functions squeeze many rows into one number: COUNT, SUM, AVG, MIN, MAX.',code:"SELECT COUNT(*), SUM(amount), ROUND(AVG(rating),2), MIN(cost_for_two), MAX(cost_for_two)\nFROM restaurants;"},
+ '10':{note:'GROUP BY collapses rows into groups so you can summarise each group.',code:"SELECT city, COUNT(*) AS n FROM customers GROUP BY city;"},
  '11':{code:"SELECT city, COUNT(*) AS n FROM customers\nGROUP BY city HAVING COUNT(*) > 1;", note:'WHERE filters rows before grouping, HAVING filters groups after.'},
- '12':{code:"SELECT o.id, c.name, o.amount\nFROM orders o JOIN customers c ON o.customer_id = c.id;\n\nFROM customers c LEFT JOIN orders o ON c.id = o.customer_id;"},
+ '12':{note:'A JOIN combines rows from two tables that share a matching value.',code:"SELECT o.id, c.name, o.amount\nFROM orders o JOIN customers c ON o.customer_id = c.id;\n\nFROM customers c LEFT JOIN orders o ON c.id = o.customer_id;"},
  '13':{code:"SELECT city FROM customers\nUNION\nSELECT city FROM restaurants;", note:'UNION drops duplicates; UNION ALL keeps them and is faster.'},
- '14':{code:"CASE WHEN rating >= 4.5 THEN 'top' WHEN rating >= 4.2 THEN 'good' ELSE 'ok' END\nCOALESCE(rating_given, 0)"},
+ '14':{note:'CASE is if/else inside a query; COALESCE fills in a value when data is missing.',code:"CASE WHEN rating >= 4.5 THEN 'top' WHEN rating >= 4.2 THEN 'good' ELSE 'ok' END\nCOALESCE(rating_given, 0)"},
  '15':{code:"SELECT name FROM restaurants\nWHERE rating > (SELECT AVG(rating) FROM restaurants);", note:'ANY/ALL are standard SQL for comparing to a whole set of values; SQLite lacks them, use MAX()/MIN() instead.'},
- '16':{code:"ROW_NUMBER() OVER (ORDER BY rating DESC)\nRANK() OVER (PARTITION BY city ORDER BY rating DESC)\nSUM(amount) OVER (ORDER BY order_date)"},
- '17':{code:"INSERT INTO t (a,b) VALUES (1,2);\nUPDATE t SET a = 1 WHERE id = 3;\nDELETE FROM t WHERE active = 0;"},
- '18':{code:"CREATE TABLE t (id INTEGER PRIMARY KEY, name TEXT NOT NULL, city TEXT);\nALTER TABLE t ADD COLUMN active INTEGER DEFAULT 1;\nDROP TABLE t;"},
- '19':{code:"CREATE VIEW mumbai_restaurants AS\n  SELECT name, cuisine, rating FROM restaurants WHERE city='Mumbai';\nCREATE INDEX idx_restaurants_city ON restaurants (city);"},
+ '16':{note:'Window functions add a column like a rank or running total, without collapsing your rows.',code:"ROW_NUMBER() OVER (ORDER BY rating DESC)\nRANK() OVER (PARTITION BY city ORDER BY rating DESC)\nSUM(amount) OVER (ORDER BY order_date)"},
+ '17':{note:'These change data: INSERT adds rows, UPDATE edits them, DELETE removes them.',code:"INSERT INTO t (a,b) VALUES (1,2);\nUPDATE t SET a = 1 WHERE id = 3;\nDELETE FROM t WHERE active = 0;"},
+ '18':{note:'These change structure: CREATE makes a table, ALTER changes it, DROP deletes it.',code:"CREATE TABLE t (id INTEGER PRIMARY KEY, name TEXT NOT NULL, city TEXT);\nALTER TABLE t ADD COLUMN active INTEGER DEFAULT 1;\nDROP TABLE t;"},
+ '19':{note:'A VIEW is a saved query you reuse like a table; an INDEX makes searches faster.',code:"CREATE VIEW mumbai_restaurants AS\n  SELECT name, cuisine, rating FROM restaurants WHERE city='Mumbai';\nCREATE INDEX idx_restaurants_city ON restaurants (city);"},
  '20':{code:"typeof(name)\nCAST(rating AS INTEGER)\n-- a comment", note:'Always use parameterised queries in real apps; never paste user input straight into SQL text (SQL injection).'},
- '21':{code:"UPPER(name) | LENGTH(name) | SUBSTR(name,1,3)\nname || ' from ' || city\nROUND(x) | CAST(x AS INTEGER) | x % 100\nstrftime('%Y', order_date)\nGROUP_CONCAT(name)"},
- '22':{code:"WITH spend AS (\n  SELECT customer_id, SUM(amount) AS total FROM orders GROUP BY customer_id\n)\nSELECT * FROM spend WHERE total > 1000;"},
+ '21':{note:'Built-in functions transform values — for text, numbers, and dates.',code:"UPPER(name) | LENGTH(name) | SUBSTR(name,1,3)\nname || ' from ' || city\nROUND(x) | CAST(x AS INTEGER) | x % 100\nstrftime('%Y', order_date)\nGROUP_CONCAT(name)"},
+ '22':{note:'A CTE (the WITH clause) names a temporary result so a big query reads more clearly.',code:"WITH spend AS (\n  SELECT customer_id, SUM(amount) AS total FROM orders GROUP BY customer_id\n)\nSELECT * FROM spend WHERE total > 1000;"},
  '23':{code:"BEGIN;\nUPDATE demo SET balance = balance - 200 WHERE id = 2;\nUPDATE demo SET balance = balance + 200 WHERE id = 1;\nCOMMIT;   -- or ROLLBACK;", note:'ACID: Atomicity, Consistency, Isolation, Durability.'},
- '24':{code:"DDL: CREATE, ALTER, DROP\nDML: INSERT, UPDATE, DELETE\nDQL: SELECT\nTCL: BEGIN, COMMIT, ROLLBACK\nDCL: GRANT, REVOKE"},
+ '24':{note:'SQL commands group into families: reading data, changing data, and changing structure.',code:"DDL: CREATE, ALTER, DROP\nDML: INSERT, UPDATE, DELETE\nDQL: SELECT\nTCL: BEGIN, COMMIT, ROLLBACK\nDCL: GRANT, REVOKE"},
  '25':{code:"Primary key: uniquely identifies a row\nForeign key: points at another table's primary key\nComposite key: a key made of more than one column", note:'Normalization removes repeated/duplicated data by splitting it into linked tables.'},
  '26':{code:"EXPLAIN QUERY PLAN\nSELECT * FROM orders WHERE customer_id = 1;", note:'Add an index on columns you filter or join on often; avoid SELECT * in real apps; keep transactions short.'},
 };
+function inShort(num){var c=(typeof CHEATS!=='undefined')?CHEATS[num]:null;if(!c)return '';var h='<div class="inshort"><div class="inshort-label">In short</div>';if(c.note)h+='<p>'+c.note+'</p>';if(c.code)h+='<pre class="code">'+String(c.code).replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</pre>';return h+'</div>';}
 function renderCheatsheet(){
   let h=`<div class="eyebrow">Quick reference</div>
   <h2 class="title">Cheat sheet</h2>
@@ -433,10 +434,10 @@ lessons['interview']={ short:'Interview Q&A', where:'<b>Interview Q&A</b>', rend
 lessons['01']={ short:'SELECT', where:'Part I · <b>SELECT</b>', render:()=>`
   <div class="eyebrow">Part I · Chapter 01</div>
   <h2 class="title">SELECT, picking what you want to see</h2>
-  <p class="lead">Every question you will ever ask a database starts with one word. Before filtering, before sorting, before joining, you first say what you actually want to look at. That is SELECT, and you will type it more than any other word in SQL.</p>
+  <p class="lead">SELECT is used to get data from a database. You tell SELECT which columns you want, and FROM tells the database which table to read from. You will use SELECT in almost every query.</p>
   <hr class="rule">
-  <p class="body">Here is the honest truth about SELECT: it is less a command and more the opening of a sentence. You are talking to a ${term('database')}, and you begin by naming the pieces of information you care about. The database listens, fetches them, and lays them out in a neat grid. Nothing more mysterious than that.</p>
-  <p class="body">It always travels with a partner, <b>FROM</b>, which names the ${term('table')} to look in. SELECT says <b>which columns</b>, FROM says <b>which table</b>. Together they make the smallest complete question you can ask.</p>
+  <p class="body">The idea is simple: you tell the ${term('database')} which columns you want, and it returns that data in a table made of rows and columns. Each row is one record, and each column holds one type of information.</p>
+  <p class="body">SELECT is always used together with <b>FROM</b>. SELECT tells the database <b>which columns</b> to show, and FROM tells the database <b>which table</b> to read those columns from. Together SELECT and FROM form the simplest complete query you can write.</p>
   <div class="analogy"><div class="lab">The chai-table version</div><div class="txt">Think of a waiter at a dhaba who knows the whole menu by heart. You do not want the whole thing recited. You say, <b>"just tell me the dish names and their prices."</b> That sentence is a SELECT. You named the two things you wanted and asked him to skip the rest. The kitchen did not change, only what he read out to you did.</div></div>
 
   <div class="sec-num">1.1</div><h3 class="section-h">The smallest possible query</h3>
@@ -457,11 +458,11 @@ lessons['01']={ short:'SELECT', where:'Part I · <b>SELECT</b>', render:()=>`
   <div class="sec-num">1.3</div><h3 class="section-h">Everything at once, the <code class="inl" style="font-size:17px">*</code> star</h3>
   <p class="body">Sometimes you just want to see the whole table without typing each name. The star <b>*</b> means "all the columns". It is the fastest way to look at what a table holds when you are exploring.</p>
   <div class="ex"><div class="ex-tag">Example</div><div class="code"><span class="k">SELECT</span> * <span class="k">FROM</span> restaurants</div><div class="ex-note">Hands back id, name, city, cuisine, rating and cost_for_two, the full width of the table.</div></div>
-  <p class="aside">A note from real work: in actual projects people usually name the columns instead of using the star, because pulling back data you do not need wastes time, and a query that says <code class="inl" style="font-size:12px">SELECT *</code> can quietly break if someone adds a column later. While learning though, the star is genuinely handy. Use it to look around, then name columns once you know what you want.</p>
+  <p class="aside">A note from real work: in actual projects people usually name the columns instead of using the star, because pulling back data you do not need wastes time, and a query that says <code class="inl" style="font-size:12px">SELECT *</code> can break if someone adds a column later. While learning, the star is very handy. Use it to look around, then name columns once you know what you want.</p>
   ${ed("SELECT * FROM restaurants")}
 
   <div class="sec-num">1.4</div><h3 class="section-h">Columns can be little calculations</h3>
-  <p class="body">Here is where SELECT gets quietly powerful, and where most beginner tutorials stop too early. The things you list do not have to be plain columns. They can be ${term('expression','expressions')}, small calculations SQL works out per row. The restaurants table stores <code class="inl">cost_for_two</code>. Want cost per person? Divide, right inside the SELECT.</p>
+  <p class="body">This is where SELECT becomes more powerful, and where many tutorials stop too early. The things you list do not have to be plain columns. They can be ${term('expression','expressions')}, small calculations SQL works out per row. The restaurants table stores <code class="inl">cost_for_two</code>. Want cost per person? Divide, right inside the SELECT.</p>
   <div class="ex"><div class="ex-tag">Example</div><div class="code"><span class="k">SELECT</span> name, cost_for_two, cost_for_two / 2 <span class="k">FROM</span> restaurants</div><div class="ex-note">For each row SQL computes cost_for_two divided by 2 and shows it as an extra column. The stored data is untouched.</div></div>
   <p class="body">The usual arithmetic works: <code class="inl">+</code> add, <code class="inl">-</code> subtract, <code class="inl">*</code> multiply, <code class="inl">/</code> divide. It runs once per row.</p>
   ${ed("SELECT name, cost_for_two, cost_for_two / 2 FROM restaurants")}
@@ -505,9 +506,9 @@ lessons['01']={ short:'SELECT', where:'Part I · <b>SELECT</b>', render:()=>`
 lessons['02']={ short:'DISTINCT', where:'Part I · <b>DISTINCT</b>', render:()=>`
   <div class="eyebrow">Part I · Chapter 02</div>
   <h2 class="title">DISTINCT, cutting out the repeats</h2>
-  <p class="lead">Real data repeats itself constantly. Three customers from Mumbai, five orders from the same person, a dozen restaurants serving burgers. Often you do not want every row, you want the <b>distinct</b> values, each one listed once. That is the whole job of DISTINCT.</p>
+  <p class="lead">DISTINCT removes duplicate rows, so each value is listed only once. Reach for it when data repeats — like many customers from the same city — and you just want the unique values.</p>
   <hr class="rule">
-  <p class="body">When you run <code class="inl">SELECT city FROM customers</code>, you get one row per customer, so cities repeat. If seven customers live across three cities, you see seven rows, not three. DISTINCT collapses those ${term('duplicate','duplicates')} so each value appears a single time. It is the difference between "list everyone's city" and "which cities do our customers live in".</p>
+  <p class="body">When you run <code class="inl">SELECT city FROM customers</code>, you get one row per customer, so the same city repeats. If seven customers live in three cities, you get seven rows, not three. DISTINCT removes those ${term('duplicate','duplicates')} so each city appears only once. In short, DISTINCT changes the question from "list every customer's city" to "which cities do our customers live in".</p>
   <div class="analogy"><div class="lab">The chai-table version</div><div class="txt">Imagine flipping through a stack of order slips at the counter and someone asks, <b>"which areas are we even delivering to?"</b> You would not read out every slip. You would jot each area down once and ignore the repeats. DISTINCT is you making that short, no-repeats list.</div></div>
 
   <div class="sec-num">2.1</div><h3 class="section-h">See the duplicates first</h3>
@@ -562,9 +563,9 @@ lessons['02']={ short:'DISTINCT', where:'Part I · <b>DISTINCT</b>', render:()=>
 lessons['03']={ short:'WHERE', where:'Part I · <b>WHERE</b>', render:()=>`
   <div class="eyebrow">Part I · Chapter 03</div>
   <h2 class="title">WHERE, keeping only the rows you want</h2>
-  <p class="lead">So far every query has handed back all the rows. Real questions are almost never like that. "Show me the Mumbai restaurants." "Which orders were above 500 rupees?" The moment you want <b>some</b> rows and not others, you reach for WHERE. It is the filter, and it is where SQL starts feeling powerful.</p>
+  <p class="lead">WHERE keeps only the rows that match a condition. It is how you go from "all the rows" to "just the Mumbai restaurants" or "orders above 500".</p>
   <hr class="rule">
-  <p class="body">WHERE is a ${term('clause')} that comes right after FROM. You give it a ${term('condition')}, a yes or no test, and the database keeps only the rows for which the test comes out true. Everything else is quietly left out of the result. The table itself does not change, only what you get back.</p>
+  <p class="body">WHERE is a ${term('clause')} that comes right after FROM. You give WHERE a ${term('condition')}, which is a simple yes/no test. The database checks that test on every row and keeps only the rows where the test is true. The other rows are left out of the result. The table itself does not change — only the data you get back.</p>
   <div class="analogy"><div class="lab">The chai-table version</div><div class="txt">Picture the whole pile of order slips on the counter. You say, <b>"only give me the ones from Mumbai."</b> Someone flips through, keeps the Mumbai slips, sets the rest aside. WHERE is that flip-through: a rule applied to every slip, keep it or skip it.</div></div>
 
   <div class="sec-num">3.1</div><h3 class="section-h">Your first filter</h3>
@@ -630,9 +631,9 @@ lessons['03']={ short:'WHERE', where:'Part I · <b>WHERE</b>', render:()=>`
 lessons['04']={ short:'ORDER BY', where:'Part I · <b>ORDER BY</b>', render:()=>`
   <div class="eyebrow">Part I · Chapter 04</div>
   <h2 class="title">ORDER BY, putting rows in the right sequence</h2>
-  <p class="lead">Until now the rows came back in whatever order the database felt like. That is fine for a quick look, useless for a real answer. "The highest rated restaurant", "the newest customer", "cheapest first", all of those are questions about <b>order</b>, and ORDER BY is how you ask for it.</p>
+  <p class="lead">ORDER BY sorts your results — highest rating first, newest customer, cheapest to priciest. Without it, rows come back in no particular order.</p>
   <hr class="rule">
-  <p class="body">ORDER BY is a ${term('clause')} that comes after WHERE. You name a column to sort by, and the database arranges the whole result around it. By default it sorts smallest to largest, A to Z, oldest to newest. One word flips that around.</p>
+  <p class="body">ORDER BY is a ${term('clause')} that comes after WHERE. You name a column to sort by, and the database arranges the result by that column. By default the database sorts smallest to largest, A to Z, and oldest to newest. Adding the word DESC reverses the order.</p>
   <div class="analogy"><div class="lab">The chai-table version</div><div class="txt">You have got the day's order slips in your hand in no particular order. Someone says, <b>"arrange them highest bill on top."</b> You shuffle them into that sequence and hand the stack over. ORDER BY is that shuffle, done to your result before you see it.</div></div>
 
   <div class="sec-num">4.1</div><h3 class="section-h">Sorting, and flipping the direction</h3>
@@ -653,7 +654,7 @@ lessons['04']={ short:'ORDER BY', where:'Part I · <b>ORDER BY</b>', render:()=>
   ${ed("SELECT id, order_date FROM orders ORDER BY order_date DESC")}
 
   <div class="sec-num">4.3</div><h3 class="section-h">Sorting by more than one column</h3>
-  <p class="body">Here is the piece that makes ORDER BY genuinely useful. You can give it several columns, separated by commas. It sorts by the first, and only uses the second to break ties, the third to break ties in the second, and so on. Each column can have its own ASC or DESC.</p>
+  <p class="body">This is what makes ORDER BY really useful. You can give ORDER BY several columns, separated by commas. It sorts by the first, and only uses the second to break ties, the third to break ties in the second, and so on. Each column can have its own ASC or DESC.</p>
   <div class="ex"><div class="ex-tag">Example</div><div class="code"><span class="k">SELECT</span> name, city, rating <span class="k">FROM</span> restaurants
 <span class="k">ORDER BY</span> city <span class="k">ASC</span>, rating <span class="k">DESC</span></div><div class="ex-note">First groups the rows by city alphabetically, then within each city puts the higher rating on top. The second column only matters when the first ties.</div></div>
   ${ed("SELECT name, city, rating FROM restaurants\nORDER BY city ASC, rating DESC",true)}
@@ -694,9 +695,9 @@ lessons['04']={ short:'ORDER BY', where:'Part I · <b>ORDER BY</b>', render:()=>
 lessons['05']={ short:'LIMIT & OFFSET', where:'Part I · <b>LIMIT &amp; OFFSET</b>', render:()=>`
   <div class="eyebrow">Part I · Chapter 05</div>
   <h2 class="title">LIMIT & OFFSET, taking just a slice</h2>
-  <p class="lead">You rarely want all ten thousand rows. You want the top five, the cheapest three, the next page of results. LIMIT caps how many rows come back, and OFFSET lets you skip past some first. Together they are how every "top 10" list and every paginated screen is built.</p>
+  <p class="lead">LIMIT caps how many rows you get back; OFFSET skips some first. Together they power every "top 10" list and every page of results.</p>
   <hr class="rule">
-  <p class="body">LIMIT goes at the very end of the query and simply says "stop after this many rows". On its own it just trims the count. Its real power shows up the moment you pair it with ORDER BY, because then "the first few rows" actually means something, the best, the cheapest, the newest.</p>
+  <p class="body">LIMIT goes at the very end of the query and tells the database to stop after a given number of rows. On its own, LIMIT just cuts down the count. LIMIT becomes useful when you pair it with ORDER BY, because then "the first few rows" has a clear meaning — the best, the cheapest, or the newest.</p>
   <div class="analogy"><div class="lab">The chai-table version</div><div class="txt">You have arranged the order slips highest bill on top. Someone says, <b>"just hand me the top three."</b> You peel off three and keep the rest. That is LIMIT. If they say <b>"skip the top three, give me the next three,"</b> that skip is OFFSET.</div></div>
 
   <div class="sec-num">5.1</div><h3 class="section-h">Capping the rows with LIMIT</h3>
@@ -736,7 +737,7 @@ lessons['05']={ short:'LIMIT & OFFSET', where:'Part I · <b>LIMIT &amp; OFFSET</
     <li><b>LIMIT without ORDER BY is a coin toss.</b> The rows you get are not guaranteed to be any particular ones. For a meaningful "top N", always sort first.</li>
     <li><b>OFFSET counts rows skipped, not pages.</b> To get page 3 with 10 per page, you skip 20 (<code class="inl" style="font-size:12px">OFFSET 20</code>), not <code class="inl" style="font-size:12px">OFFSET 3</code>.</li>
     <li><b>LIMIT is last.</b> It sits at the very end, after ORDER BY. The full order is SELECT, FROM, WHERE, ORDER BY, LIMIT.</li>
-    <li><b>Large OFFSETs get slow.</b> On big tables, skipping a million rows to reach page 100000 is genuinely inefficient. It is fine to know now; the fix (keyset pagination) is a topic for much later.</li>
+    <li><b>Large OFFSETs get slow.</b> On big tables, skipping a million rows to reach page 100000 is very inefficient. It is fine to know now; the fix (keyset pagination) is a topic for much later.</li>
   </ul></div>
 
   <div class="sec-num">Recap</div><h3 class="section-h">Part I, complete</h3>
@@ -754,10 +755,10 @@ lessons['05']={ short:'LIMIT & OFFSET', where:'Part I · <b>LIMIT &amp; OFFSET</
 lessons['00']={ short:'What is SQL?', where:'Groundwork · <b>What even is SQL?</b>', render:()=>`
   <div class="eyebrow">Groundwork · Chapter 00</div>
   <h2 class="title">What even is SQL?</h2>
-  <p class="lead">Before the keywords and the practice, let us settle what this whole thing is. No jargon, no fear. If you have ever looked something up in a well-organised register, you already understand the idea. SQL just puts words to it.</p>
+  <p class="lead">SQL is the language you use to ask a database for data. If you have ever looked something up in a well-organised register, you already get the idea — this chapter just puts words to it.</p>
   <hr class="rule">
   <p class="body">Almost every app you use sits on top of a ${term('database')}, a tidy store of information. Inside it, data lives in ${term('table','tables')}: grids with columns across the top and rows down the side, exactly like sheets in Excel. One table for customers, one for restaurants, one for orders.</p>
-  <p class="body"><b>SQL</b> (say it "sequel" or spell it out, both are fine) is the language you use to talk to that store. You write a short, almost-English sentence, the database reads it, and hands back a neat grid of answers. That sentence is called a ${term('query')}.</p>
+  <p class="body"><b>SQL</b> (say it "sequel" or spell it out, both are fine) is the language you use to talk to that store. You write a short, almost-English sentence, the database reads that sentence, and the database returns the answer as a table of rows and columns. That sentence is called a ${term('query')}.</p>
   <div class="analogy"><div class="lab">The chai-table version</div><div class="txt">Think of the database as a very patient clerk with a filing cabinet. You do not rummage through the drawers yourself. You write a clear request, <b>"give me the names of customers in Mumbai"</b>, slide it across, and the clerk brings back exactly that. SQL is just the agreed language for writing those requests.</div></div>
 
   <div class="sec-num">0.1</div><h3 class="section-h">The shape of every question</h3>
@@ -770,13 +771,13 @@ lessons['00']={ short:'What is SQL?', where:'Groundwork · <b>What even is SQL?<
   <p class="aside">A comforting truth for the nervous beginner: a SELECT query never alters your data. Run it wrong, run it a hundred times, the tables stay exactly as they were. You are free to experiment.</p>
 
   <div class="sec-num">0.3</div><h3 class="section-h">Why it is worth your time</h3>
-  <p class="body">Data lives in databases everywhere, in your company's systems, in analytics tools, behind dashboards. Being able to ask it questions yourself, without waiting for someone else, is one of the highest-leverage skills you can pick up. And it is genuinely learnable in small steps, which is exactly how the next chapters are built. Next up, let us meet the actual data you will be working with.</p>
+  <p class="body">Data lives in databases everywhere, in your company's systems, in analytics tools, behind dashboards. Being able to ask a database questions yourself, without waiting for someone else, is one of the most useful skills you can build. And SQL is learnable in small steps, which is exactly how the next chapters are built. Next up, let us meet the actual data you will be working with.</p>
 `};
 
 lessons['0i']={ short:'Meet the data', where:'Groundwork · <b>Meet the data</b>', render:()=>`
   <div class="eyebrow">Groundwork · Chapter 0i</div>
   <h2 class="title">Meet the data</h2>
-  <p class="lead">Every example and every practice question in this handbook uses the same three little tables, a tiny pretend food-delivery service. Spend two minutes here getting to know them, and every later chapter will feel familiar instead of abstract.</p>
+  <p class="lead">Every example in this handbook uses the same three small tables — a tiny pretend food-delivery service. Two minutes getting to know them here makes every later chapter easier.</p>
   <hr class="rule">
   <p class="body">There are three tables: <b>customers</b>, <b>restaurants</b>, and <b>orders</b>. Run each one below to see what it holds. These are real queries against a real database running in your browser.</p>
 
@@ -801,7 +802,7 @@ lessons['0i']={ short:'Meet the data', where:'Groundwork · <b>Meet the data</b>
 lessons['06']={ short:'LIKE', where:'Part II · <b>LIKE &amp; wildcards</b>', render:()=>`
   <div class="eyebrow">Part II · Chapter 06</div>
   <h2 class="title">LIKE, matching text by its shape</h2>
-  <p class="lead">Sometimes you do not know the exact value, only its pattern. Names starting with S. Emails ending in gmail.com. Anything containing the word "pizza". A plain <code class="inl">=</code> cannot do that, it demands an exact match. LIKE can, using two little wildcard symbols.</p>
+  <p class="lead">LIKE searches text by pattern instead of an exact match — names starting with S, emails ending in gmail.com. It uses two wildcards: % for any characters, _ for exactly one.</p>
   <hr class="rule">
   <p class="body">LIKE is used inside WHERE, just like <code class="inl">=</code>, but instead of an exact value you give it a <b>pattern</b>. Two wildcards do the work: <b>%</b> stands for any run of characters (including none), and <b>_</b> stands for exactly one character. Combine them and you can describe almost any text shape.</p>
   <div class="analogy"><div class="lab">The chai-table version</div><div class="txt">You are looking through a box of visiting cards and you only half-remember the shop's name: <b>"it started with Bur-something."</b> You do not need the full name, just the shape of the start. LIKE 'Bur%' is you saying exactly that, "begins with Bur, rest can be anything".</div></div>
@@ -852,11 +853,11 @@ lessons['06']={ short:'LIKE', where:'Part II · <b>LIKE &amp; wildcards</b>', re
 lessons['07']={ short:'IN & BETWEEN', where:'Part II · <b>IN &amp; BETWEEN</b>', render:()=>`
   <div class="eyebrow">Part II · Chapter 07</div>
   <h2 class="title">IN & BETWEEN, tidier ways to say "one of these" and "in this range"</h2>
-  <p class="lead">You could write <code class="inl">city = 'Mumbai' OR city = 'Delhi' OR city = 'Pune'</code>. It works, but it is noisy, and it gets worse with every option. IN and BETWEEN are the clean shortcuts for "match any of these values" and "fall inside this range".</p>
+  <p class="lead">IN checks if a value matches any in a list; BETWEEN checks if it falls in a range. Both replace long chains of OR with something short and clear.</p>
   <hr class="rule">
 
   <div class="sec-num">7.1</div><h3 class="section-h">IN: any one of a list</h3>
-  <p class="body"><b>IN</b> checks whether a value matches <b>any</b> item in a list you give it. It is exactly a stack of ORs, folded into one readable line.</p>
+  <p class="body"><b>IN</b> checks whether a value matches <b>any</b> item in a list you give IN. IN does the same job as a stack of ORs, written as one readable line.</p>
   <div class="qb"><div class="qb-title">Breaking it down</div>
     <div class="qb-row"><span class="qb-kw kw-p">WHERE city</span><span class="qb-mean">test the city column</span></div>
     <div class="qb-row"><span class="qb-kw kw-a">IN ('Mumbai', 'Delhi')</span><span class="qb-mean">match if it is any of these</span></div></div>
@@ -886,7 +887,7 @@ lessons['07']={ short:'IN & BETWEEN', where:'Part II · <b>IN &amp; BETWEEN</b>'
     <li><b>BETWEEN includes both ends.</b> <code class="inl" style="font-size:12px">BETWEEN 400 AND 600</code> keeps 400 and 600 themselves. If you want to exclude an end, use <code class="inl" style="font-size:12px">></code> and <code class="inl" style="font-size:12px"><</code> instead.</li>
     <li><b>Low value first.</b> Write <code class="inl" style="font-size:12px">BETWEEN 400 AND 600</code>, not the reverse. Backwards, it matches nothing.</li>
     <li><b>Quote a list of text, each item.</b> <code class="inl" style="font-size:12px">IN ('Mumbai', 'Delhi')</code>, every string in its own quotes. Numbers go unquoted: <code class="inl" style="font-size:12px">IN (1, 2, 3)</code>.</li>
-    <li><b>NOT IN with NULLs can surprise you.</b> If the list could contain a NULL, NOT IN may quietly return nothing. We will see exactly why in the very next chapter on NULL.</li>
+    <li><b>NOT IN with NULLs can surprise you.</b> If the list could contain a NULL, NOT IN may return nothing at all. We will see exactly why in the very next chapter on NULL.</li>
   </ul></div>
 
   <div class="sec-num">Recap</div><h3 class="section-h">Shortcuts worth the habit</h3>
@@ -903,7 +904,7 @@ lessons['07']={ short:'IN & BETWEEN', where:'Part II · <b>IN &amp; BETWEEN</b>'
 lessons['08']={ short:'NULL handling', where:'Part II · <b>NULL handling</b>', render:()=>`
   <div class="eyebrow">Part II · Chapter 08</div>
   <h2 class="title">NULL, the value that means "we don't know"</h2>
-  <p class="lead">Real data has gaps. A customer who never left a rating, a phone number nobody filled in. SQL marks those gaps with a special marker called <b>NULL</b>. It is not zero, not an empty string, not "nothing", it is "unknown". And because it means unknown, it behaves in ways that surprise almost everyone at first. This chapter is where you make peace with it.</p>
+  <p class="lead">NULL is SQL's marker for a missing or unknown value — not zero, not empty text. Because it means "unknown", it behaves in ways that surprise beginners, so this chapter shows how to handle it.</p>
   <hr class="rule">
   <p class="body">In our orders table, <code class="inl">rating_given</code> is NULL for the orders where the customer never rated. Run this and look at the blanks.</p>
   ${ed("SELECT id, amount, rating_given FROM orders",true)}
@@ -920,7 +921,7 @@ lessons['08']={ short:'NULL handling', where:'Part II · <b>NULL handling</b>', 
   ${ed("SELECT id, rating_given FROM orders WHERE rating_given IS NULL",true)}
   ${ed("SELECT id, rating_given FROM orders WHERE rating_given IS NOT NULL",true)}
 
-  <div class="sec-num">8.3</div><h3 class="section-h">NULLs quietly drop out of comparisons</h3>
+  <div class="sec-num">8.3</div><h3 class="section-h">NULLs drop out of comparisons</h3>
   <p class="body">Any ordinary comparison against a NULL gives "unknown", so those rows fail the test and vanish from the result, without any error. Ask for ratings of 4 or more, and the unrated orders simply do not appear.</p>
   <div class="ex"><div class="ex-tag">Example</div><div class="code"><span class="k">SELECT</span> id, rating_given <span class="k">FROM</span> orders <span class="k">WHERE</span> rating_given >= 4</div><div class="ex-note">Only rated orders of 4+ come back. The NULL rows are not "less than 4", they are unknown, so they are left out entirely. Worth pausing on: a filter can silently exclude your gaps.</div></div>
   ${ed("SELECT id, rating_given FROM orders WHERE rating_given >= 4",true)}
@@ -940,7 +941,7 @@ lessons['08']={ short:'NULL handling', where:'Part II · <b>NULL handling</b>', 
   </ul></div>
 
   <div class="sec-num">Recap</div><h3 class="section-h">Make peace with the unknown</h3>
-  <p class="body">NULL means "unknown", so it never equals anything, not even another NULL. Test it only with <code class="inl">IS NULL</code> and <code class="inl">IS NOT NULL</code>, and stay alert that ordinary conditions quietly drop NULL rows. Later, in the CASE and null-functions chapter, you will learn to <b>replace</b> NULLs with a fallback value using COALESCE. For now, just knowing how to find and reason about them is the win.</p>
+  <p class="body">NULL means "unknown", so it never equals anything, not even another NULL. Test it only with <code class="inl">IS NULL</code> and <code class="inl">IS NOT NULL</code>, and remember that ordinary conditions drop NULL rows. Later, in the CASE and null-functions chapter, you will learn to <b>replace</b> NULLs with a fallback value using COALESCE. For now, just knowing how to find and reason about them is the win.</p>
 
   <div class="sec-num">Practice</div><h3 class="section-h">Your turn, five questions</h3>
   ${q('q1','easy','Show <b>all columns</b> of orders that have <b>no rating</b> (rating_given is missing).', i=>sameRowsAnyOrder(i,'SELECT * FROM orders WHERE rating_given IS NULL'), 'SELECT * FROM orders WHERE rating_given IS NULL', 'IS NULL.')}
@@ -953,9 +954,9 @@ lessons['08']={ short:'NULL handling', where:'Part II · <b>NULL handling</b>', 
 lessons['09']={ short:'Aggregates', where:'Part III · <b>Aggregates</b>', render:()=>`
   <div class="eyebrow">Part III · Chapter 09</div>
   <h2 class="title">Aggregates, turning many rows into one number</h2>
-  <p class="lead">So far every query handed back rows. But often the question is a single summary: how many orders, total sales, the average rating, the priciest place. Aggregate functions take a whole column of values and boil them down to one answer. They are how raw data becomes a headline figure.</p>
+  <p class="lead">Aggregate functions take a whole column and reduce it to one number — a count, a total, an average, a minimum, or a maximum. They turn many rows into a single summary value.</p>
   <hr class="rule">
-  <p class="body">There are five you will use constantly: <b>COUNT</b> (how many), <b>SUM</b> (add them up), <b>AVG</b> (the average), <b>MIN</b> (the smallest), and <b>MAX</b> (the largest). Each takes a column, sweeps down every row, and returns one value.</p>
+  <p class="body">There are five you will use constantly: <b>COUNT</b> (how many), <b>SUM</b> (add them up), <b>AVG</b> (the average), <b>MIN</b> (the smallest), and <b>MAX</b> (the largest). Each function takes a column, goes through every row, and returns one value.</p>
   <div class="analogy"><div class="lab">The chai-table version</div><div class="txt">At the end of the day you do not read out every bill. You tot them up: <b>"forty orders, twelve thousand rupees total, biggest was seven hundred."</b> Those single-line summaries are aggregates. The individual slips still exist; you are just reporting the totals.</div></div>
 
   <div class="sec-num">9.1</div><h3 class="section-h">COUNT, how many rows</h3>
@@ -964,7 +965,7 @@ lessons['09']={ short:'Aggregates', where:'Part III · <b>Aggregates</b>', rende
   ${ed("SELECT COUNT(*) AS total_orders FROM orders",true)}
 
   <div class="sec-num">9.2</div><h3 class="section-h">SUM and AVG</h3>
-  <p class="body"><b>SUM</b> adds a numeric column; <b>AVG</b> averages it. Both quietly skip NULLs, so the average is over the values that actually exist.</p>
+  <p class="body"><b>SUM</b> adds a numeric column; <b>AVG</b> averages it. Both skip NULLs, so the average is calculated only over the values that exist.</p>
   <div class="ex"><div class="ex-tag">Total sales</div><div class="code"><span class="k">SELECT</span> <span class="k">SUM</span>(amount) <span class="k">AS</span> total_sales <span class="k">FROM</span> orders</div></div>
   ${ed("SELECT SUM(amount) AS total_sales FROM orders",true)}
   <div class="ex"><div class="ex-tag">Average rating</div><div class="code"><span class="k">SELECT</span> <span class="k">AVG</span>(rating) <span class="k">AS</span> avg_rating <span class="k">FROM</span> restaurants</div><div class="ex-note">The average comes out with a long decimal tail. Wrap it in ROUND to tidy up: <code class="inl" style="font-size:12px">ROUND(AVG(rating), 2)</code>.</div></div>
@@ -1006,7 +1007,7 @@ lessons['09']={ short:'Aggregates', where:'Part III · <b>Aggregates</b>', rende
 lessons['10']={ short:'GROUP BY', where:'Part III · <b>GROUP BY</b>', render:()=>`
   <div class="eyebrow">Part III · Chapter 10</div>
   <h2 class="title">GROUP BY, one summary per category</h2>
-  <p class="lead">Aggregates gave you one number for the whole table. But the useful questions are usually per category: how many customers <b>in each city</b>, total spend <b>per customer</b>, average rating <b>per cuisine</b>. GROUP BY splits the rows into groups and runs the aggregate once for each. This is where SQL starts answering real business questions.</p>
+  <p class="lead">GROUP BY splits rows into groups and runs an aggregate for each — customers per city, total spend per customer. It gives you a summary per category instead of one number for everything.</p>
   <hr class="rule">
   <p class="body">The idea: name a column to group by, and the database gathers all rows that share a value in it into one bucket. Then any aggregate you write, COUNT, SUM, AVG, runs separately inside each bucket, giving you one summary row per group.</p>
   <div class="analogy"><div class="lab">The chai-table version</div><div class="txt">You have got the day's slips in a pile. You sort them into stacks, <b>one stack per area</b>: a Mumbai stack, a Delhi stack, a Pune stack. Then you count each stack. GROUP BY is the sorting-into-stacks; the aggregate is the counting of each. You end with one line per area, not one line for the whole pile.</div></div>
@@ -1067,7 +1068,7 @@ lessons['10']={ short:'GROUP BY', where:'Part III · <b>GROUP BY</b>', render:()
 lessons['11']={ short:'HAVING', where:'Part III · <b>HAVING</b>', render:()=>`
   <div class="eyebrow">Part III · Chapter 11</div>
   <h2 class="title">HAVING, filtering the groups</h2>
-  <p class="lead">You can group and summarise. Now the natural next question: "only show me the groups that meet some condition", cities with more than one customer, cuisines with an average rating above 4.4. You cannot use WHERE for that, because the condition is about the summary, not the raw rows. That is exactly what HAVING is for.</p>
+  <p class="lead">HAVING filters groups after they are summarised — for example, only cities with more than one customer. WHERE cannot do this, because the condition is about the summary, not the raw rows.</p>
   <hr class="rule">
   <p class="body">The clean way to hold it in your head: <b>WHERE filters rows before grouping, HAVING filters groups after.</b> WHERE decides which slips go into the stacks; HAVING decides which finished stacks you keep. HAVING can test aggregates like COUNT and AVG, which WHERE simply cannot.</p>
   <div class="analogy"><div class="lab">The chai-table version</div><div class="txt">You have sorted the slips into stacks by area and counted each. Now someone says, <b>"only tell me about the areas with more than one order."</b> You glance at each finished stack and toss the single-slip ones aside. That final sift, done on the counts rather than the slips, is HAVING.</div></div>
@@ -1119,7 +1120,7 @@ lessons['11']={ short:'HAVING', where:'Part III · <b>HAVING</b>', render:()=>`
 lessons['12']={ short:'JOINs', where:'Part IV · <b>JOINs</b>', render:()=>`
   <div class="eyebrow">Part IV · Chapter 12</div>
   <h2 class="title">JOINs, pulling from more than one table</h2>
-  <p class="lead">This is the chapter that changes everything. Until now you have worked one table at a time. But real data is deliberately split apart, the orders table stores a customer_id, not the customer's name. To answer "who ordered what", you have to stitch tables back together. That stitching is a JOIN, and it is the heart of relational databases.</p>
+  <p class="lead">A JOIN combines rows from two tables that share a matching value. Data is deliberately split across tables (orders store a customer_id, not a name), and a JOIN stitches it back together.</p>
   <hr class="rule">
   <p class="body">Remember from Meet the data: an order does not repeat the customer's name, it points at them by id. That pointing column is a ${term('foreign_key')}. A ${term('join')} follows that thread, matching each order's customer_id to the matching row in customers, and lets you select columns from both tables in one result.</p>
   <div class="analogy"><div class="lab">The chai-table version</div><div class="txt">You have a stack of order slips that just say <b>"customer #1"</b>, and a separate register of who each customer number is. To read the orders properly you lay the two side by side and, for each slip, look up the number in the register. A JOIN is the database doing that lookup for every row at once.</div></div>
@@ -1197,7 +1198,7 @@ lessons['12']={ short:'JOINs', where:'Part IV · <b>JOINs</b>', render:()=>`
 lessons['13']={ short:'UNION', where:'Part IV · <b>UNION</b>', render:()=>`
   <div class="eyebrow">Part IV · Chapter 13</div>
   <h2 class="title">UNION, stacking results on top of each other</h2>
-  <p class="lead">A JOIN glues tables side by side, adding columns. UNION does the opposite direction: it stacks the rows of two results on top of each other, into one longer list. When you have similar data from two places and want it in a single column of results, UNION is the tool.</p>
+  <p class="lead">UNION stacks the rows of two results into one longer list. Where a JOIN adds columns side by side, UNION adds rows on top of each other.</p>
   <hr class="rule">
   <p class="body">You write two SELECT statements and put <b>UNION</b> between them. The database runs both and piles the second result underneath the first. Think side-by-side versus end-to-end: JOIN widens, UNION lengthens.</p>
   <div class="analogy"><div class="lab">The chai-table version</div><div class="txt">You have one list of names from the customer register and another from the restaurant-owner register, and someone asks for <b>"one combined list of everyone."</b> You simply write the second list below the first. That stacking is UNION.</div></div>
@@ -1210,12 +1211,12 @@ lessons['13']={ short:'UNION', where:'Part IV · <b>UNION</b>', render:()=>`
   ${ed("SELECT city FROM customers\nUNION\nSELECT city FROM restaurants",true)}
 
   <div class="sec-num">13.2</div><h3 class="section-h">UNION removes duplicates, UNION ALL keeps them</h3>
-  <p class="body">Plain <b>UNION</b> quietly removes duplicate rows across the combined result, a bit like DISTINCT over the whole stack. If you want every row kept, including repeats, use <b>UNION ALL</b>. It is also faster, since it skips the de-duplication work.</p>
+  <p class="body">Plain <b>UNION</b> removes duplicate rows from the combined result, similar to DISTINCT over the whole stack. If you want every row kept, including repeats, use <b>UNION ALL</b>. It is also faster, since it skips the de-duplication work.</p>
   <div class="ex"><div class="ex-tag">Every city, repeats and all</div><div class="code"><span class="k">SELECT</span> city <span class="k">FROM</span> customers
 <span class="k">UNION ALL</span>
 <span class="k">SELECT</span> city <span class="k">FROM</span> restaurants</div><div class="ex-note">Now you get all seven customer cities plus all six restaurant cities, thirteen rows, duplicates included. Compare with the four from plain UNION above.</div></div>
   ${ed("SELECT city FROM customers\nUNION ALL\nSELECT city FROM restaurants",true)}
-  <p class="aside">A good habit: reach for UNION ALL by default when you know there are no duplicates, or when you actually want them. Use plain UNION only when de-duplicating is genuinely the point, since it costs extra work.</p>
+  <p class="aside">A good habit: reach for UNION ALL by default when you know there are no duplicates, or when you actually want them. Use plain UNION only when removing duplicates is the point, since it costs extra work.</p>
 
   <div class="sec-num">13.3</div><h3 class="section-h">The two rules that must hold</h3>
   <p class="body">UNION is strict about shape. Both SELECTs must return the <b>same number of columns</b>, and the columns must line up in a sensible <b>order and type</b> (text under text, numbers under numbers). The column <b>names</b> of the final result come from the <b>first</b> SELECT; the second's names are ignored.</p>
@@ -1225,7 +1226,7 @@ lessons['13']={ short:'UNION', where:'Part IV · <b>UNION</b>', render:()=>`
     <div class="qb-row"><span class="qb-kw kw-r">result names</span><span class="qb-mean">taken from the first SELECT only</span></div></div>
 
   <div class="sec-num">13.4</div><h3 class="section-h">Tagging where each row came from</h3>
-  <p class="body">A common, genuinely useful pattern: add a constant column to each SELECT so you can tell the two sources apart once they are stacked.</p>
+  <p class="body">A common and useful pattern: add a constant column to each SELECT so you can tell the two sources apart once they are stacked.</p>
   <div class="ex"><div class="ex-tag">Example</div><div class="code"><span class="k">SELECT</span> name, <span class="s">'customer'</span> <span class="k">AS</span> type <span class="k">FROM</span> customers
 <span class="k">UNION ALL</span>
 <span class="k">SELECT</span> name, <span class="s">'restaurant'</span> <span class="k">AS</span> type <span class="k">FROM</span> restaurants</div><div class="ex-note">Each row carries a label saying whether it came from customers or restaurants. The constant string is just another column.</div></div>
@@ -1241,7 +1242,7 @@ lessons['13']={ short:'UNION', where:'Part IV · <b>UNION</b>', render:()=>`
 
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Column counts must match.</b> Two columns on top, three below, and the database refuses. Same number, both sides.</li>
-    <li><b>UNION de-duplicates, which can hide real rows.</b> If two genuinely different records happen to look identical in the selected columns, plain UNION collapses them into one. Use UNION ALL if every row matters.</li>
+    <li><b>UNION de-duplicates, which can hide real rows.</b> If two different records happen to look identical in the selected columns, plain UNION collapses them into one. Use UNION ALL if every row matters.</li>
     <li><b>Names come from the first SELECT.</b> Do not be surprised that the second query's aliases are ignored in the final headers.</li>
     <li><b>ORDER BY goes last, once.</b> It sorts the whole union. Trying to sort each half separately is not how it works.</li>
   </ul></div>
@@ -1260,7 +1261,7 @@ lessons['13']={ short:'UNION', where:'Part IV · <b>UNION</b>', render:()=>`
 lessons['14']={ short:'CASE & null functions', where:'Part V · <b>CASE &amp; null functions</b>', render:()=>`
   <div class="eyebrow">Part V · Chapter 14</div>
   <h2 class="title">CASE and the null-functions, decisions inside a query</h2>
-  <p class="lead">Sometimes a plain column is not enough, you want the query itself to make a small decision per row. "Label anything above 4.5 as top-rated." "Show 'Not rated' instead of a blank." CASE gives you if-then-else right inside SELECT, and a trio of null-functions cleanly handle those empty values you met earlier.</p>
+  <p class="lead">CASE is if-then-else inside a query — label anything above 4.5 as "top-rated", or show "Not rated" instead of a blank. It decides a value for each row.</p>
   <hr class="rule">
 
   <div class="sec-num">14.1</div><h3 class="section-h">CASE, if-then-else for a column</h3>
@@ -1321,7 +1322,7 @@ lessons['14']={ short:'CASE & null functions', where:'Part V · <b>CASE &amp; nu
 lessons['15']={ short:'Subqueries', where:'Part V · <b>Subqueries</b>', render:()=>`
   <div class="eyebrow">Part V · Chapter 15</div>
   <h2 class="title">Subqueries, a query inside a query</h2>
-  <p class="lead">Some questions need an answer before they can even be asked. "Which restaurants are rated above average?" You first have to work out the average, then compare each restaurant to it. A ${term('subquery')} lets you nest that first query inside the second, so SQL computes the inner answer and feeds it to the outer question.</p>
+  <p class="lead">A ${term('subquery')} is a query inside another query. Use it when you need one answer before you can ask the main question — like finding the average rating, then listing the restaurants above it.</p>
   <hr class="rule">
 
   <div class="sec-num">15.1</div><h3 class="section-h">A single-value subquery</h3>
@@ -1391,7 +1392,7 @@ lessons['15']={ short:'Subqueries', where:'Part V · <b>Subqueries</b>', render:
 lessons['16']={ short:'Window functions', where:'Part V · <b>Window functions</b>', render:()=>`
   <div class="eyebrow">Part V · Chapter 16</div>
   <h2 class="title">Window functions, summaries without losing the rows</h2>
-  <p class="lead">GROUP BY is powerful but greedy: it collapses many rows into one. Often you want the summary <b>and</b> the original rows together, each restaurant next to its city's average, a running total that grows row by row, a ranking. Window functions do exactly that. They are the most advanced idea in this handbook, and genuinely worth the stretch.</p>
+  <p class="lead">Window functions add a summary next to each row without collapsing them — each restaurant beside its city's average, a running total, a ranking. This is the most advanced topic in this course, but it is worth learning.</p>
   <hr class="rule">
   <p class="body">The key idea: a window function computes across a set of rows (a "window") but <b>keeps every row in the output</b>. You attach it with the <b>OVER</b> keyword. Where GROUP BY gives one row per group, a window function gives every row, with the group's summary alongside.</p>
   <div class="analogy"><div class="lab">The chai-table version</div><div class="txt">GROUP BY is totting up each area's stack and throwing the slips away, you keep only the totals. A window function is jotting the area's total in the corner of <b>every single slip</b>, then handing all the slips back. Same arithmetic, but nothing is lost.</div></div>
@@ -1448,7 +1449,7 @@ lessons['16']={ short:'Window functions', where:'Part V · <b>Window functions</
 lessons['17']={ short:'INSERT, UPDATE, DELETE', where:'Part VI · <b>INSERT, UPDATE, DELETE</b>', render:()=>`
   <div class="eyebrow">Part VI · Chapter 17</div>
   <h2 class="title">INSERT, UPDATE, DELETE, changing the data</h2>
-  <p class="lead">Everything so far only <b>read</b> data. Now we write it: adding rows, editing them, removing them. These are powerful and, unlike SELECT, they change things for real. So this chapter comes with a genuine safety lesson attached, one small missing word here can rewrite an entire table.</p>
+  <p class="lead">These commands change data: INSERT adds rows, UPDATE edits them, DELETE removes them. Unlike SELECT they change things for real, so this chapter has a safety lesson — one missing word can rewrite a whole table.</p>
   <hr class="rule">
   <p class="body">To keep your learning data safe, everything below runs against a private scratch table called <code class="inl">demo</code>, not the real customers or restaurants. The cell just below creates a fresh <code class="inl">demo</code> each time you open this chapter, so you can add, edit and delete freely and never break the other lessons. Re-run it any time to reset.</p>
   ${ed("DROP TABLE IF EXISTS demo;\nCREATE TABLE demo (id INTEGER PRIMARY KEY, name TEXT, city TEXT, active INTEGER);\nINSERT INTO demo VALUES (1, 'Ravi', 'Mumbai', 1), (2, 'Sita', 'Delhi', 1), (3, 'Amit', 'Pune', 0);\nSELECT * FROM demo;",true)}
@@ -1499,7 +1500,7 @@ lessons['17']={ short:'INSERT, UPDATE, DELETE', where:'Part VI · <b>INSERT, UPD
 lessons['18']={ short:'CREATE, ALTER, DROP', where:'Part VI · <b>CREATE, ALTER, DROP</b>', render:()=>`
   <div class="eyebrow">Part VI · Chapter 18</div>
   <h2 class="title">CREATE, ALTER, DROP, building the tables themselves</h2>
-  <p class="lead">So far the tables already existed. Now you make them. CREATE builds a table and defines its columns and rules, ALTER changes an existing table's shape, and DROP removes a table entirely. This is the structural layer, the design of the container rather than the contents.</p>
+  <p class="lead">These commands build and change the tables themselves: CREATE makes a table, ALTER changes its shape, DROP removes it. This is the structure — the container, not the contents.</p>
   <hr class="rule">
 
   <div class="sec-num">18.1</div><h3 class="section-h">CREATE TABLE and column types</h3>
@@ -1560,7 +1561,7 @@ lessons['18']={ short:'CREATE, ALTER, DROP', where:'Part VI · <b>CREATE, ALTER,
 lessons['19']={ short:'VIEWs & INDEXes', where:'Part VI · <b>VIEWs &amp; INDEXes</b>', render:()=>`
   <div class="eyebrow">Part VI · Chapter 19</div>
   <h2 class="title">VIEWs and INDEXes, convenience and speed</h2>
-  <p class="lead">Two tools that quietly make databases pleasant to work with. A ${term('view')} lets you save a complicated query and reuse it as if it were a simple table. An ${term('index')} makes lookups dramatically faster on big tables. Neither changes your data; they change how comfortably and quickly you work with it.</p>
+  <p class="lead">A ${term('view')} saves a complicated query so you can reuse it like a simple table. An ${term('index')} makes lookups much faster on big tables. Neither changes your data — just how easily you work with it.</p>
   <hr class="rule">
 
   <div class="sec-num">19.1</div><h3 class="section-h">A VIEW is a saved query</h3>
@@ -1590,7 +1591,7 @@ lessons['19']={ short:'VIEWs & INDEXes', where:'Part VI · <b>VIEWs &amp; INDEXe
     <li><b>A view stores no data.</b> It re-runs its query each time, so it always reflects the current tables. It is convenience, not a copy.</li>
     <li><b>Views are usually read-only.</b> You query them freely; writing through a view is limited and often not allowed. Treat them as saved SELECTs.</li>
     <li><b>Indexes trade write speed for read speed.</b> Do not reflexively index every column. Index what you search and join by.</li>
-    <li><b>You rarely "use" an index by name.</b> You create it, and the database chooses to use it automatically when it helps. It works quietly in the background.</li>
+    <li><b>You rarely "use" an index by name.</b> You create it, and the database chooses to use it automatically when it helps. It works in the background.</li>
   </ul></div>
 
   <div class="sec-num">Recap</div><h3 class="section-h">Comfort and performance</h3>
@@ -1608,7 +1609,7 @@ lessons['19']={ short:'VIEWs & INDEXes', where:'Part VI · <b>VIEWs &amp; INDEXe
 lessons['20']={ short:'Types, comments, safety', where:'Part VI · <b>Types, comments, safety</b>', render:()=>`
   <div class="eyebrow">Part VI · Chapter 20</div>
   <h2 class="title">Types, comments, and staying safe</h2>
-  <p class="lead">The finishing chapter, the professional habits that separate someone who can write SQL from someone you trust with a real database. What the data types mean, how to comment your queries, and the one security idea, SQL injection, that you must internalise before you ever put SQL near real users.</p>
+  <p class="lead">The finishing touches: what the data types mean, how to comment your queries, and the one security idea you must know — SQL injection — before putting SQL anywhere near real users.</p>
   <hr class="rule">
 
   <div class="sec-num">20.1</div><h3 class="section-h">Data types, briefly</h3>
@@ -1642,7 +1643,7 @@ lessons['20']={ short:'Types, comments, safety', where:'Part VI · <b>Types, com
   <p class="body">A short list worth making automatic. Preview UPDATE and DELETE with a matching SELECT before running them, and never omit the WHERE. Wrap risky changes in a transaction (<code class="inl">BEGIN; ... COMMIT;</code>, or <code class="inl">ROLLBACK;</code> to undo) so a mistake can be reversed. Back up before structural changes like DROP. Prefer explicit column lists over <code class="inl">SELECT *</code> in real code. And parameterise every query that touches user input, without exception.</p>
 
   <div class="sec-num">Recap</div><h3 class="section-h">You have finished the handbook</h3>
-  <p class="body">From your very first SELECT to window functions, data changes, table design, and now the professional habits, you have covered the whole working core of SQL. Types describe your data, comments explain your intent, and safe habits, especially parameterised queries and a well-checked WHERE, keep you and your data out of trouble. The rest is practice on real problems, which you are now genuinely ready for. Well done.</p>
+  <p class="body">From your very first SELECT to window functions, data changes, table design, and now the professional habits, you have covered the whole working core of SQL. Types describe your data, comments explain your intent, and safe habits, especially parameterised queries and a well-checked WHERE, keep you and your data out of trouble. The rest is practice on real problems, which you are now ready for. Well done.</p>
 
   <div class="sec-num">Practice</div><h3 class="section-h">Your turn, five questions</h3>
   <p class="body">A gentle final set, reinforcing comments, types, and casting.</p>
@@ -1656,7 +1657,7 @@ lessons['20']={ short:'Types, comments, safety', where:'Part VI · <b>Types, com
 lessons['0b']={ short:'The SQL world', where:'Groundwork · <b>The SQL world &amp; NoSQL</b>', render:()=>`
   <div class="eyebrow">Groundwork · Chapter 0b</div>
   <h2 class="title">The SQL world: dialects, and where NoSQL fits</h2>
-  <p class="lead">Before diving in, a quick map of the territory, so you know what you are learning, how it relates to the database names you keep hearing (MySQL, PostgreSQL, and the rest), and where the trendy "NoSQL" databases fit. Two minutes here saves a lot of confusion later.</p>
+  <p class="lead">A quick map of the territory: what you are learning, how it relates to the database names you keep hearing (MySQL, PostgreSQL), and where "NoSQL" fits. Two minutes here saves confusion later.</p>
   <hr class="rule">
 
   <div class="sec-num">b.1</div><h3 class="section-h">SQL is a language, not a product</h3>
@@ -1688,7 +1689,7 @@ lessons['0b']={ short:'The SQL world', where:'Groundwork · <b>The SQL world &am
   ${ed("SELECT 'SQLite ' || sqlite_version() AS running_engine",true)}
 
   <div class="sec-num">b.5</div><h3 class="section-h">SQL vs NoSQL, the other family</h3>
-  <p class="body">You will hear "NoSQL" a lot, so here is the honest picture. Everything above is a <b>relational</b> (SQL) database: data lives in tables of rows and columns, with a fixed structure (a schema) and relationships between tables, and you query it with SQL. <b>NoSQL</b> is an umbrella term for databases that deliberately do things differently, usually trading strict structure for flexibility or massive scale.</p>
+  <p class="body">You will hear "NoSQL" a lot, so here is a clear picture. Everything above is a <b>relational</b> (SQL) database: data lives in tables of rows and columns, with a fixed structure (a schema) and relationships between tables, and you query it with SQL. <b>NoSQL</b> is an umbrella term for databases that deliberately do things differently, usually trading strict structure for flexibility or massive scale.</p>
   <div class="qb"><div class="qb-title">SQL (relational) vs NoSQL, at a glance</div>
     <div class="qb-row"><span class="qb-kw kw-p">SQL</span><span class="qb-mean">tables with a fixed schema; relationships and JOINs; the SQL language; strong consistency (ACID). Great when data is structured and correctness matters (payments, orders, records).</span></div>
     <div class="qb-row"><span class="qb-kw kw-a">NoSQL</span><span class="qb-mean">flexible or schema-less; scales out easily; various shapes. Great for huge scale, rapidly changing shapes, or simple fast lookups.</span></div></div>
@@ -1701,7 +1702,7 @@ lessons['0b']={ short:'The SQL world', where:'Groundwork · <b>The SQL world &am
 lessons['21']={ short:'Built-in functions', where:'Part VII · <b>Built-in functions</b>', render:()=>`
   <div class="eyebrow">Part VII · Chapter 21</div>
   <h2 class="title">Built-in functions, reshaping values</h2>
-  <p class="lead">Databases ship with dozens of ready-made functions to transform values: upper-casing text, rounding numbers, pulling the year out of a date. You have already met a few (ROUND, COALESCE, CAST). This chapter gathers the everyday ones, grouped by what they work on. This is also the area where dialects differ most, so watch for the notes.</p>
+  <p class="lead">Databases ship with ready-made functions to transform values — upper-casing text, rounding numbers, pulling the year from a date. This chapter gathers the everyday ones, grouped by what they work on.</p>
   <hr class="rule">
 
   <div class="sec-num">21.1</div><h3 class="section-h">String functions</h3>
@@ -1762,9 +1763,9 @@ lessons['21']={ short:'Built-in functions', where:'Part VII · <b>Built-in funct
 lessons['22']={ short:'CTEs (WITH)', where:'Part VII · <b>CTEs (the WITH clause)</b>', render:()=>`
   <div class="eyebrow">Part VII · Chapter 22</div>
   <h2 class="title">CTEs, naming a query with WITH</h2>
-  <p class="lead">When queries grow, nested subqueries become a tangle of brackets that is painful to read. A Common Table Expression, written with the <b>WITH</b> keyword, lets you name a query up front and then use that name below, like a temporary, throwaway view that exists just for this one statement. It is the single biggest readability upgrade in SQL.</p>
+  <p class="lead">A CTE (the WITH clause) lets you name a query up front and use that name below, instead of deeply nested brackets. It is the single biggest readability upgrade in SQL.</p>
   <hr class="rule">
-  <p class="body">A CTE is essentially a ${term('subquery')} given a name and lifted to the top, so the main query reads cleanly. Same power as a subquery, far kinder to the reader (including future you).</p>
+  <p class="body">A CTE is essentially a ${term('subquery')} given a name and lifted to the top, so the main query reads cleanly. Same power as a subquery, but much easier to read, including for you later.</p>
 
   <div class="sec-num">22.1</div><h3 class="section-h">Your first CTE</h3>
   <p class="body">Recall the derived-table example from the subqueries chapter, per-customer spend, then filter the big spenders. Here it is as a CTE. Notice how the logic reads top to bottom instead of inside-out.</p>
@@ -1804,7 +1805,7 @@ lessons['22']={ short:'CTEs (WITH)', where:'Part VII · <b>CTEs (the WITH clause
   ${ed("WITH\n  per_city AS (SELECT city, AVG(rating) AS avg_rating FROM restaurants GROUP BY city),\n  good_cities AS (SELECT city FROM per_city WHERE avg_rating >= 4.4)\nSELECT * FROM good_cities",true)}
 
   <div class="sec-num">22.4</div><h3 class="section-h">Recursive CTEs, a peek</h3>
-  <p class="body">CTEs have an advanced superpower: with <b>WITH RECURSIVE</b>, a CTE can refer to itself, which lets SQL walk hierarchies (org charts, category trees) or generate sequences. It is genuinely advanced and you will not need it soon, but it is worth knowing the capability exists. A tiny taste that counts 1 to 5:</p>
+  <p class="body">CTEs have an advanced superpower: with <b>WITH RECURSIVE</b>, a CTE can refer to itself, which lets SQL walk hierarchies (org charts, category trees) or generate sequences. This is advanced, and you will not need it soon, but it is worth knowing it exists. A tiny taste that counts 1 to 5:</p>
   <div class="ex"><div class="ex-tag">Example</div><div class="code"><span class="k">WITH RECURSIVE</span> nums(n) <span class="k">AS</span> (
   <span class="k">SELECT</span> 1
   <span class="k">UNION ALL</span>
@@ -1821,7 +1822,7 @@ lessons['22']={ short:'CTEs (WITH)', where:'Part VII · <b>CTEs (the WITH clause
   </ul></div>
 
   <div class="sec-num">Recap</div><h3 class="section-h">Readable, step-by-step queries</h3>
-  <p class="body">WITH names a query so you can use it below like a table, turning nested, inside-out subqueries into clean top-to-bottom steps. Chain several with commas, join to them, and reach for WITH RECURSIVE for hierarchies later. Nothing a CTE does is impossible with subqueries, it just makes complex SQL genuinely readable.</p>
+  <p class="body">WITH names a query so you can use it below like a table, turning nested, inside-out subqueries into clean top-to-bottom steps. Chain several with commas, join to them, and reach for WITH RECURSIVE for hierarchies later. Nothing a CTE does is impossible with subqueries, it just makes complex SQL much more readable.</p>
 
   <div class="sec-num">Practice</div><h3 class="section-h">Your turn, five questions</h3>
   ${q('q1','easy',"Using a CTE named <b>t</b> that holds each customer_id with its total order amount as <b>total</b>, select <b>everything</b> from t.", i=>sameRowsAnyOrder(i,"WITH t AS (SELECT customer_id, SUM(amount) AS total FROM orders GROUP BY customer_id) SELECT * FROM t"), "WITH t AS (SELECT customer_id, SUM(amount) AS total FROM orders GROUP BY customer_id) SELECT * FROM t", "WITH t AS (SELECT customer_id, SUM(amount) AS total FROM orders GROUP BY customer_id) SELECT * FROM t.")}
@@ -1834,7 +1835,7 @@ lessons['22']={ short:'CTEs (WITH)', where:'Part VII · <b>CTEs (the WITH clause
 lessons['23']={ short:'Transactions & ACID', where:'Part VII · <b>Transactions &amp; ACID</b>', render:()=>`
   <div class="eyebrow">Part VII · Chapter 23</div>
   <h2 class="title">Transactions and ACID, all-or-nothing safety</h2>
-  <p class="lead">Some jobs are made of several steps that must all succeed together, or not at all. Moving money is the classic case: subtract from one account, add to another. If the second step fails after the first, money vanishes. A <b>transaction</b> groups steps so they either all commit together or all undo together. This is the idea that makes databases trustworthy.</p>
+  <p class="lead">A transaction groups several steps so they all succeed together or all undo together. The classic case is moving money — take from one account, add to another — where doing just half would be a disaster.</p>
   <hr class="rule">
   <p class="body">You wrap statements between <b>BEGIN</b> and <b>COMMIT</b>. If everything goes well, COMMIT saves it all at once. If something goes wrong, <b>ROLLBACK</b> throws away every change since BEGIN, as if none of it happened. Practice below runs on an isolated scratch table (two accounts, Asha 1000 and Bala 500) that resets each check.</p>
   ${ed("DROP TABLE IF EXISTS demo;\nCREATE TABLE demo (id INTEGER PRIMARY KEY, name TEXT, balance INTEGER);\nINSERT INTO demo VALUES (1, 'Asha', 1000), (2, 'Bala', 500);\nSELECT * FROM demo;",true)}
@@ -1877,7 +1878,7 @@ lessons['23']={ short:'Transactions & ACID', where:'Part VII · <b>Transactions 
   </ul></div>
 
   <div class="sec-num">Recap</div><h3 class="section-h">The whole course, complete</h3>
-  <p class="body">A transaction groups statements so they all succeed (COMMIT) or all undo (ROLLBACK), and ACID (Atomicity, Consistency, Isolation, Durability) is the set of guarantees that makes relational databases dependable. And with that, you have covered the full working span of SQL, from your first SELECT through joins, aggregation, windows, the whole data-management toolkit, functions, CTEs, and now transactions. You are genuinely equipped to work with real databases. Congratulations on finishing.</p>
+  <p class="body">A transaction groups statements so they all succeed (COMMIT) or all undo (ROLLBACK), and ACID (Atomicity, Consistency, Isolation, Durability) is the set of guarantees that makes relational databases dependable. And with that, you have covered the full working span of SQL, from your first SELECT through joins, aggregation, windows, the whole data-management toolkit, functions, CTEs, and now transactions. You are now equipped to work with real databases. Congratulations on finishing.</p>
 
   <div class="sec-num">Practice</div><h3 class="section-h">Your turn, five questions</h3>
   <p class="body">These run on an isolated accounts table (Asha 1000, Bala 500) that resets each check. Write full transactions.</p>
@@ -1893,7 +1894,7 @@ lessons['23']={ short:'Transactions & ACID', where:'Part VII · <b>Transactions 
 lessons['24']={ short:'Command families', where:'Part VIII · <b>Command families</b>', render:()=>`
   <div class="eyebrow">Part VIII · Chapter 24</div>
   <h2 class="title">The command families: DDL, DML, DQL, TCL, DCL</h2>
-  <p class="lead">Every SQL statement you have learned belongs to one of a few named families, grouped by what the statement does. You will see these acronyms constantly in documentation and interviews, so here is what each means, with the commands you already know slotted into place.</p>
+  <p class="lead">Every SQL statement belongs to one of a few named families, grouped by what it does. You will see these acronyms in documentation and interviews, so here is what each means, with commands you already know.</p>
   <hr class="rule">
   <div class="qb"><div class="qb-title">The five families at a glance</div>
     <div class="qb-row"><span class="qb-kw kw-p">DDL</span><span class="qb-mean"><b>Data Definition Language</b> — defines and changes structure: CREATE, ALTER, DROP, TRUNCATE.</span></div>
@@ -1930,7 +1931,7 @@ lessons['24']={ short:'Command families', where:'Part VIII · <b>Command familie
 lessons['25']={ short:'Normalization & design', where:'Part VIII · <b>Normalization &amp; design</b>', render:()=>`
   <div class="eyebrow">Part VIII · Chapter 25</div>
   <h2 class="title">Normalization and database design</h2>
-  <p class="lead">Good queries start with good tables. Normalization is the craft of organising columns into tables so that each fact is stored once, in the right place. Get it right and your data stays consistent and easy to change. Get it wrong and you fight duplication and contradictions forever. This is the design theory beneath everything you have learned.</p>
+  <p class="lead">Normalization is organising columns into tables so each fact is stored once, in the right place. Done well, your data stays consistent; done poorly, you fight duplication and contradictions forever.</p>
   <hr class="rule">
 
   <div class="sec-num">25.1</div><h3 class="section-h">The problem: one big flat table</h3>
@@ -1967,7 +1968,7 @@ lessons['25']={ short:'Normalization & design', where:'Part VIII · <b>Normaliza
 lessons['26']={ short:'Best practices & scaling', where:'Part VIII · <b>Best practices &amp; scaling</b>', render:()=>`
   <div class="eyebrow">Part VIII · Chapter 26</div>
   <h2 class="title">Best practices and scaling</h2>
-  <p class="lead">You know the language. This final chapter is about using it well: writing SQL that is readable, correct, and fast, and understanding how databases cope when the data grows large. These are the habits that separate someone who can write a query from someone trusted to run one against production.</p>
+  <p class="lead">You know the language — this final chapter is about using it well: writing SQL that is readable, correct, and fast, and understanding what happens as the data grows large.</p>
   <hr class="rule">
 
   <div class="sec-num">26.1</div><h3 class="section-h">Writing SQL people can trust</h3>

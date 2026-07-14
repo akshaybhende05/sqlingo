@@ -1,4 +1,5 @@
 import { courses } from "../lib/courses";
+import { terms as explainedTerms } from "../lib/explained";
 import sql from "../lib/content/sql.json";
 import ba from "../lib/content/business-analyst.json";
 import qa from "../lib/content/qa.json";
@@ -23,7 +24,15 @@ export default function sitemap() {
     { url: `${BASE_URL}/`, lastModified: now, changeFrequency: "weekly", priority: 1 },
     { url: `${BASE_URL}/courses`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${BASE_URL}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${BASE_URL}/explained`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
   ];
+
+  const explainedRoutes = explainedTerms.map((t) => ({
+    url: `${BASE_URL}/explained/${t.slug}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.6,
+  }));
 
   const available = courses.filter((c) => c.status === "available" && c.href);
 
@@ -49,5 +58,5 @@ export default function sitemap() {
 
   // Note: /progress and /certificate are intentionally excluded — they are
   // per-user utility pages marked noindex.
-  return [...staticRoutes, ...courseRoutes, ...chapterRoutes];
+  return [...staticRoutes, ...explainedRoutes, ...courseRoutes, ...chapterRoutes];
 }

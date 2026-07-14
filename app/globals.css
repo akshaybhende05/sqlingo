@@ -528,6 +528,40 @@
   .reading-extras a:hover{color:var(--teal-deep);}
   .reading-extras [aria-current="page"]{color:var(--ink);font-weight:700;}
 
+  /* ---------- explained (plain-English glossary) ---------- */
+  .explain-cat{margin-top:30px;}
+  .explain-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-top:16px;}
+  .explain-card{display:flex;flex-direction:column;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px;text-decoration:none;transition:border-color .16s ease,box-shadow .16s ease,transform .16s ease;}
+  .explain-card:hover{border-color:#d7d2c5;box-shadow:0 12px 28px rgba(20,30,25,.07);transform:translateY(-2px);}
+  .explain-term{font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:var(--ink);}
+  .explain-one{font-size:13.5px;line-height:1.55;color:var(--ink-soft);}
+
+  .explain-article{max-width:760px;margin:0 auto;padding:34px 24px 72px;}
+  .explain-title{font-family:'Fraunces',serif;font-size:38px;font-weight:600;letter-spacing:-0.5px;line-height:1.15;margin:6px 0 14px;}
+  .explain-lead{font-size:19px;line-height:1.6;color:var(--ink);font-weight:500;margin-bottom:8px;}
+  .explain-analogy{background:var(--teal-soft);border-left:4px solid var(--teal);border-radius:0 12px 12px 0;padding:16px 20px;margin:22px 0;}
+  .explain-analogy-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--teal-deep);margin-bottom:6px;}
+  .explain-analogy p{font-size:16px;line-height:1.6;color:var(--ink);margin:0;}
+  .explain-body{font-size:16px;line-height:1.75;color:var(--ink-soft);margin:14px 0;}
+  .explain-course{font-size:15px;color:var(--ink-soft);margin:20px 0;}
+  .explain-course a{color:var(--teal);font-weight:700;text-decoration:none;}
+  .explain-related{margin-top:30px;border-top:1px solid var(--line);padding-top:20px;}
+  .explain-related h2{font-family:'Fraunces',serif;font-size:19px;font-weight:600;margin-bottom:12px;}
+  .explain-related ul{list-style:none;display:flex;flex-wrap:wrap;gap:10px 20px;}
+  .explain-related a{color:var(--teal);font-weight:600;text-decoration:none;font-size:14.5px;}
+  .explain-related a:hover{color:var(--teal-deep);}
+  .explain-back{margin-top:28px;}
+  .explain-back a{color:var(--teal);font-weight:700;text-decoration:none;}
+  .explain-figure{margin:20px 0;}
+  .explain-figure .iq-flow{margin:0;}
+
+  /* ---------- "In short" chapter summary box ---------- */
+  .inshort{background:var(--teal-soft);border:1px solid var(--teal);border-radius:12px;padding:16px 20px;margin:0 0 26px;}
+  .inshort-label{font-size:11px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--teal-deep);margin-bottom:8px;}
+  .inshort p{font-size:15.5px;line-height:1.6;color:var(--ink);margin:0 0 10px;}
+  .inshort p:last-child{margin-bottom:0;}
+  .inshort .code{margin:0;}
+
   @media(max-width:880px){
     .hero-inner{flex-direction:column;}
     .hero-visual{max-width:420px;width:100%;}
