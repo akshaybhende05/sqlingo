@@ -281,7 +281,139 @@ Feedback: the SQL lessons read as wordy/literary vs. plainer sites (GeeksforGeek
   - **Writing standard:** lead with what it does + an example in short sentences;
     keep analogies as a bonus underneath, not before the point.
 
+## 3e. SQL reference layer (breadth, GfG-style) — in progress
+
+Feedback: GeeksforGeeks feels "vast" because it's an encyclopedic reference
+(one short article per micro-topic), whereas SQLingo is a guided hands-on course.
+Decision (user: "both"): keep the course AND add a searchable reference for breadth.
+- ✅ **Infrastructure + batch 1** — `lib/sql-reference.js` (data-driven like
+  `/explained`), `app/sql-reference/page.js` (hub, grouped by category) and
+  `app/sql-reference/[topic]/page.js` (SSR page per entry: syntax + runnable
+  examples on the sample tables + notes + related + "practise in SQLingo" link,
+  TechArticle/Breadcrumb JSON-LD). Nav link "SQL Ref"; all in sitemap.
+  Batch 1 = 30 entries: query clauses (SELECT, WHERE, DISTINCT, ORDER BY, LIMIT,
+  GROUP BY, HAVING, aliases), operators (AND/OR/NOT, IN, BETWEEN, LIKE, IS NULL,
+  EXISTS, comparison), all join types (INNER, LEFT, RIGHT, FULL OUTER, SELF,
+  CROSS), set ops (UNION, INTERSECT, EXCEPT), constraints (PRIMARY/FOREIGN KEY,
+  UNIQUE, NOT NULL, CHECK, DEFAULT). Examples render as React text (auto-escaped);
+  dialect notes included where relevant.
+- ✅ **Batch 2a done** (40 entries total): Functions category (aggregate, string,
+  numeric, date, COALESCE/NULLIF, CASE, CAST) + Advanced category (subquery, CTE,
+  window functions). All related links now resolve.
+- ✅ **Dialects + theory expansion — reference now 90 entries / 11 categories.**
+  Added a "Dialects & differences" category (SQL dialects overview, LIMIT vs TOP vs
+  FETCH, string joining, auto-increment, date functions, identifier quoting) and 4
+  more Theory pages (relational algebra, ER model, B-tree index internals, query
+  optimization). All plain-voice, data-driven (pages + sitemap auto-update).
+- ✅ **Per-function expansion — reference 80 entries / 10 categories.** Added
+  21 individual function pages (COUNT, SUM, AVG, MIN, MAX, UPPER, LOWER, LENGTH,
+  SUBSTR, TRIM, REPLACE, ||, ROUND, ABS, %, strftime, DATE, DATETIME, IFNULL,
+  NULLIF, typeof) alongside the grouped overviews — big long-tail SEO ("SQL ROUND
+  function") and closer to GfG volume. Data-driven, so pages + sitemap auto-update.
+- ✅ **Batch 2b done — reference core: 59 entries / 10 categories.**
+  Added Data definition (CREATE/ALTER/DROP TABLE, CREATE INDEX, CREATE VIEW), Data
+  modification (INSERT/UPDATE/DELETE, UPSERT, TRUNCATE), Advanced (transactions,
+  triggers, stored procedures, cursors — the last two marked "not runnable in the
+  in-browser SQLite engine"), and Theory (keys, normalization 1NF–BCNF, ACID,
+  DBMS vs RDBMS, DDL/DML/DCL/TCL — these use a `detail` prose array, and the topic
+  page now renders `detail` and makes syntax/examples optional). No broken links;
+  page compiles. All 59 URLs in the sitemap.
+- 🔄 **Course depth chapters (in progress).** Adding guided, runnable chapters to
+  the SQLingo engine (`public/app.js`).
+  - ✅ **Chapter 12b "SELF & CROSS JOIN"** added (Part IV, after JOINs): manifest
+    entry, CHEATS entry (drives the In-short box), full lesson render with teaching
+    + playground editors + 3 COUNT-based graded questions (deterministic, safe to
+    grade). Coordinated counts updated everywhere: `lib/courses.js` sql
+    chapters 29→30 / questions 115→118; landing STATS 285→286 chapters, 469→472
+    questions; `lib/syllabus.js` regenerated; `lib/content/sql.json` re-extracted
+    (reading page /courses/sql/12b + In-short). All validated.
+  - **How to add a chapter (recipe for next time):** 1) add `['NN','Title',1]` to
+    the right part in `manifest`; 2) add `'NN':{note,code}` to `CHEATS`; 3) register
+    `lessons['NN']={short,where,render:()=>\`...\`}` (start render with the eyebrow —
+    the In-short box is auto-prepended from CHEATS by `inShort()`); use
+    `${ed(sql,true)}` for playgrounds and `${q(id,lvl,txt,i=>sameResult(i,SQL)|sameRowsAnyOrder(...),sol,hint)}`
+    for graded practice (unique ids per chapter; COUNT/ordered answers grade most
+    reliably); 4) update sql chapters+questions in `lib/courses.js` and STATS in
+    `app/page.js`; 5) regen `lib/syllabus.js`; 6) `node scripts/extract-content.js sql`.
+  - ✅ **Chapter 18b "Constraints"** added (Part VI, after CREATE/ALTER/DROP):
+    scratch table `cdemo`, runnable demos of NOT NULL / UNIQUE / CHECK / DEFAULT /
+    FOREIGN KEY (each shows the violation error), + 2 `qm` graded tasks (DEFAULT,
+    CHECK) that grade by table state. Counts updated: SQL 31 chapters / 120
+    questions; site 287 chapters / 474 questions. Syllabus regenerated, sql.json
+    re-extracted, all validated.
+  - **Depth status:** the biggest runnable gaps are now filled (join types via 12b,
+    constraints via 18b). Function catalogs (ch21), CTEs (ch22), transactions (ch23),
+    normalization (ch25) already exist as chapters, and the /sql-reference layer
+    covers the rest (incl. server-side concepts). Optional future chapters: a
+    date/time-functions deep-dive, or extend ch25 to BCNF. INTERSECT/EXCEPT is a
+    weak fit for the current seed (customer and restaurant *city* sets are
+    identical → empty results); use differing columns or extend the seed if added.
+
+## 3f. Python reference layer (breadth) — in progress
+
+Same pattern as `/sql-reference`, applied to Python.
+- ✅ **Infra + batch 1 — 30 entries.** `lib/python-reference.js`,
+  `app/python-reference/page.js` (hub) and `app/python-reference/[topic]/page.js`
+  (SSR per entry; supports `detail` prose + optional syntax/examples). Nav link
+  "Python Ref"; all in sitemap. Batch 1 categories: Basics (variables, numbers,
+  strings, booleans, comments, print/input), Data types & structures (list, tuple,
+  set, dict, string methods, slicing), Control flow (if/elif/else, for, while,
+  break/continue, range, ternary), Functions (def, return, default args,
+  *args/**kwargs, lambda, scope), Built-in functions (len, enumerate, zip, sorted,
+  map/filter, sum/min/max). Plain voice; examples run in the course's Pyodide.
+- ✅ **Batch 2 done — Python reference now 56 entries / 10 categories.** Added
+  Iteration & comprehensions (list/dict/set comprehensions, generator+yield,
+  generator expression, iterator), Object-oriented Python (class, __init__,
+  inheritance, super, dunder methods, @property, @dataclass), Errors & exceptions
+  (try/except/finally, raise, custom exceptions, with/context manager), Modules &
+  files (import, pip/venv, file read/write, json), and Advanced (decorator, closure,
+  GIL, threading vs multiprocessing, async/await, type hints). No broken links;
+  page compiles. Both reference sections (SQL 90, Python 56) are data-driven —
+  append to the lib file and pages + sitemap auto-update.
+
+## 3g. Django reference + unified /reference hub
+
+- ✅ **Django reference — 27 entries / 6 categories** (`lib/django-reference.js`,
+  `app/django-reference/page.js` + `[topic]/page.js`): Basics (MTV, project vs app,
+  settings, manage.py), Models & ORM (model, field types, migrations, QuerySet,
+  filter/get, relationships, select_related/N+1), Views & URLs (function/class views,
+  urls, middleware), Templates & forms (templates, forms, ModelForm, CSRF), Admin/
+  auth/APIs (admin, authentication, permissions, DRF, serializer), Advanced
+  (signals, static vs media, pagination). Plain voice, TastyGo-style examples.
+- ✅ **Unified `/reference` hub** (`app/reference/page.js`) lists all reference
+  sections (SQL 90, Python 56, Django 27). Nav consolidated: the separate "SQL Ref"
+  and "Python Ref" items are replaced by one **"Reference"** link → `/reference`.
+  All reference URLs + the hub are in the sitemap. **Reference total: 173 pages.**
+- ✅ **FastAPI reference — 23 entries** (`lib/fastapi-reference.js` + pages): basics,
+  path operations & params, Pydantic validation & models, dependencies (Depends,
+  DB session, auth), async & performance, cross-cutting (middleware, CORS, error
+  handling, BaseSettings, TestClient).
+- ✅ **DevOps reference — 24 entries** (`lib/devops-reference.js` + pages):
+  containers (Docker, Dockerfile, image vs container, compose), CI/CD, orchestration
+  & infra (Kubernetes, pods/services, registry, IaC, immutable infra), networking &
+  serving (reverse proxy, load balancer, CDN, environments), reliability &
+  observability (monitoring, logs/metrics/traces, SLI/SLO/SLA, health checks,
+  scaling), security & config (secrets, least privilege, env vars).
+- ✅ **Reference layer COMPLETE across all 5 dev languages — 220 pages total**
+  (SQL 90, Python 56, Django 27, FastAPI 23, DevOps 24). All in the unified
+  `/reference` hub, the single "Reference" nav item, and the sitemap. (Also fixed:
+  Django routes were defined but missing from the sitemap return — now all five
+  reference sections are returned.)
+
 ## 4. Remaining real gaps (ranked)
+
+**STATUS (current):** 4.1 is effectively resolved — every chapter now has a
+server-rendered, indexable reading page (285) plus the /sql-reference (59) and
+/explained (61) SSR sections. 4.2 is resolved — progress dashboard + backup/restore
+shipped. 4.3 was a **false positive** (the old scan matched the words
+"analytics"/"plausible" in lesson prose; there is no analytics/tracking code in any
+engine — the site has none by design). Landing notes below are also done (animated
+hero mockup, practice badges). Added a `/privacy` page (no accounts/tracking;
+progress stored only in the browser) linked in the footer + sitemap. **Only 4.4
+(the Stage 2 monolith refactor) genuinely remains — a large maintainability rewrite,
+intentionally deferred since its SEO motivation is already met by the reading pages.**
+
+Original scan notes (some now superseded) below:
 
 ### 4.1 Lesson content is still not server-rendered — HIGH (biggest open issue)
 Every course page renders an **empty** `<div id="content">` (e.g.

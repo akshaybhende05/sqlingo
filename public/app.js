@@ -164,9 +164,9 @@ const manifest=[
  {p:'Part I · Asking questions',items:[['01','SELECT',1],['02','DISTINCT',1],['03','WHERE',1],['04','ORDER BY',1],['05','LIMIT & OFFSET',1]]},
  {p:'Part II · Matching & nulls',items:[['06','LIKE & wildcards',1],['07','IN & BETWEEN',1],['08','NULL handling',1]]},
  {p:'Part III · Summaries',items:[['09','Aggregates',1],['10','GROUP BY',1],['11','HAVING',1]]},
- {p:'Part IV · Many tables',items:[['12','JOINs',1],['13','UNION',1]]},
+ {p:'Part IV · Many tables',items:[['12','JOINs',1],['12b','SELF & CROSS JOIN',1],['13','UNION',1]]},
  {p:'Part V · Advanced',items:[['14','CASE & null functions',1],['15','Subqueries',1],['16','Window functions',1]]},
- {p:'Part VI · Managing data',items:[['17','INSERT, UPDATE, DELETE',1],['18','CREATE, ALTER, DROP',1],['19','VIEWs & INDEXes',1],['20','Types, comments, safety',1]]},
+ {p:'Part VI · Managing data',items:[['17','INSERT, UPDATE, DELETE',1],['18','CREATE, ALTER, DROP',1],['18b','Constraints',1],['19','VIEWs & INDEXes',1],['20','Types, comments, safety',1]]},
  {p:'Part VII · Deeper SQL',items:[['21','Built-in functions',1],['22','CTEs (the WITH clause)',1],['23','Transactions & ACID',1]]},
  {p:'Part VIII · Theory & craft',items:[['24','Command families',1],['25','Normalization & design',1],['26','Best practices & scaling',1]]},
 ];
@@ -237,12 +237,14 @@ const CHEATS={
  '10':{note:'GROUP BY collapses rows into groups so you can summarise each group.',code:"SELECT city, COUNT(*) AS n FROM customers GROUP BY city;"},
  '11':{code:"SELECT city, COUNT(*) AS n FROM customers\nGROUP BY city HAVING COUNT(*) > 1;", note:'WHERE filters rows before grouping, HAVING filters groups after.'},
  '12':{note:'A JOIN combines rows from two tables that share a matching value.',code:"SELECT o.id, c.name, o.amount\nFROM orders o JOIN customers c ON o.customer_id = c.id;\n\nFROM customers c LEFT JOIN orders o ON c.id = o.customer_id;"},
+ '12b':{note:'A SELF JOIN joins a table to itself (with two aliases) to compare rows within it. A CROSS JOIN pairs every row of one table with every row of another.',code:"SELECT a.name, b.name\nFROM customers a JOIN customers b\n  ON a.city = b.city AND a.id < b.id;"},
  '13':{code:"SELECT city FROM customers\nUNION\nSELECT city FROM restaurants;", note:'UNION drops duplicates; UNION ALL keeps them and is faster.'},
  '14':{note:'CASE is if/else inside a query; COALESCE fills in a value when data is missing.',code:"CASE WHEN rating >= 4.5 THEN 'top' WHEN rating >= 4.2 THEN 'good' ELSE 'ok' END\nCOALESCE(rating_given, 0)"},
  '15':{code:"SELECT name FROM restaurants\nWHERE rating > (SELECT AVG(rating) FROM restaurants);", note:'ANY/ALL are standard SQL for comparing to a whole set of values; SQLite lacks them, use MAX()/MIN() instead.'},
  '16':{note:'Window functions add a column like a rank or running total, without collapsing your rows.',code:"ROW_NUMBER() OVER (ORDER BY rating DESC)\nRANK() OVER (PARTITION BY city ORDER BY rating DESC)\nSUM(amount) OVER (ORDER BY order_date)"},
  '17':{note:'These change data: INSERT adds rows, UPDATE edits them, DELETE removes them.',code:"INSERT INTO t (a,b) VALUES (1,2);\nUPDATE t SET a = 1 WHERE id = 3;\nDELETE FROM t WHERE active = 0;"},
  '18':{note:'These change structure: CREATE makes a table, ALTER changes it, DROP deletes it.',code:"CREATE TABLE t (id INTEGER PRIMARY KEY, name TEXT NOT NULL, city TEXT);\nALTER TABLE t ADD COLUMN active INTEGER DEFAULT 1;\nDROP TABLE t;"},
+ '18b':{note:'A constraint is a rule the database enforces on a column: NOT NULL (required), UNIQUE (no duplicates), CHECK (must pass a test), DEFAULT (auto value), and FOREIGN KEY (must exist in another table).',code:"CREATE TABLE cdemo (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT UNIQUE,\n  rating REAL CHECK (rating >= 0 AND rating <= 5),\n  status TEXT DEFAULT 'active'\n);"},
  '19':{note:'A VIEW is a saved query you reuse like a table; an INDEX makes searches faster.',code:"CREATE VIEW mumbai_restaurants AS\n  SELECT name, cuisine, rating FROM restaurants WHERE city='Mumbai';\nCREATE INDEX idx_restaurants_city ON restaurants (city);"},
  '20':{code:"typeof(name)\nCAST(rating AS INTEGER)\n-- a comment", note:'Always use parameterised queries in real apps; never paste user input straight into SQL text (SQL injection).'},
  '21':{note:'Built-in functions transform values — for text, numbers, and dates.',code:"UPPER(name) | LENGTH(name) | SUBSTR(name,1,3)\nname || ' from ' || city\nROUND(x) | CAST(x AS INTEGER) | x % 100\nstrftime('%Y', order_date)\nGROUP_CONCAT(name)"},
@@ -1195,6 +1197,32 @@ lessons['12']={ short:'JOINs', where:'Part IV · <b>JOINs</b>', render:()=>`
   ${q('q5','hard','Show each <b>customer name</b> with the <b>total amount</b> they have spent as <b>total</b>, highest spender first (customers with orders only).', i=>sameResult(i,'SELECT c.name, SUM(o.amount) AS total FROM customers c JOIN orders o ON c.id = o.customer_id GROUP BY c.id ORDER BY total DESC'), 'SELECT c.name, SUM(o.amount) AS total FROM customers c JOIN orders o ON c.id = o.customer_id GROUP BY c.id ORDER BY total DESC', 'JOIN, SUM(o.amount), GROUP BY customer, ORDER BY total DESC.')}
 `};
 
+lessons['12b']={ short:'SELF & CROSS JOIN', where:'Part IV · <b>SELF &amp; CROSS JOIN</b>', render:()=>`
+  <div class="eyebrow">Part IV · Chapter 12b</div>
+  <h2 class="title">SELF JOIN and CROSS JOIN</h2>
+  <p class="lead">A SELF JOIN joins a table to itself to compare rows within that one table. A CROSS JOIN pairs every row of one table with every row of another. Both are just special ways of using the JOIN you already know.</p>
+  <hr class="rule">
+  <p class="body">In chapter 12 you joined two different tables. But JOIN does not care whether the two sides are different tables or the same table twice, and it does not always need a matching condition. Those two ideas give you the self join and the cross join.</p>
+
+  <div class="sec-num">1</div><h3 class="section-h">SELF JOIN: comparing rows in one table</h3>
+  <p class="body">To compare rows within a table, you list the table twice and give each copy a different alias, then join the two copies. To find customers who live in the same city, join <code class="inl">customers</code> to <code class="inl">customers</code> on matching city.</p>
+  <div class="ex"><div class="ex-tag">Example</div><div class="code"><span class="k">SELECT</span> a.name, b.name
+<span class="k">FROM</span> customers a <span class="k">JOIN</span> customers b
+  <span class="k">ON</span> a.city = b.city <span class="k">AND</span> a.id &lt; b.id</div><div class="ex-note">The two aliases a and b are the same table. The condition a.id &lt; b.id stops a customer pairing with themselves and stops the same pair showing up twice.</div></div>
+  ${ed("SELECT a.name, b.name\nFROM customers a JOIN customers b\n  ON a.city = b.city AND a.id < b.id",true)}
+
+  <div class="sec-num">2</div><h3 class="section-h">CROSS JOIN: every combination</h3>
+  <p class="body">A CROSS JOIN has no ON condition. It pairs every row on the left with every row on the right, which is called the Cartesian product. With 7 customers and 6 restaurants, a cross join produces 7 &times; 6 = 42 rows.</p>
+  <div class="ex"><div class="ex-tag">Example</div><div class="code"><span class="k">SELECT</span> c.name, r.name
+<span class="k">FROM</span> customers c <span class="k">CROSS JOIN</span> restaurants r</div><div class="ex-note">Every customer paired with every restaurant. The row count grows fast, so use a cross join deliberately.</div></div>
+  ${ed("SELECT c.name, r.name\nFROM customers c CROSS JOIN restaurants r",true)}
+  <p class="aside">A cross join with a WHERE that matches the two sides is the same as an inner join. Adding a matching condition is what turns "every combination" into "only the ones that go together".</p>
+
+  <div class="sec-num">3</div><h3 class="section-h">Your turn</h3>
+  ${q("cj1","easy","Use a <b>CROSS JOIN</b> to pair every customer with every restaurant, and return <b>COUNT(*)</b> — the total number of combinations.", i=>sameResult(i,"SELECT COUNT(*) FROM customers CROSS JOIN restaurants"), "SELECT COUNT(*) FROM customers CROSS JOIN restaurants", "7 customers times 6 restaurants.")}
+  ${q("cj2","med","Using a <b>self join</b> with the condition a.id &lt; b.id, return <b>COUNT(*)</b> of the customer pairs who live in the same city.", i=>sameResult(i,"SELECT COUNT(*) FROM customers a JOIN customers b ON a.city = b.city AND a.id < b.id"), "SELECT COUNT(*) FROM customers a JOIN customers b ON a.city = b.city AND a.id < b.id", "Join customers to itself on matching city, keeping a.id < b.id.")}
+  ${q("cj3","med","Cross join customers and restaurants, then keep only rows where <b>both</b> are in Mumbai, and return <b>COUNT(*)</b>.", i=>sameResult(i,"SELECT COUNT(*) FROM customers c CROSS JOIN restaurants r WHERE c.city = 'Mumbai' AND r.city = 'Mumbai'"), "SELECT COUNT(*) FROM customers c CROSS JOIN restaurants r WHERE c.city = 'Mumbai' AND r.city = 'Mumbai'", "Filter the cross join with a WHERE on both cities.")}
+`};
 lessons['13']={ short:'UNION', where:'Part IV · <b>UNION</b>', render:()=>`
   <div class="eyebrow">Part IV · Chapter 13</div>
   <h2 class="title">UNION, stacking results on top of each other</h2>
@@ -1558,6 +1586,40 @@ lessons['18']={ short:'CREATE, ALTER, DROP', where:'Part VI · <b>CREATE, ALTER,
   ${qm('q5','hard',"<b>Create a table</b> called <b>members</b> with <b>id</b> (INTEGER) PRIMARY KEY, <b>email</b> (TEXT) NOT NULL, and <b>active</b> (INTEGER) with a DEFAULT of 1.","DROP TABLE IF EXISTS members;","SELECT name FROM pragma_table_info('members')","CREATE TABLE members (id INTEGER PRIMARY KEY, email TEXT NOT NULL, active INTEGER DEFAULT 1)","List three columns with their constraints inside CREATE TABLE.")}
 `};
 
+lessons['18b']={ short:'Constraints', where:'Part VI · <b>Constraints</b>', render:()=>`
+  <div class="eyebrow">Part VI · Chapter 18b</div>
+  <h2 class="title">Constraints, rules the database enforces</h2>
+  <p class="lead">A constraint is a rule you attach to a column so the database refuses any data that breaks it. Constraints keep bad data out at the source, instead of trusting every app to check first.</p>
+  <hr class="rule">
+  <p class="body">You have already met PRIMARY KEY. This chapter covers the everyday constraints you set when you create a table: NOT NULL, UNIQUE, CHECK, DEFAULT and FOREIGN KEY. Everything below runs on a private scratch table called <code class="inl">cdemo</code>, so you can safely try breaking the rules. Run the cell to create the table, and re-run it any time to reset.</p>
+  ${ed("DROP TABLE IF EXISTS cdemo;\nCREATE TABLE cdemo (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT UNIQUE,\n  rating REAL CHECK (rating >= 0 AND rating <= 5),\n  status TEXT DEFAULT 'active'\n);\nINSERT INTO cdemo (id, name, email, rating) VALUES (1, 'Aarav', 'aarav@x.com', 4.5);\nSELECT * FROM cdemo;",true)}
+
+  <div class="sec-num">1</div><h3 class="section-h">NOT NULL — a value is required</h3>
+  <p class="body">The name column is NOT NULL, so a row without a name is rejected. Run this and read the error the database gives back.</p>
+  ${ed("INSERT INTO cdemo (id, email) VALUES (2, 'new@x.com');\nSELECT * FROM cdemo;")}
+
+  <div class="sec-num">2</div><h3 class="section-h">UNIQUE — no duplicates</h3>
+  <p class="body">The email column is UNIQUE. Inserting an email that already exists is refused.</p>
+  ${ed("INSERT INTO cdemo (id, name, email) VALUES (2, 'Priya', 'aarav@x.com');\nSELECT * FROM cdemo;")}
+
+  <div class="sec-num">3</div><h3 class="section-h">CHECK — the value must pass a test</h3>
+  <p class="body">The rating column has a CHECK that the rating stays between 0 and 5. A rating of 9 breaks the rule and is rejected.</p>
+  ${ed("INSERT INTO cdemo (id, name, rating) VALUES (2, 'Priya', 9);\nSELECT * FROM cdemo;")}
+
+  <div class="sec-num">4</div><h3 class="section-h">DEFAULT — a value filled in for you</h3>
+  <p class="body">The status column has DEFAULT 'active'. Insert a row without a status and the database fills it in for you.</p>
+  ${ed("INSERT INTO cdemo (id, name) VALUES (2, 'Priya');\nSELECT id, name, status FROM cdemo;")}
+
+  <div class="sec-num">5</div><h3 class="section-h">FOREIGN KEY — a value must exist in another table</h3>
+  <p class="body">A FOREIGN KEY ties one table to another: a child row must point to a real parent row. SQLite only enforces this when foreign keys are switched on with <code class="inl">PRAGMA foreign_keys = ON</code>.</p>
+  ${ed("PRAGMA foreign_keys = ON;\nDROP TABLE IF EXISTS child;\nDROP TABLE IF EXISTS parent;\nCREATE TABLE parent (id INTEGER PRIMARY KEY, name TEXT);\nCREATE TABLE child (id INTEGER PRIMARY KEY, parent_id INTEGER,\n  FOREIGN KEY (parent_id) REFERENCES parent(id));\nINSERT INTO parent VALUES (1, 'A');\nINSERT INTO child VALUES (1, 99);\nSELECT * FROM child;")}
+  <p class="aside">The child row points at parent 99, which does not exist, so the insert is refused. Adding ON DELETE CASCADE to the foreign key would delete child rows automatically when their parent is deleted.</p>
+
+  <div class="sec-num">6</div><h3 class="section-h">Your turn</h3>
+  <p class="body">Each question runs on a fresh <code class="inl">cdemo</code> when you check it.</p>
+  ${qm("con1","easy","Insert a row with id 2 and name 'Priya' without setting status, so the DEFAULT of 'active' fills in. Afterwards the new row should show status 'active'.", "DROP TABLE IF EXISTS cdemo; CREATE TABLE cdemo (id INTEGER PRIMARY KEY, name TEXT NOT NULL, email TEXT UNIQUE, rating REAL CHECK (rating >= 0 AND rating <= 5), status TEXT DEFAULT 'active'); INSERT INTO cdemo (id, name, email, rating) VALUES (1, 'Aarav', 'aarav@x.com', 4.5);", "SELECT id, name, status FROM cdemo;", "INSERT INTO cdemo (id, name) VALUES (2, 'Priya');", "List only id and name in the INSERT; leave status out so the default applies.")}
+  ${qm("con2","med","Insert a row with id 3, name 'Rohan' and a valid rating of 4.0 (the CHECK requires the rating to be between 0 and 5).", "DROP TABLE IF EXISTS cdemo; CREATE TABLE cdemo (id INTEGER PRIMARY KEY, name TEXT NOT NULL, email TEXT UNIQUE, rating REAL CHECK (rating >= 0 AND rating <= 5), status TEXT DEFAULT 'active'); INSERT INTO cdemo (id, name, email, rating) VALUES (1, 'Aarav', 'aarav@x.com', 4.5);", "SELECT id, name, rating FROM cdemo;", "INSERT INTO cdemo (id, name, rating) VALUES (3, 'Rohan', 4.0);", "A rating of 4.0 passes the CHECK; a value like 9 would be rejected.")}
+`};
 lessons['19']={ short:'VIEWs & INDEXes', where:'Part VI · <b>VIEWs &amp; INDEXes</b>', render:()=>`
   <div class="eyebrow">Part VI · Chapter 19</div>
   <h2 class="title">VIEWs and INDEXes, convenience and speed</h2>

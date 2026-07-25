@@ -8,7 +8,9 @@ export default function SiteFooter() {
         <p>Free, hands-on IT courses. Built for people switching careers into tech.</p>
         <nav className="site-footer-nav">
           <Link href="/courses">Courses</Link>
+          <Link href="/explained">Explained</Link>
           <Link href="/about">About</Link>
+          <Link href="/privacy">Privacy</Link>
         </nav>
       </div>
     </footer>

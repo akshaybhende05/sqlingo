@@ -29,8 +29,8 @@ const STEPS = [
 ];
 
 const STATS = [
-  { n: "285", label: "chapters across all courses" },
-  { n: "469", label: "graded practice questions" },
+  { n: "287", label: "chapters across all courses" },
+  { n: "474", label: "graded practice questions" },
   { n: "9", label: "real, hands-on courses" },
   { n: "0", label: "signups, paywalls, or dark patterns" },
 ];

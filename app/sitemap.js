@@ -1,5 +1,10 @@
 import { courses } from "../lib/courses";
 import { terms as explainedTerms } from "../lib/explained";
+import { entries as sqlRefEntries } from "../lib/sql-reference";
+import { entries as pyRefEntries } from "../lib/python-reference";
+import { entries as djangoRefEntries } from "../lib/django-reference";
+import { entries as fastapiRefEntries } from "../lib/fastapi-reference";
+import { entries as devopsRefEntries } from "../lib/devops-reference";
 import sql from "../lib/content/sql.json";
 import ba from "../lib/content/business-analyst.json";
 import qa from "../lib/content/qa.json";
@@ -24,7 +29,14 @@ export default function sitemap() {
     { url: `${BASE_URL}/`, lastModified: now, changeFrequency: "weekly", priority: 1 },
     { url: `${BASE_URL}/courses`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${BASE_URL}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${BASE_URL}/privacy`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
     { url: `${BASE_URL}/explained`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${BASE_URL}/sql-reference`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${BASE_URL}/python-reference`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${BASE_URL}/django-reference`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${BASE_URL}/fastapi-reference`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${BASE_URL}/devops-reference`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
+    { url: `${BASE_URL}/reference`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
   ];
 
   const explainedRoutes = explainedTerms.map((t) => ({
@@ -32,6 +44,35 @@ export default function sitemap() {
     lastModified: now,
     changeFrequency: "monthly",
     priority: 0.6,
+  }));
+
+  const sqlRefRoutes = sqlRefEntries.map((e) => ({
+    url: `${BASE_URL}/sql-reference/${e.slug}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.6,
+  }));
+
+  const pyRefRoutes = pyRefEntries.map((e) => ({
+    url: `${BASE_URL}/python-reference/${e.slug}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.6,
+  }));
+
+  const djangoRefRoutes = djangoRefEntries.map((e) => ({
+    url: `${BASE_URL}/django-reference/${e.slug}`,
+    lastModified: now,
+    changeFrequency: "monthly",
+    priority: 0.6,
+  }));
+
+  const fastapiRefRoutes = fastapiRefEntries.map((e) => ({
+    url: `${BASE_URL}/fastapi-reference/${e.slug}`, lastModified: now, changeFrequency: "monthly", priority: 0.6,
+  }));
+
+  const devopsRefRoutes = devopsRefEntries.map((e) => ({
+    url: `${BASE_URL}/devops-reference/${e.slug}`, lastModified: now, changeFrequency: "monthly", priority: 0.6,
   }));
 
   const available = courses.filter((c) => c.status === "available" && c.href);
@@ -58,5 +99,5 @@ export default function sitemap() {
 
   // Note: /progress and /certificate are intentionally excluded — they are
   // per-user utility pages marked noindex.
-  return [...staticRoutes, ...explainedRoutes, ...courseRoutes, ...chapterRoutes];
+  return [...staticRoutes, ...explainedRoutes, ...sqlRefRoutes, ...pyRefRoutes, ...djangoRefRoutes, ...fastapiRefRoutes, ...devopsRefRoutes, ...courseRoutes, ...chapterRoutes];
 }
