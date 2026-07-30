@@ -290,20 +290,20 @@ lessons['00'] = {
   short: 'Why Python?', where: 'Groundwork · <b>What is Python, and why learn it here?</b>', render: () => `
   <div class="eyebrow">Groundwork · Chapter 00</div>
   <h2 class="title">What is Python, and why learn it here?</h2>
-  <p class="lead">Python is one of the most widely used programming languages in the world, and the one this whole Developer track builds its backend courses on.</p>
+  <p class="lead">Python is one of the most widely used programming languages in the world. It is also the language this whole Developer track builds its backend courses on.</p>
   <hr class="rule">
-  <p class="body">Python reads closer to plain English than most languages, which is a large part of why it's a common first language: <code class="inl">if age &gt;= 18:</code> reads almost like the English sentence it represents. It's an interpreted language (covered conceptually in the Fundamentals course), which is exactly why you'll be able to run real code directly in this browser, no installation, no setup.</p>
-  <div class="analogy"><div class="lab">Why Python specifically, for this track</div><div class="txt">Django and FastAPI, the two frameworks taught later in this Developer track, are both Python frameworks. Learning Python well here means everything in those courses focuses on the framework itself, not on fighting unfamiliar language syntax at the same time.</div></div>
-  <p class="body">Try your first real Python below. Click "Run" (or just watch, it runs automatically once the engine is ready).</p>
+  <p class="body">Python reads closer to plain English than most languages. This is a large part of why it is a common first language to learn. For example, <code class="inl">if age &gt;= 18:</code> reads almost like the English sentence it represents. Python is also an interpreted language, a concept covered in the Fundamentals course. This is exactly why you can run real code directly in this browser, with no installation and no setup.</p>
+  <div class="analogy"><div class="lab">Why Python specifically, for this track</div><div class="txt">Django and FastAPI, the two frameworks taught later in this Developer track, are both Python frameworks. Learning Python well here means those later courses can focus on the framework itself, instead of also teaching unfamiliar language syntax.</div></div>
+  <p class="body">Try your first real Python code below. Click Run, or just watch: it runs automatically once the engine is ready.</p>
   ${ed(`print("Hello, TastyGo!")\nprint(2 + 2)`, true)}
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
-    <li><b>Expecting instant results the first time you load this course.</b> The Python engine (a full interpreter, running via WebAssembly) takes a few seconds to load the first time; after that, it's instant for the rest of your session.</li>
+    <li><b>Expecting instant results the first time you load this course.</b> The Python engine (a full interpreter, running via WebAssembly) takes a few seconds to load the first time. After that, it is instant for the rest of your session.</li>
   </ul></div>
   <div class="sec-num">0.1</div><h3 class="section-h">Recap</h3>
   <p class="body">Python is a widely used, readable, interpreted language, and the foundation for the Django and FastAPI courses ahead. Every code block in this course runs real Python, directly in your browser.</p>
   ${qMC('q1', 'easy', 'Why does this course teach Python before Django or FastAPI?',
     ['Python has nothing to do with either framework', 'Django and FastAPI are both Python frameworks, so learning Python well here means those courses can focus on the framework itself', 'Python is required only for testing, not for building applications'],
-    1, 'Both Django and FastAPI are written in and used with Python, so a solid grounding in the language itself lets those later courses focus purely on what each framework adds.')}
+    1, 'Both Django and FastAPI are written in and used with Python. A solid grounding in the language itself lets those later courses focus purely on what each framework adds.')}
 `
 };
 
@@ -311,15 +311,15 @@ lessons['0b'] = {
   short: 'Meet the project', where: 'Groundwork · <b>Meet the project</b>', render: () => `
   <div class="eyebrow">Groundwork · Chapter 0b</div>
   <h2 class="title">Meet the project</h2>
-  <p class="lead">Same TastyGo used across every CareerLadder course. In this one, you'll represent and work with TastyGo's data using plain Python, before Django/FastAPI connect it to a real database.</p>
+  <p class="lead">This course uses the same TastyGo example as every CareerLadder course. In this one, you will represent and work with TastyGo's data using plain Python, before Django and FastAPI connect it to a real database.</p>
   <hr class="rule">
-  <p class="body">Throughout this course, a TastyGo "order" will often be represented as a Python dictionary, and a list of orders as a Python list of dictionaries, a structure you'll meet properly in Part III. Here's a preview, already runnable:</p>
+  <p class="body">Throughout this course, a TastyGo order will often be represented as a Python dictionary. A list of orders will be a Python list of dictionaries, a structure explained properly in Part III. Here is a preview, already runnable:</p>
   ${ed(`order = {"id": 101, "customer": "Aarav Sharma", "total": 450}\nprint(order["customer"], "spent", order["total"])`, true)}
   <div class="sec-num">0.1</div><h3 class="section-h">Recap</h3>
-  <p class="body">TastyGo's data will be modeled directly in Python throughout this course, giving you hands-on practice with exactly the kind of structures Django and FastAPI will later load from a real database.</p>
+  <p class="body">TastyGo's data will be modeled directly in Python throughout this course. This gives you direct practice with exactly the kind of structures that Django and FastAPI will later load from a real database.</p>
   ${qMC('q1', 'easy', 'In this course, how will a single TastyGo order typically be represented?',
     ['As a single number', 'As a Python dictionary holding its details as key-value pairs', 'Orders cannot be represented until you learn Django'],
-    1, 'A dictionary is a natural fit for one order\'s details (id, customer, total, etc.), each accessible by a named key.')}
+    1, 'A dictionary works well for one order\'s details (id, customer, total, and so on), since each value is accessible by a named key.')}
 `
 };
 
@@ -327,18 +327,18 @@ lessons['0i'] = {
   short: 'How this course works', where: 'Groundwork · <b>How this course works: real Python, in your browser</b>', render: () => `
   <div class="eyebrow">Groundwork · Chapter 0i</div>
   <h2 class="title">How this course works: real Python, in your browser</h2>
-  <p class="lead">Two kinds of code block appear throughout this course, worth knowing apart before you start.</p>
+  <p class="lead">Two kinds of code block appear throughout this course. It helps to know the difference before you start.</p>
   <hr class="rule">
   <div class="qb"><div class="qb-title">The two block types</div>
     <div class="qb-row"><span class="qb-kw kw-p">Playground blocks</span><span class="qb-mean">free to edit and experiment with, no right answer, just press Run</span></div>
-    <div class="qb-row"><span class="qb-kw kw-r">Practice blocks</span><span class="qb-mean">a specific task to complete; press "Run &amp; Check" to test your code against hidden checks, or "Show answer" if you're stuck</span></div>
+    <div class="qb-row"><span class="qb-kw kw-r">Practice blocks</span><span class="qb-mean">a specific task to complete; press "Run &amp; Check" to test your code against hidden checks, or "Show answer" if you are stuck</span></div>
   </div>
-  <p class="body">Every block runs actual Python, actually executed, right in this page, via a real Python interpreter compiled to run in the browser. There is no fake simulation happening, if you write invalid Python, you'll see a real Python error, exactly like you would on your own machine.</p>
+  <p class="body">Every block runs real Python code, executed right in this page, using a real Python interpreter compiled to run in the browser. There is no fake simulation happening. If you write invalid Python, you will see a real Python error, exactly like you would on your own machine.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
-    <li><b>Expecting a practice block to check the exact text of your code.</b> It actually runs your code and checks the results/behaviour, so different, equally correct approaches will still pass.</li>
+    <li><b>Expecting a practice block to check the exact text of your code.</b> It actually runs your code and checks the results and behaviour, so different, equally correct approaches will still pass.</li>
   </ul></div>
   <div class="sec-num">0.1</div><h3 class="section-h">Recap</h3>
-  <p class="body">Playground blocks are free experimentation; practice blocks check your code's actual behaviour against hidden tests. Both run real, live Python.</p>
+  <p class="body">Playground blocks are free experimentation. Practice blocks check your code's actual behaviour against hidden tests. Both run real, live Python.</p>
   ${qMC('q1', 'easy', 'How does a practice block ("Run & Check") actually verify your code?',
     ['By comparing the exact text you typed against a stored answer', 'By actually running your code together with hidden checks, and seeing if those checks pass', 'It does not check anything, it only shows the sample answer'],
     1, 'Practice blocks execute your real code alongside hidden test logic, so any correct approach passes, not just one exact expected wording.')}
@@ -349,9 +349,9 @@ lessons['01'] = {
   short: 'Variables & types', where: 'Part I · <b>Variables and basic types</b>', render: () => `
   <div class="eyebrow">Part I · Chapter 01</div>
   <h2 class="title">Variables and basic types</h2>
-  <p class="lead">A ${term('variable', 'variable')} in Python needs no special declaration keyword, you simply assign a value to a name.</p>
+  <p class="lead">A ${term('variable', 'variable')} in Python needs no special declaration keyword. You simply assign a value to a name.</p>
   <hr class="rule">
-  <div class="qb"><div class="qb-title">The basic types you'll use constantly</div>
+  <div class="qb"><div class="qb-title">The basic types you will use constantly</div>
     <div class="qb-row"><span class="qb-kw kw-p">int</span><span class="qb-mean">a whole number, like 450</span></div>
     <div class="qb-row"><span class="qb-kw kw-a">float</span><span class="qb-mean">a decimal number, like 4.8</span></div>
     <div class="qb-row"><span class="qb-kw kw-r">str</span><span class="qb-mean">text, like "Aarav Sharma", written in quotes</span></div>
@@ -361,7 +361,7 @@ lessons['01'] = {
   ${ed(`price = 450\nrating = 4.8\nname = "Aarav Sharma"\nis_delivered = True\n\nprint(type(price), type(rating), type(name), type(is_delivered))`, true)}
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Writing a number in quotes by accident.</b> <code class="inl">"450"</code> is a string, not a number, and behaves very differently in calculations.</li>
-    <li><b>Assuming a variable's type is fixed forever.</b> Python lets you reassign a variable to a completely different type later; this is flexible, but can hide bugs if done accidentally.</li>
+    <li><b>Assuming a variable's type is fixed forever.</b> Python lets you reassign a variable to a completely different type later. This is flexible, but it can hide bugs if done accidentally.</li>
   </ul></div>
   <div class="sec-num">1.1</div><h3 class="section-h">Recap</h3>
   <p class="body">Assigning a value to a name creates a variable, no declaration keyword needed. Python infers the type (int, float, str, bool) automatically from the value.</p>
@@ -382,16 +382,16 @@ lessons['02'] = {
   short: 'Numbers, strings, operators', where: 'Part I · <b>Numbers, strings, and operators</b>', render: () => `
   <div class="eyebrow">Part I · Chapter 02</div>
   <h2 class="title">Numbers, strings, and operators</h2>
-  <p class="lead">The same <code class="inl">+</code> symbol means something different depending on the type of value on either side, worth understanding precisely.</p>
+  <p class="lead">The same <code class="inl">+</code> symbol means something different depending on the type of value on either side. This is worth understanding precisely.</p>
   <hr class="rule">
   ${ed(`print(2 + 2)          # arithmetic addition\nprint("Tasty" + "Go")  # string concatenation\nprint(10 / 3)          # true division\nprint(10 // 3)         # floor division\nprint(10 % 3)          # remainder`, true)}
-  <p class="body">Mixing a number and text with <code class="inl">+</code> raises an error rather than silently guessing what you meant, exactly the "types matter" idea from the Fundamentals course, enforced directly by the language here.</p>
+  <p class="body">Mixing a number and text with <code class="inl">+</code> raises an error rather than silently guessing what you meant. This is exactly the "types matter" idea from the Fundamentals course, enforced directly by the language here.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
-    <li><b>Assuming <code class="inl">/</code> always gives a whole number.</b> It gives a precise decimal (float); use <code class="inl">//</code> specifically for floor (whole-number) division.</li>
+    <li><b>Assuming <code class="inl">/</code> always gives a whole number.</b> It gives a precise decimal (float). Use <code class="inl">//</code> specifically for floor (whole-number) division.</li>
     <li><b>Trying to add a number directly to text.</b> <code class="inl">"Total: " + 450</code> raises a TypeError; convert first with <code class="inl">str(450)</code>.</li>
   </ul></div>
   <div class="sec-num">2.1</div><h3 class="section-h">Recap</h3>
-  <p class="body"><code class="inl">+</code> means addition for numbers and concatenation for strings. <code class="inl">/</code> gives precise division; <code class="inl">//</code> gives the floor; <code class="inl">%</code> gives the remainder.</p>
+  <p class="body"><code class="inl">+</code> means addition for numbers and concatenation for strings. <code class="inl">/</code> gives precise division. <code class="inl">//</code> gives the floor. <code class="inl">%</code> gives the remainder.</p>
   ${qPy('q2', 'med', 'Two friends split a ₹450 order evenly. Compute the per-person cost as <code class="inl">per_person</code>, and print it.',
 `total = 450
 # compute per_person here
@@ -409,13 +409,13 @@ lessons['03'] = {
   short: 'Output, input, f-strings', where: 'Part I · <b>Output, input, and f-strings</b>', render: () => `
   <div class="eyebrow">Part I · Chapter 03</div>
   <h2 class="title">Output, input, and f-strings</h2>
-  <p class="lead"><code class="inl">print()</code> is how your program talks back to you. F-strings are the cleanest way to mix variables into readable text.</p>
+  <p class="lead"><code class="inl">print()</code> is how your program shows output to you. F-strings are the cleanest way to mix variables into readable text.</p>
   <hr class="rule">
   ${ed(`name = "Priya Patel"\ntotal = 610\nprint(f"{name}'s order total is ₹{total}")`, true)}
-  <p class="body">An f-string is a string prefixed with <code class="inl">f</code>, letting you drop variables (or even expressions) directly inside <code class="inl">{ }</code>, rather than stitching text and variables together manually with <code class="inl">+</code>.</p>
+  <p class="body">An f-string is a string prefixed with <code class="inl">f</code>. It lets you insert variables, or even expressions, directly inside <code class="inl">{ }</code>, instead of joining text and variables together manually with <code class="inl">+</code>.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Forgetting the <code class="inl">f</code> prefix.</b> Without it, <code class="inl">"{name}"</code> prints literally as the text "{name}", not the variable's value.</li>
-    <li><b>Manually concatenating many pieces with +.</b> This works, but gets hard to read fast; an f-string is almost always clearer once more than one or two values are involved.</li>
+    <li><b>Manually concatenating many pieces with +.</b> This works, but the code becomes hard to read once more than one or two values are involved. An f-string is almost always clearer in that case.</li>
   </ul></div>
   <div class="sec-num">3.1</div><h3 class="section-h">Recap</h3>
   <p class="body">Use <code class="inl">print()</code> for output, and f-strings (<code class="inl">f"...{variable}..."</code>) to cleanly embed variables inside readable text.</p>
@@ -438,7 +438,7 @@ lessons['04'] = {
   short: 'Booleans & comparisons', where: 'Part I · <b>Booleans and comparisons</b>', render: () => `
   <div class="eyebrow">Part I · Chapter 04</div>
   <h2 class="title">Booleans and comparisons</h2>
-  <p class="lead">Comparison operators produce a bool (<code class="inl">True</code> or <code class="inl">False</code>), the foundation everything in the next Part (control flow) is built on.</p>
+  <p class="lead">Comparison operators produce a bool (<code class="inl">True</code> or <code class="inl">False</code>). This is what the next part of the course, control flow, depends on.</p>
   <hr class="rule">
   ${ed(`rating = 4.6\nprint(rating > 4.5)\nprint(rating == 4.6)\nprint(rating != 5.0)\nprint(rating >= 4.5 and rating <= 5.0)`, true)}
   <div class="qb"><div class="qb-title">The comparison operators</div>
@@ -450,7 +450,7 @@ lessons['04'] = {
     <li><b>Using a single = for comparison.</b> A single <code class="inl">=</code> assigns a value; <code class="inl">==</code> compares two values. Mixing these up is one of the most common early Python mistakes.</li>
   </ul></div>
   <div class="sec-num">4.1</div><h3 class="section-h">Recap</h3>
-  <p class="body">Comparison operators (==, !=, &gt;, &lt;, &gt;=, &lt;=) produce booleans. <code class="inl">and</code>/<code class="inl">or</code>/<code class="inl">not</code> combine them, the basis for every decision your code will make from here on.</p>
+  <p class="body">Comparison operators (==, !=, &gt;, &lt;, &gt;=, &lt;=) produce booleans. <code class="inl">and</code>/<code class="inl">or</code>/<code class="inl">not</code> combine them. Your code will use these for every decision it makes from here on.</p>
   ${qPy('q1', 'easy', 'Given <code class="inl">cost_for_two = 700</code>, create a variable <code class="inl">is_expensive</code> that is True if cost_for_two is greater than 600.',
 `cost_for_two = 700
 # compute is_expensive here
@@ -477,7 +477,7 @@ elif total >= 500:
     print("Discounted delivery: ₹20")
 else:
     print("Standard delivery: ₹40")`, true)}
-  <p class="body">Python checks each condition top to bottom and runs the first one that's true, skipping the rest, then falls to <code class="inl">else</code> only if nothing matched. Indentation (four spaces, consistently) is how Python knows which lines belong to which branch, there are no curly braces.</p>
+  <p class="body">Python checks each condition from top to bottom. It runs the first one that is true and skips the rest. It falls back to <code class="inl">else</code> only if nothing matched. Indentation (four spaces, used consistently) is how Python knows which lines belong to which branch. There are no curly braces.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Inconsistent indentation.</b> Python treats indentation as meaningful structure, not just style; mixing tabs and spaces or uneven indents causes real errors.</li>
     <li><b>Using <code class="inl">if</code> repeatedly instead of <code class="inl">elif</code>.</b> Several standalone <code class="inl">if</code>s all get checked even after one matches; <code class="inl">elif</code> stops at the first true branch.</li>
@@ -506,14 +506,14 @@ lessons['06'] = {
   short: 'while loops', where: 'Part II · <b>while loops</b>', render: () => `
   <div class="eyebrow">Part II · Chapter 06</div>
   <h2 class="title">while loops</h2>
-  <p class="lead">A <code class="inl">while</code> loop repeats for as long as a condition stays true, useful when you don't know in advance exactly how many times you'll need to repeat.</p>
+  <p class="lead">A <code class="inl">while</code> loop repeats for as long as a condition stays true. It is useful when you do not know in advance exactly how many times you will need to repeat something.</p>
   <hr class="rule">
   ${ed(`minutes_left = 5
 while minutes_left > 0:
     print(f"{minutes_left} minutes until delivery")
     minutes_left -= 1
 print("Delivered!")`, true)}
-  <p class="body">Each pass through the loop, Python re-checks the condition; the moment it's false, the loop stops. Something inside the loop (here, <code class="inl">minutes_left -= 1</code>) needs to actually move the condition toward becoming false, or the loop runs forever.</p>
+  <p class="body">Each pass through the loop, Python re-checks the condition. The moment it is false, the loop stops. Something inside the loop (here, <code class="inl">minutes_left -= 1</code>) needs to actually move the condition toward becoming false, or the loop runs forever.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Forgetting to update the condition variable.</b> This creates an infinite loop, one of the most common early bugs.</li>
     <li><b>Using <code class="inl">while</code> when you actually know the exact count in advance.</b> A <code class="inl">for</code> loop (next chapter) is usually clearer for that case.</li>
@@ -542,7 +542,7 @@ lessons['07'] = {
   short: 'for loops & range()', where: 'Part II · <b>for loops and range()</b>', render: () => `
   <div class="eyebrow">Part II · Chapter 07</div>
   <h2 class="title">for loops and range()</h2>
-  <p class="lead">A <code class="inl">for</code> loop repeats once per item in a sequence, the most common kind of loop you'll write.</p>
+  <p class="lead">A <code class="inl">for</code> loop repeats once per item in a sequence. This is the most common kind of loop you will write.</p>
   <hr class="rule">
   ${ed(`totals = [450, 610, 300, 720]
 total_sum = 0
@@ -552,10 +552,10 @@ print(total_sum)
 
 for i in range(3):
     print("Delivery attempt", i + 1)`, true)}
-  <p class="body"><code class="inl">range(n)</code> produces the numbers 0 up to (but not including) n, useful whenever you need to repeat something a specific number of times rather than iterate real data.</p>
+  <p class="body"><code class="inl">range(n)</code> produces the numbers 0 up to, but not including, n. This is useful whenever you need to repeat something a specific number of times, rather than loop over real data.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
-    <li><b>Assuming <code class="inl">range(3)</code> includes 3.</b> It produces 0, 1, 2, the endpoint is exclusive, exactly the boundary-value kind of mistake covered in the QA course.</li>
-    <li><b>Trying to modify a list while looping over it directly.</b> This can skip items unpredictably; build a new list instead when filtering or transforming.</li>
+    <li><b>Assuming <code class="inl">range(3)</code> includes 3.</b> It produces 0, 1, 2. The endpoint is exclusive. This is exactly the boundary-value kind of mistake covered in the QA course.</li>
+    <li><b>Trying to modify a list while looping over it directly.</b> This can skip items unpredictably. Build a new list instead when filtering or transforming.</li>
   </ul></div>
   <div class="sec-num">7.1</div><h3 class="section-h">Recap</h3>
   <p class="body">A for loop runs once per item in a sequence. <code class="inl">range(n)</code> generates 0 through n-1, handy for repeating something a fixed number of times.</p>
@@ -579,7 +579,7 @@ lessons['08'] = {
   short: 'break, continue, patterns', where: 'Part II · <b>break, continue, and loop patterns</b>', render: () => `
   <div class="eyebrow">Part II · Chapter 08</div>
   <h2 class="title">break, continue, and loop patterns</h2>
-  <p class="lead"><code class="inl">break</code> exits a loop immediately; <code class="inl">continue</code> skips straight to the next iteration without exiting.</p>
+  <p class="lead"><code class="inl">break</code> exits a loop immediately. <code class="inl">continue</code> skips straight to the next iteration, without exiting the loop.</p>
   <hr class="rule">
   ${ed(`restaurants = [("Domino's", 4.8), ("McDonald's", 4.5), ("KFC", 4.3)]
 for name, rating in restaurants:
@@ -588,9 +588,9 @@ for name, rating in restaurants:
         break
 else:
     print("Nothing found")`, true)}
-  <p class="body"><code class="inl">break</code> is useful once you've found what you're looking for and don't need to keep checking the rest. <code class="inl">continue</code> is useful for skipping items that don't apply, without writing a large nested <code class="inl">if</code> around the rest of the loop body.</p>
+  <p class="body"><code class="inl">break</code> is useful once you have found what you are looking for and do not need to keep checking the rest. <code class="inl">continue</code> is useful for skipping items that do not apply, without writing a large nested <code class="inl">if</code> around the rest of the loop body.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
-    <li><b>Confusing <code class="inl">break</code> and <code class="inl">continue</code>.</b> <code class="inl">break</code> stops the whole loop; <code class="inl">continue</code> only skips the current pass and keeps looping.</li>
+    <li><b>Confusing <code class="inl">break</code> and <code class="inl">continue</code>.</b> <code class="inl">break</code> stops the whole loop. <code class="inl">continue</code> only skips the current pass and keeps looping.</li>
   </ul></div>
   <div class="sec-num">8.1</div><h3 class="section-h">Recap</h3>
   <p class="body"><code class="inl">break</code> exits a loop entirely. <code class="inl">continue</code> skips the rest of the current pass and moves to the next one.</p>
@@ -616,7 +616,7 @@ lessons['09'] = {
   short: 'Lists', where: 'Part III · <b>Lists</b>', render: () => `
   <div class="eyebrow">Part III · Chapter 09</div>
   <h2 class="title">Lists</h2>
-  <p class="lead">A ${term('list', 'list')} is an ordered, changeable collection, the most commonly used data structure in everyday Python.</p>
+  <p class="lead">A ${term('list', 'list')} is an ordered, changeable collection. It is the most commonly used data structure in everyday Python.</p>
   <hr class="rule">
   ${ed(`cuisines = ["Pizza", "Burgers", "Biryani"]
 print(cuisines[0])
@@ -631,7 +631,7 @@ print(len(cuisines))`, true)}
     <div class="qb-row"><span class="qb-kw kw-r">.append(x)</span><span class="qb-mean">adds x to the end</span></div>
   </div>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
-    <li><b>Off-by-one slicing mistakes.</b> <code class="inl">cuisines[1:3]</code> gives indexes 1 and 2, not 3, the end is exclusive, exactly like <code class="inl">range()</code>.</li>
+    <li><b>Off-by-one slicing mistakes.</b> <code class="inl">cuisines[1:3]</code> gives indexes 1 and 2, not 3. The end is exclusive, exactly like <code class="inl">range()</code>.</li>
     <li><b>Indexing past the end of a list.</b> This raises an IndexError rather than silently returning something empty.</li>
   </ul></div>
   <div class="sec-num">9.1</div><h3 class="section-h">Recap</h3>
@@ -655,7 +655,7 @@ lessons['10'] = {
   short: 'Tuples & sets', where: 'Part III · <b>Tuples and sets</b>', render: () => `
   <div class="eyebrow">Part III · Chapter 10</div>
   <h2 class="title">Tuples and sets</h2>
-  <p class="lead">Two more collection types, each suited to a specific job a list isn't the best fit for.</p>
+  <p class="lead">This chapter covers two more collection types, tuples and sets. Each is suited to a specific job that a list is not the best fit for.</p>
   <hr class="rule">
   ${ed(`location = (19.0760, 72.8777)  # tuple: latitude, longitude
 print(location[0])
@@ -665,12 +665,12 @@ unique_cities = set(cities)
 print(unique_cities)
 print(len(unique_cities))`, true)}
   <div class="qb"><div class="qb-title">When to reach for each</div>
-    <div class="qb-row"><span class="qb-kw kw-p">Tuple</span><span class="qb-mean">an ordered, fixed collection that shouldn't change after creation, like a coordinate pair</span></div>
+    <div class="qb-row"><span class="qb-kw kw-p">Tuple</span><span class="qb-mean">an ordered, fixed collection that should not change after creation, like a coordinate pair</span></div>
     <div class="qb-row"><span class="qb-kw kw-r">Set</span><span class="qb-mean">an unordered collection of unique values, perfect for removing duplicates or checking membership fast</span></div>
   </div>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Trying to modify a tuple.</b> Tuples are immutable by design; attempting <code class="inl">location[0] = 5</code> raises an error.</li>
-    <li><b>Expecting a set to preserve order.</b> Sets are unordered; don't rely on the order values print in.</li>
+    <li><b>Expecting a set to preserve order.</b> Sets are unordered. Do not rely on the order values print in.</li>
   </ul></div>
   <div class="sec-num">10.1</div><h3 class="section-h">Recap</h3>
   <p class="body">Tuples are ordered and immutable, good for fixed groupings. Sets are unordered and automatically unique, good for deduplication and fast membership checks.</p>
@@ -691,7 +691,7 @@ lessons['11'] = {
   short: 'Dictionaries', where: 'Part III · <b>Dictionaries</b>', render: () => `
   <div class="eyebrow">Part III · Chapter 11</div>
   <h2 class="title">Dictionaries</h2>
-  <p class="lead">A ${term('dictionary', 'dictionary')} stores values under named keys, the natural way to represent one real-world "thing" with several named attributes, like one TastyGo order.</p>
+  <p class="lead">A ${term('dictionary', 'dictionary')} stores values under named keys. This is the natural way to represent one real-world "thing" with several named attributes, like one TastyGo order.</p>
   <hr class="rule">
   ${ed(`order = {"id": 101, "customer": "Aarav Sharma", "total": 450}
 print(order["customer"])
@@ -699,15 +699,15 @@ print(order.get("discount", 0))  # safe access with a default
 for key, value in order.items():
     print(key, "->", value)`, true)}
   <div class="qb"><div class="qb-title">Accessing values safely</div>
-    <div class="qb-row"><span class="qb-kw kw-p">order["key"]</span><span class="qb-mean">raises an error if the key doesn't exist</span></div>
+    <div class="qb-row"><span class="qb-kw kw-p">order["key"]</span><span class="qb-mean">raises an error if the key does not exist</span></div>
     <div class="qb-row"><span class="qb-kw kw-r">order.get("key", default)</span><span class="qb-mean">returns default instead of raising an error if missing</span></div>
   </div>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Using <code class="inl">order["key"]</code> for a key that might not exist.</b> This raises a KeyError; <code class="inl">.get()</code> is safer when a key is optional.</li>
-    <li><b>Assuming dictionary order matters for logic.</b> Modern Python does preserve insertion order for display, but code shouldn't depend on it for correctness.</li>
+    <li><b>Assuming dictionary order matters for logic.</b> Modern Python does preserve insertion order for display, but code should not depend on it for correctness.</li>
   </ul></div>
   <div class="sec-num">11.1</div><h3 class="section-h">Recap</h3>
-  <p class="body">Dictionaries map keys to values. Use <code class="inl">[key]</code> when you're sure the key exists, and <code class="inl">.get(key, default)</code> when it might not.</p>
+  <p class="body">Dictionaries map keys to values. Use <code class="inl">[key]</code> when you are sure the key exists, and <code class="inl">.get(key, default)</code> when it might not.</p>
   ${qPy('q1', 'easy', 'Given <code class="inl">order = {"id": 101, "customer": "Aarav Sharma", "total": 450}</code>, add a key <code class="inl">"status"</code> with value <code class="inl">"delivered"</code>.',
 `order = {"id": 101, "customer": "Aarav Sharma", "total": 450}
 # add a "status" key with value "delivered"
@@ -725,7 +725,7 @@ lessons['12'] = {
   short: 'Nesting it together', where: 'Part III · <b>Nesting it all together</b>', render: () => `
   <div class="eyebrow">Part III · Chapter 12</div>
   <h2 class="title">Nesting it all together</h2>
-  <p class="lead">Real data is rarely one flat structure. A list of dictionaries, one dict per record, is exactly how you'll model TastyGo's orders throughout this course.</p>
+  <p class="lead">Real data is rarely one flat structure. A list of dictionaries, one dict per record, is exactly how you will model TastyGo's orders throughout this course.</p>
   <hr class="rule">
   ${ed(`orders = [
     {"id": 1, "customer": "Aarav", "total": 450},
@@ -736,13 +736,13 @@ total_revenue = sum(o["total"] for o in orders)
 print(total_revenue)
 
 for o in orders:
-    print(f"Order #{o['id']}: {o['customer']} — ₹{o['total']}")`, true)}
-  <p class="body">This should look familiar: it's the exact same shape as SQLingo's <code class="inl">orders</code> table, one row per order, one column per attribute, just represented as Python data instead of database rows. Django and FastAPI will later load real rows from a real database into structures very much like this.</p>
+    print(f"Order #{o['id']}: {o['customer']} - ₹{o['total']}")`, true)}
+  <p class="body">This should look familiar. It is the exact same shape as SQLingo's <code class="inl">orders</code> table: one row per order, one column per attribute. It is just represented as Python data instead of database rows. Django and FastAPI will later load real rows from a real database into structures very much like this.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Forgetting a nested access needs both levels.</b> <code class="inl">orders[0]["total"]</code> needs the list index and the dict key together; either alone gives you the wrong thing.</li>
   </ul></div>
   <div class="sec-num">12.1</div><h3 class="section-h">Recap</h3>
-  <p class="body">A list of dictionaries represents a collection of records, each with named fields, exactly the shape of a database table's rows, which Django/FastAPI will later connect to a real one.</p>
+  <p class="body">A list of dictionaries represents a collection of records, each with named fields. This is exactly the shape of a database table's rows, which Django and FastAPI will later connect to a real one.</p>
   ${qPy('q1', 'med', 'Given the <code class="inl">orders</code> list of dicts below, compute <code class="inl">aarav_total</code>, the sum of totals for orders where <code class="inl">customer == "Aarav"</code>.',
 `orders = [
     {"id": 1, "customer": "Aarav", "total": 450},
@@ -781,9 +781,9 @@ lessons['13'] = {
 
 print(delivery_fee(300))
 print(delivery_fee(600))`, true)}
-  <p class="body"><code class="inl">return</code> sends a value back to wherever the function was called, and immediately ends the function, any code after a return in that branch never runs.</p>
+  <p class="body"><code class="inl">return</code> sends a value back to wherever the function was called, and it immediately ends the function. Any code after a return in that branch never runs.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
-    <li><b>Using <code class="inl">print()</code> inside a function instead of <code class="inl">return</code>.</b> Printing shows a value but doesn't hand it back to the caller to use in further logic; <code class="inl">return</code> does.</li>
+    <li><b>Using <code class="inl">print()</code> inside a function instead of <code class="inl">return</code>.</b> Printing shows a value, but it does not hand that value back to the caller to use in further logic. <code class="inl">return</code> does.</li>
     <li><b>Forgetting a function with no explicit return gives back <code class="inl">None</code>.</b> This is a common source of confusing bugs downstream.</li>
   </ul></div>
   <div class="sec-num">13.1</div><h3 class="section-h">Recap</h3>
@@ -823,7 +823,7 @@ def total_of(*amounts):
     return sum(amounts)
 
 print(total_of(100, 200, 300))`, true)}
-  <p class="body"><code class="inl">express=False</code> is a default, used automatically if the caller doesn't provide it. <code class="inl">*amounts</code> collects any number of positional arguments into a tuple, letting <code class="inl">total_of()</code> accept 2 numbers or 10 without changing its definition.</p>
+  <p class="body"><code class="inl">express=False</code> is a default, used automatically if the caller does not provide it. <code class="inl">*amounts</code> collects any number of positional arguments into a tuple, letting <code class="inl">total_of()</code> accept 2 numbers or 10 without changing its definition.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Putting a parameter without a default after one that has one.</b> Python requires defaulted parameters to come after non-defaulted ones.</li>
   </ul></div>
@@ -849,7 +849,7 @@ lessons['15'] = {
   short: 'Scope: local vs. global', where: 'Part IV · <b>Scope: local vs. global</b>', render: () => `
   <div class="eyebrow">Part IV · Chapter 15</div>
   <h2 class="title">Scope: local vs. global</h2>
-  <p class="lead">A variable created inside a function only exists inside that function, unless you deliberately reach outside it.</p>
+  <p class="lead">A variable created inside a function only exists inside that function, unless you deliberately access it from outside.</p>
   <hr class="rule">
   ${ed(`counter = 0
 
@@ -860,14 +860,14 @@ def increment():
 increment()
 increment()
 print(counter)`, true)}
-  <p class="body">Without <code class="inl">global counter</code>, writing <code class="inl">counter += 1</code> inside the function would create a brand new local variable named <code class="inl">counter</code>, entirely separate from the one outside, and raise an error (since it reads before assigning). Reaching into global state from inside a function works, but relying on it heavily makes code harder to reason about, exactly what the next chapter addresses.</p>
+  <p class="body">Without <code class="inl">global counter</code>, writing <code class="inl">counter += 1</code> inside the function would try to create a brand new local variable named <code class="inl">counter</code>. This new variable would be entirely separate from the one outside, and it would raise an error, because it reads the variable before assigning it. Accessing global state from inside a function works, but relying on it heavily makes code harder to understand. This is exactly what the next chapter addresses.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Expecting a variable assigned inside a function to change the outside version automatically.</b> Without <code class="inl">global</code>, it creates a separate local variable instead.</li>
   </ul></div>
   <div class="sec-num">15.1</div><h3 class="section-h">Recap</h3>
   <p class="body">Variables created inside a function are local to it by default. <code class="inl">global</code> lets a function modify a variable defined outside it, but this should be used sparingly.</p>
   ${qMC('q1', 'easy', 'Without the <code class="inl">global counter</code> line, what would happen when <code class="inl">increment()</code> tries to run <code class="inl">counter += 1</code>?',
-    ['It would work exactly the same', 'It would raise an error, since Python would treat counter as a new local variable being read before it\'s assigned', 'It would silently do nothing'],
+    ['It would work exactly the same', 'It would raise an error, since Python would treat counter as a new local variable being read before it is assigned', 'It would silently do nothing'],
     1, 'Without declaring counter as global, Python assumes any name assigned to inside the function is local; using += on it before it has a local value raises an UnboundLocalError.')}
 `
 };
@@ -876,7 +876,7 @@ lessons['16'] = {
   short: 'Clean, testable functions', where: 'Part IV · <b>Writing clean, testable functions</b>', render: () => `
   <div class="eyebrow">Part IV · Chapter 16</div>
   <h2 class="title">Writing clean, testable functions</h2>
-  <p class="lead">A function that returns a value based only on its inputs, with no other side effects, is called "pure," and pure functions are dramatically easier to test.</p>
+  <p class="lead">A function that returns a value based only on its inputs, with no other side effects, is called "pure." Pure functions are much easier to test.</p>
   <hr class="rule">
   ${ed(`# harder to test: relies on external state, has a side effect (printing)
 running_total = 0
@@ -890,7 +890,7 @@ def with_tax(amount, tax_rate=0.05):
     return amount + amount * tax_rate
 
 print(with_tax(500))`, true)}
-  <p class="body">Testing <code class="inl">with_tax(500)</code> is simple: call it, check the return value. Testing <code class="inl">add_to_total</code> requires tracking global state and can't easily be re-run in isolation, exactly the kind of function the QA and Fundamentals courses' testing chapters are hardest to write reliable tests for.</p>
+  <p class="body">Testing <code class="inl">with_tax(500)</code> is simple: call it, and check the return value. Testing <code class="inl">add_to_total</code> is harder. It requires tracking global state, and it cannot easily be re-run in isolation. This is exactly the kind of function that is hardest to write reliable tests for, a topic covered in the QA and Fundamentals courses.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Mixing calculation and side effects (like printing or modifying global state) in the same function.</b> Splitting the "compute" part from the "act on it" part makes both easier to test and reuse.</li>
   </ul></div>
@@ -898,7 +898,7 @@ print(with_tax(500))`, true)}
   <p class="body">A pure function's output depends only on its inputs, with no side effects, making it easy to test in isolation. Prefer pure functions for logic; keep side effects (printing, global state) separate where possible.</p>
   ${qPy('q1', 'med', 'Rewrite this so it is pure: <code class="inl">def bad(total):\\n&nbsp;&nbsp;&nbsp;&nbsp;print(total * 1.05)</code>. Write a pure version named <code class="inl">with_tax(total)</code> that returns the result instead of printing it.',
 `def with_tax(total):
-    # return total with 5% tax added, don't print
+    # return total with 5% tax added, do not print
     pass
 `,
 `assert abs(with_tax(500) - 525.0) < 0.001, "with_tax(500) should be 525.0"
@@ -928,7 +928,7 @@ print("TastyGo".replace("Tasty", "Yummy"))`, true)}
     <div class="qb-row"><span class="qb-kw kw-r">sep.join(list)</span><span class="qb-mean">the reverse: joins a list back into one string</span></div>
   </div>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
-    <li><b>Forgetting strings are immutable.</b> <code class="inl">name.strip()</code> returns a new string; it doesn't change <code class="inl">name</code> itself unless reassigned.</li>
+    <li><b>Forgetting strings are immutable.</b> <code class="inl">name.strip()</code> returns a new string. It does not change <code class="inl">name</code> itself unless reassigned.</li>
   </ul></div>
   <div class="sec-num">17.1</div><h3 class="section-h">Recap</h3>
   <p class="body">.strip(), .split(), .join(), .replace(), and .title()/.upper()/.lower() cover the large majority of everyday string cleanup and formatting.</p>
@@ -949,7 +949,7 @@ lessons['18'] = {
   short: 'Reading & writing files', where: 'Part V · <b>Reading and writing files</b>', render: () => `
   <div class="eyebrow">Part V · Chapter 18</div>
   <h2 class="title">Reading and writing files</h2>
-  <p class="lead"><code class="inl">open()</code> is how Python reads from and writes to files. In this browser-based course, files live in an in-memory virtual filesystem, not your real computer, but the code is identical to what you'd run locally.</p>
+  <p class="lead"><code class="inl">open()</code> is how Python reads from and writes to files. In this browser-based course, files are stored in an in-memory virtual filesystem, not on your real computer. The code itself is identical to what you would run locally.</p>
   <hr class="rule">
   ${ed(`with open("orders.txt", "w") as f:
     f.write("Order 101: 450\\n")
@@ -957,7 +957,7 @@ lessons['18'] = {
 
 with open("orders.txt", "r") as f:
     print(f.read())`, true)}
-  <p class="body">The <code class="inl">with</code> statement ensures the file is properly closed automatically once you're done with it, even if an error occurs partway through, the recommended way to work with files in real Python.</p>
+  <p class="body">The <code class="inl">with</code> statement ensures the file is properly closed automatically once you are done with it, even if an error occurs partway through. This is the recommended way to work with files in real Python.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Opening a file without "w" or "r" mode in mind.</b> "w" overwrites existing content entirely; "a" appends instead; opening the wrong mode is a common way to accidentally lose data.</li>
     <li><b>In this course specifically: expecting a file to persist between chapters or after refreshing.</b> This browser-based filesystem is temporary and isolated to this one running session.</li>
@@ -997,7 +997,7 @@ lessons['19'] = {
 
 print(safe_divide(10, 2))
 print(safe_divide(10, 0))`, true)}
-  <p class="body">Code inside <code class="inl">try</code> runs normally unless an exception occurs, in which case Python jumps straight to a matching <code class="inl">except</code> block. <code class="inl">finally</code> always runs afterward, whether or not an exception occurred, useful for cleanup that must happen either way.</p>
+  <p class="body">Code inside <code class="inl">try</code> runs normally unless an exception occurs. If one occurs, Python jumps straight to a matching <code class="inl">except</code> block. <code class="inl">finally</code> always runs afterward, whether or not an exception occurred. This is useful for cleanup that must happen either way.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Catching every possible exception with a bare <code class="inl">except:</code>.</b> This can silently swallow bugs you actually wanted to know about; catch specific exception types when you can.</li>
   </ul></div>
@@ -1026,7 +1026,7 @@ lessons['20'] = {
   short: 'Raising your own exceptions', where: 'Part V · <b>Raising your own exceptions</b>', render: () => `
   <div class="eyebrow">Part V · Chapter 20</div>
   <h2 class="title">Raising your own exceptions</h2>
-  <p class="lead">Sometimes the right response to bad input isn't a fallback value, it's refusing to continue at all, loudly and clearly.</p>
+  <p class="lead">Sometimes the right response to bad input is not a fallback value. It is refusing to continue at all, loudly and clearly.</p>
   <hr class="rule">
   ${ed(`def apply_discount(total, percent):
     if percent < 0 or percent > 100:
@@ -1037,12 +1037,12 @@ try:
     apply_discount(500, 150)
 except ValueError as e:
     print("Error:", e)`, true)}
-  <p class="body"><code class="inl">raise</code> deliberately stops normal execution and signals a specific problem, with a message explaining what went wrong, exactly the kind of clear, actionable signal a good bug report (from the QA course) also aims for.</p>
+  <p class="body"><code class="inl">raise</code> deliberately stops normal execution and signals a specific problem, with a message explaining what went wrong. This is exactly the kind of clear, actionable signal that a good bug report, covered in the QA course, also aims for.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
-    <li><b>Silently returning a default value for genuinely invalid input.</b> This can hide a real bug much further down the line; raising an exception makes the problem visible immediately, at its source.</li>
+    <li><b>Silently returning a default value for invalid input.</b> This can hide a real bug that only appears much later. Raising an exception makes the problem visible immediately, at its source.</li>
   </ul></div>
   <div class="sec-num">20.1</div><h3 class="section-h">Recap</h3>
-  <p class="body"><code class="inl">raise SomeError("message")</code> deliberately stops execution to signal invalid input or a genuine problem, rather than quietly returning a fallback.</p>
+  <p class="body"><code class="inl">raise SomeError("message")</code> deliberately stops execution to signal invalid input or a real problem, rather than silently returning a fallback.</p>
   ${qPy('q1', 'hard', 'Fix <code class="inl">apply_discount(total, percent)</code> so it raises <code class="inl">ValueError</code> for a negative total, and still works correctly for valid input.',
 `def apply_discount(total, percent):
     # raise ValueError if total is negative, otherwise return the discounted total
@@ -1079,7 +1079,7 @@ o = Order()
 o.id = 101
 o.total = 450
 print(o.id, o.total)`, true)}
-  <p class="body">This works, but it's clunky, setting attributes one at a time from outside. The next chapter shows the proper way: defining what every <code class="inl">Order</code> needs right inside the class itself.</p>
+  <p class="body">This works, but it is clunky. Setting attributes one at a time from outside is not ideal. The next chapter shows the proper way: defining what every <code class="inl">Order</code> needs right inside the class itself.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Confusing the class itself with an object made from it.</b> <code class="inl">Order</code> is the blueprint; <code class="inl">o = Order()</code> creates one actual object (an "instance") from it. You can create many instances from one class.</li>
   </ul></div>
@@ -1106,7 +1106,7 @@ lessons['22'] = {
   short: '__init__, methods, self', where: 'Part VI · <b>__init__, methods, and self</b>', render: () => `
   <div class="eyebrow">Part VI · Chapter 22</div>
   <h2 class="title">__init__, methods, and self</h2>
-  <p class="lead"><code class="inl">__init__</code> runs automatically whenever a new object is created, the proper place to set up its starting attributes.</p>
+  <p class="lead"><code class="inl">__init__</code> runs automatically whenever a new object is created. It is the proper place to set up its starting attributes.</p>
   <hr class="rule">
   ${ed(`class Order:
     def __init__(self, id, total):
@@ -1118,9 +1118,9 @@ lessons['22'] = {
 
 o = Order(101, 450)
 print(o.summary())`, true)}
-  <p class="body"><code class="inl">self</code> refers to the specific object a method is being called on, letting <code class="inl">summary()</code> reach that object's own <code class="inl">id</code> and <code class="inl">total</code>. Python passes it automatically, you never write it in the call itself (<code class="inl">o.summary()</code>, not <code class="inl">o.summary(o)</code>).</p>
+  <p class="body"><code class="inl">self</code> refers to the specific object a method is being called on. This lets <code class="inl">summary()</code> reach that object's own <code class="inl">id</code> and <code class="inl">total</code>. Python passes <code class="inl">self</code> automatically. You never write it in the call itself (<code class="inl">o.summary()</code>, not <code class="inl">o.summary(o)</code>).</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
-    <li><b>Forgetting <code class="inl">self</code> as the first parameter of a method.</b> Every method needs it, even if the method doesn't otherwise use any of the object's own data.</li>
+    <li><b>Forgetting <code class="inl">self</code> as the first parameter of a method.</b> Every method needs it, even if the method does not otherwise use any of the object's own data.</li>
   </ul></div>
   <div class="sec-num">22.1</div><h3 class="section-h">Recap</h3>
   <p class="body"><code class="inl">__init__</code> sets up a new object's initial attributes. <code class="inl">self</code>, the first parameter of every method, refers to the specific object the method was called on.</p>
@@ -1157,7 +1157,7 @@ lessons['23'] = {
   short: 'Inheritance', where: 'Part VI · <b>Inheritance</b>', render: () => `
   <div class="eyebrow">Part VI · Chapter 23</div>
   <h2 class="title">Inheritance</h2>
-  <p class="lead">A class can build on another class, inheriting its behaviour and adding or changing only what's different.</p>
+  <p class="lead">A class can build on another class, inheriting its behaviour and adding or changing only what is different.</p>
   <hr class="rule">
   ${ed(`class Order:
     def __init__(self, total):
@@ -1174,9 +1174,9 @@ class ExpressOrder(Order):
 
 o = ExpressOrder(450, 30)
 print(o.final_total())`, true)}
-  <p class="body"><code class="inl">ExpressOrder(Order)</code> means "an ExpressOrder is an Order, plus a bit extra." <code class="inl">super().__init__(total)</code> reuses the parent class's setup instead of duplicating it, and overriding <code class="inl">final_total</code> lets the subclass behave differently where it needs to.</p>
+  <p class="body"><code class="inl">ExpressOrder(Order)</code> means "an ExpressOrder is an Order, plus a bit extra." <code class="inl">super().__init__(total)</code> reuses the parent class's setup instead of duplicating it. Overriding <code class="inl">final_total</code> lets the subclass behave differently where it needs to.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
-    <li><b>Forgetting to call <code class="inl">super().__init__()</code>.</b> Without it, the parent class's own setup never runs, and attributes it was supposed to set won't exist.</li>
+    <li><b>Forgetting to call <code class="inl">super().__init__()</code>.</b> Without it, the parent class's own setup never runs, and attributes it was supposed to set will not exist.</li>
     <li><b>Reaching for inheritance when composition would be simpler.</b> Not every relationship needs a class hierarchy; sometimes a plain attribute holding another object is clearer.</li>
   </ul></div>
   <div class="sec-num">23.1</div><h3 class="section-h">Recap</h3>
@@ -1234,9 +1234,9 @@ class Order:
 o = Order(101, 450)
 print(o)
 print(o.total)`, true)}
-  <p class="body">This is exactly equivalent to writing <code class="inl">__init__(self, id, total): self.id = id; self.total = total</code> by hand, plus a readable default printed representation, for free. Reach for a full class with real methods when an object needs actual behaviour attached to it; reach for a dataclass, or even just a plain dictionary, when it's really just a bundle of related values.</p>
+  <p class="body">This is exactly equivalent to writing <code class="inl">__init__(self, id, total): self.id = id; self.total = total</code> by hand, plus a readable default printed representation, for free. Reach for a full class with real methods when an object needs actual behaviour attached to it. Reach for a dataclass, or even just a plain dictionary, when it is really just a bundle of related values.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
-    <li><b>Building an elaborate class hierarchy for something that's really just data.</b> Not every problem needs OOP; a dictionary or dataclass is often clearer and simpler for pure data with no real behaviour attached.</li>
+    <li><b>Building an elaborate class hierarchy for something that is really just data.</b> Not every problem needs OOP; a dictionary or dataclass is often clearer and simpler for pure data with no real behaviour attached.</li>
   </ul></div>
   <div class="sec-num">24.1</div><h3 class="section-h">Recap</h3>
   <p class="body"><code class="inl">@dataclass</code> removes boilerplate for data-holding classes. Choose the simplest structure that fits: a dict, a dataclass, or a full class with methods, roughly in that order of complexity.</p>
@@ -1266,7 +1266,7 @@ lessons['25'] = {
   short: 'Modules and imports', where: 'Part VII · <b>Modules and imports</b>', render: () => `
   <div class="eyebrow">Part VII · Chapter 25</div>
   <h2 class="title">Modules and imports</h2>
-  <p class="lead">A ${term('module', 'module')} is just a Python file. <code class="inl">import</code> makes its contents available in your own code, whether it's the standard library or a file you wrote yourself.</p>
+  <p class="lead">A ${term('module', 'module')} is just a Python file. <code class="inl">import</code> makes its contents available in your own code, whether it is the standard library or a file you wrote yourself.</p>
   <hr class="rule">
   ${ed(`import math
 import random
@@ -1276,7 +1276,7 @@ print(round(math.pi, 2))
 
 random.seed(1)
 print(random.randint(1, 6))`, true)}
-  <p class="body">Python ships with a large standard library (math, random, datetime, json, and many more) covering common needs without installing anything extra, exactly what's being imported above. For code beyond the standard library, <code class="inl">pip</code> (next chapter) installs it.</p>
+  <p class="body">Python ships with a large standard library (math, random, datetime, json, and many more) that covers common needs without installing anything extra. This is exactly what is being imported above. For code beyond the standard library, <code class="inl">pip</code> (next chapter) installs it.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Writing <code class="inl">sqrt(16)</code> instead of <code class="inl">math.sqrt(16)</code>.</b> A regular <code class="inl">import math</code> requires the module name as a prefix; only <code class="inl">from math import sqrt</code> lets you drop it.</li>
   </ul></div>
@@ -1301,21 +1301,21 @@ lessons['26'] = {
   <h2 class="title">pip and virtual environments</h2>
   <p class="lead">This chapter is conceptual: these are real terminal commands, run on your own machine, not something to execute in this browser-based course.</p>
   <hr class="rule">
-  <p class="body">${term('pip', 'pip')} installs third-party packages from PyPI (the Python Package Index). A ${term('virtual_environment', 'virtual environment')} keeps one project's installed packages separate from every other project on the same machine, so they can't silently conflict with each other's required versions.</p>
+  <p class="body">${term('pip', 'pip')} installs third-party packages from PyPI (the Python Package Index). A ${term('virtual_environment', 'virtual environment')} keeps one project's installed packages separate from every other project on the same machine, so they cannot silently conflict with each other's required versions.</p>
   <pre class="code">python -m venv venv                 # create a virtual environment named "venv"
 source venv/bin/activate            # activate it (Windows: venv\\Scripts\\activate)
 pip install requests                # install a package into this environment only
 pip freeze > requirements.txt       # record exact installed versions</pre>
-  <p class="body">Anyone else working on the project runs <code class="inl">pip install -r requirements.txt</code> to install the exact same versions, avoiding "it works on my machine" bugs, exactly the version-pinning idea covered in the Fundamentals course.</p>
-  <div class="analogy"><div class="lab">Note for this course specifically</div><div class="txt">This browser-based Python (Pyodide) has its own separate mechanism (called micropip) for installing pure-Python packages inside the page itself. It's a close cousin of pip, built specifically for this WebAssembly environment, but the venv/pip workflow above is what you'll actually use once you're writing Python on your own machine, including in the Django and FastAPI courses ahead.</div></div>
+  <p class="body">Anyone else working on the project runs <code class="inl">pip install -r requirements.txt</code> to install the exact same versions, avoiding "it works on my machine" bugs. This is exactly the version-pinning idea covered in the Fundamentals course.</p>
+  <div class="analogy"><div class="lab">Note for this course specifically</div><div class="txt">This browser-based Python (Pyodide) has its own separate mechanism (called micropip) for installing pure-Python packages inside the page itself. It is similar to pip, built specifically for this WebAssembly environment, but the venv and pip workflow above is what you will actually use once you are writing Python on your own machine, including in the Django and FastAPI courses ahead.</div></div>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Installing packages globally instead of inside a virtual environment.</b> This can cause different projects on the same machine to silently conflict over incompatible versions of the same package.</li>
-    <li><b>Forgetting to activate the virtual environment before installing.</b> A "successful" install can silently go to the wrong place if the venv isn't active.</li>
+    <li><b>Forgetting to activate the virtual environment before installing.</b> A "successful" install can silently go to the wrong place if the venv is not active.</li>
   </ul></div>
   <div class="sec-num">26.1</div><h3 class="section-h">Recap</h3>
-  <p class="body">pip installs packages; a virtual environment isolates a project's installed packages from every other project, and a requirements.txt file records exact versions for teammates to reproduce.</p>
+  <p class="body">pip installs packages. A virtual environment isolates a project's installed packages from every other project. A requirements.txt file records exact versions, so teammates can reproduce them.</p>
   ${qMC('q1', 'easy', 'Why create a separate virtual environment for each Python project, instead of installing everything globally?',
-    ['It makes packages install faster', 'It keeps each project\'s installed package versions isolated, so different projects can\'t silently conflict', 'Virtual environments are required by Python to run any code at all'],
+    ['It makes packages install faster', 'It keeps each project\'s installed package versions isolated, so different projects cannot silently conflict', 'Virtual environments are required by Python to run any code at all'],
     1, 'Isolation is the entire point: without it, two projects needing different versions of the same package on one machine would conflict.')}
   ${qMC('q2', 'med', 'What is the purpose of a requirements.txt file?',
     ['It stores the project\'s source code', 'It records the exact package versions used, so others can install the identical set with one command', 'It is required for Python syntax to be valid'],
@@ -1341,12 +1341,12 @@ print(back_to_text)`, true)}
     <div class="qb-row"><span class="qb-kw kw-p">json.loads(text)</span><span class="qb-mean">JSON text &rarr; Python data (dict/list)</span></div>
     <div class="qb-row"><span class="qb-kw kw-r">json.dumps(data)</span><span class="qb-mean">Python data &rarr; JSON text</span></div>
   </div>
-  <p class="body">This is exactly what happens under the hood whenever your code calls a real API, like TastyGo's own backend: the response arrives as JSON text, and <code class="inl">json.loads()</code> turns it into normal Python dictionaries and lists you can work with directly.</p>
+  <p class="body">This is exactly what happens whenever your code calls a real API, like TastyGo's own backend. The response arrives as JSON text, and <code class="inl">json.loads()</code> turns it into normal Python dictionaries and lists you can work with directly.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Confusing loads and dumps.</b> "loads" loads JSON text into Python; "dumps" dumps Python data out as JSON text. Easy to mix up at first.</li>
   </ul></div>
   <div class="sec-num">27.1</div><h3 class="section-h">Recap</h3>
-  <p class="body"><code class="inl">json.loads()</code> parses JSON text into Python data; <code class="inl">json.dumps()</code> converts Python data back into JSON text, the exchange format almost every real API uses.</p>
+  <p class="body"><code class="inl">json.loads()</code> parses JSON text into Python data. <code class="inl">json.dumps()</code> converts Python data back into JSON text. This is the exchange format almost every real API uses.</p>
   ${qPy('q1', 'med', 'Given a JSON string representing a list of orders, parse it and compute <code class="inl">total_revenue</code>, the sum of all "total" values.',
 `import json
 
@@ -1369,7 +1369,7 @@ lessons['28'] = {
   short: 'Testing with assert', where: 'Part VIII · <b>Testing your code with assert</b>', render: () => `
   <div class="eyebrow">Part VIII · Chapter 28</div>
   <h2 class="title">Testing your code with assert</h2>
-  <p class="lead">Every "Run &amp; Check" exercise in this course has been doing exactly this behind the scenes: running your code, then asserting it behaves correctly.</p>
+  <p class="lead">Every "Run &amp; Check" exercise in this course does exactly this internally: it runs your code, then asserts that it behaves correctly.</p>
   <hr class="rule">
   ${ed(`def add_delivery_fee(total):
     return total + 40 if total < 500 else total
@@ -1380,7 +1380,7 @@ def test_add_delivery_fee():
     print("All tests passed!")
 
 test_add_delivery_fee()`, true)}
-  <p class="body">An <code class="inl">assert</code> statement does nothing if its condition is true, and raises an <code class="inl">AssertionError</code> immediately if it's false, exactly the mechanism the Fundamentals and QA courses' unit-testing chapters described conceptually. In real projects, tools like <code class="inl">pytest</code> automatically discover and run every test function like this across a whole codebase, reporting a clear pass/fail summary instead of you calling each one by hand.</p>
+  <p class="body">An <code class="inl">assert</code> statement does nothing if its condition is true, and it raises an <code class="inl">AssertionError</code> immediately if the condition is false. This is exactly the mechanism that the Fundamentals and QA courses' unit-testing chapters described conceptually. In real projects, tools like <code class="inl">pytest</code> automatically discover and run every test function like this across a whole codebase. This gives a clear pass/fail summary, instead of you calling each test by hand.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Writing only one assert per test, covering only the "normal" case.</b> Just like the QA course's positive/negative testing principle, a good test checks edge cases and invalid input too, not just the happy path.</li>
   </ul></div>
@@ -1409,29 +1409,29 @@ lessons['29'] = {
   short: 'Django vs. FastAPI', where: 'Part VIII · <b>Where to go next: Django vs. FastAPI</b>', render: () => `
   <div class="eyebrow">Part VIII · Chapter 29</div>
   <h2 class="title">Where to go next: Django vs. FastAPI</h2>
-  <p class="lead">Everything in this course, variables, control flow, data structures, functions, classes, modules, was building toward being able to actually read and write a real web framework's code without the language itself getting in the way.</p>
+  <p class="lead">This course covered variables, control flow, data structures, functions, classes, and modules. All of it was building toward one goal: being able to read and write a real web framework's code, without the language itself getting in the way.</p>
   <hr class="rule">
   <div class="qb"><div class="qb-title">What's ahead</div>
     <div class="qb-row"><span class="qb-kw kw-p">Django</span><span class="qb-mean">a full-featured framework: models (classes representing database tables, building directly on this course's OOP chapters), an admin panel, templates, all included</span></div>
     <div class="qb-row"><span class="qb-kw kw-a">FastAPI</span><span class="qb-mean">a lean framework focused on APIs, leaning heavily on this course's function and JSON chapters, returning Python dictionaries that become JSON responses automatically</span></div>
     <div class="qb-row"><span class="qb-kw kw-r">DevOps</span><span class="qb-mean">deploying whichever you build, using the reverse proxy, container, and CI/CD concepts from the Fundamentals course, in real depth</span></div>
   </div>
-  <p class="body">Both frameworks assume you're comfortable with everything in this course: defining functions and classes, working with dictionaries and lists, handling exceptions, and importing modules. If any of that still feels shaky, revisiting a chapter now costs far less time than getting stuck deep inside a framework later.</p>
+  <p class="body">Both frameworks assume you are comfortable with everything in this course: defining functions and classes, working with dictionaries and lists, handling exceptions, and importing modules. If any of that still feels shaky, revisiting a chapter now costs far less time than getting stuck deep inside a framework later.</p>
   <div class="sec-num">29.1</div><h3 class="section-h">Recap</h3>
   <p class="body">This course built real, hands-on fluency in Python itself. Django and FastAPI, taught next, are two different ways of using that same language to build a real backend, with DevOps covering how to actually ship it.</p>
   ${qMC('q1', 'easy', 'Which Python concept from this course does FastAPI lean on especially heavily, given it returns data that becomes JSON responses?',
     ['Inheritance', 'Dictionaries and the json module', 'While loops'],
     1, 'FastAPI\'s core job is accepting and returning structured data as JSON, which maps directly onto this course\'s dictionary and json.loads/dumps chapters.')}
   ${qMC('q2', 'med', 'Why does this course recommend being comfortable with functions, classes, and exceptions before starting Django or FastAPI?',
-    ['Frameworks don\'t actually use any of these concepts', 'Both frameworks are built using these exact concepts, so shakiness here makes learning the framework itself much harder', 'These concepts are only relevant for the DevOps course'],
-    1, 'Django and FastAPI are Python code through and through, built from functions, classes, and (in FastAPI\'s case especially) careful data handling, so fluency here directly determines how smoothly the framework courses go.')}
+    ['Frameworks do not actually use any of these concepts', 'Both frameworks are built using these exact concepts, so shakiness here makes learning the framework itself much harder', 'These concepts are only relevant for the DevOps course'],
+    1, 'Django and FastAPI are built entirely in Python, using functions, classes, and (in FastAPI\'s case especially) careful data handling. Fluency here directly determines how smoothly the framework courses go.')}
 `
 };
 
 /* ---------- cheat sheet ---------- */
 const CHEATS = {
   '00': { note: 'Python is a widely used, readable, interpreted language, and the foundation for the Django and FastAPI courses ahead.' },
-  '0b': { note: 'TastyGo orders will be modeled as Python dictionaries throughout this course, foreshadowing Django/FastAPI\'s real database models.' },
+  '0b': { note: 'TastyGo orders will be modeled as Python dictionaries throughout this course. This previews the real database models used later in Django and FastAPI.' },
   '0i': { note: 'Playground blocks are free experimentation. Practice blocks ("Run & Check") execute your code against hidden checks.' },
   '01': { code: 'x = 450          # int\nx = 4.8          # float\nx = "text"       # str\nx = True         # bool\ntype(x)          # check a variable\'s type' },
   '02': { code: '2 + 2      # addition\n"a" + "b"  # concatenation\n10 / 3     # 3.333... (true division)\n10 // 3    # 3 (floor division)\n10 % 3     # 1 (remainder)' },
@@ -1448,7 +1448,7 @@ const CHEATS = {
   '13': { code: 'def name(params):\n    ...\n    return value   # ends the function, sends value back to the caller' },
   '14': { code: 'def f(x, y=10):        # default parameter\n    ...\ndef f(*args):          # collects extra positional args into a tuple\n    return sum(args)' },
   '15': { code: 'x = 0\ndef f():\n    global x   # without this, x += 1 inside f() creates a new local variable instead' },
-  '16': { code: 'A pure function\'s output depends only on its inputs, no side effects (printing, global state) — much easier to test in isolation.' },
+  '16': { code: 'A pure function\'s output depends only on its inputs, no side effects (printing, global state). Much easier to test in isolation.' },
   '17': { code: 's.strip()          # remove whitespace\ns.split(sep)       # string -> list\nsep.join(lst)      # list -> string\ns.replace(a, b)    # substitution' },
   '18': { code: 'with open(path, "w") as f:\n    f.write(...)\nwith open(path, "r") as f:\n    f.read()   # "with" auto-closes the file' },
   '19': { code: 'try:\n    ...\nexcept SpecificError:\n    ...\nfinally:\n    ...   # always runs, error or not' },

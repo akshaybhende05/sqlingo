@@ -148,6 +148,19 @@ If the honest answer is no, rewrite the sentence.
     4. Show a small example.
     5. Add an analogy only if it improves understanding.
 
+## Implementation note added during the SQL/Python sweep
+
+While applying these rules chapter by chapter, one more consistent pattern
+emerged and should be treated as part of rule 2 (textbook English) going
+forward: **do not use contractions**. Write "do not" instead of "don't",
+"it is" instead of "it's", "you will" instead of "you'll", and so on,
+everywhere in chapter body text (lead paragraphs, body paragraphs, gotcha
+boxes, recaps, question explanations, and any "In short" / cheat-sheet
+notes rendered as prose). This matches the fully expanded, textbook tone
+the rest of the rules are already pushing toward, and it is now the
+established style across the SQL and Python courses. Apply it to every
+remaining course.
+
 ## Reference examples
 
 SQL:
@@ -242,13 +255,40 @@ Must return zero matches.
 
 ## Status
 
-### SQL (`public/app.js`) — pilot, in progress
-Done: `00`, `0i`, `0b`, `01`-`14`, `15` (Subqueries), `16` (Window functions).
-Remaining, in order: `17`, `18`, `18b`, `19`, `20`, `21`, `22`, `23`, `24`,
-`25`, `26`.
+### SQL (`public/app.js`) — complete
+All 31 chapters done: `00`, `0i`, `0b`, `01`-`18`, `18b` (Constraints), `19`
+(VIEWs & INDEXes), `20` (Types, comments, safety), `21` (Built-in
+functions), `22` (CTEs), `23` (Transactions & ACID), `24` (Command
+families), `25` (Normalization & design), `26` (Best practices & scaling).
+All chapters pass the grep sweep with zero matches (checked across the
+full chapter-body range of the file).
 
-### Python, Django, FastAPI, DevOps, Business Analyst, QA, Development Fundamentals, Capstone
-Not started. Work through these in this order, after SQL is fully done and
-passes both the close-read process and the grep sweep with zero matches.
+Note: the SQL interview Q&A bank (`renderInterview`, a separate section
+from the chapter bodies) was rewritten earlier under a looser, informal
+pass, before this standard existed. It still contains em dashes and has
+not been re-checked against this file's rules. It is out of scope for the
+current chapter-by-chapter sweep, which covers `lessons['<id>']` chapter
+bodies only.
+
+### Python (`public/python.js`) — complete
+All 32 chapters done: `00`, `0b`, `0i`, `01`-`29`. The chapter-notes/cheat
+sheet block (`CHEATS`, used for the "In short" boxes) was also checked and
+fixed. All chapters pass the grep sweep with zero matches, including a
+contractions check (it's, don't, you'll, etc. all expanded to full form,
+matching the SQL course's established style).
+
+Same interview-bank caveat as SQL: `renderInterview` in python.js was
+rewritten earlier under a looser, informal pass and is out of scope for
+this sweep.
+
+### Django (`public/django.js`) — complete
+All 32 chapters done: `00`, `0b`, `0i`, `01`-`29`. The CHEATS block ("In
+short" boxes) was also checked. All chapters pass the grep sweep with
+zero matches (metaphor list, em dash, banned flourish words, and
+contractions). Same interview-bank caveat as SQL and Python applies.
+
+### FastAPI, DevOps, Business Analyst, QA, Development Fundamentals, Capstone
+Not started. Work through these in this order, now that SQL, Python, and
+Django are fully done. Start with FastAPI (`public/fastapi.js`).
 
 Landing page hero/card copy is a separate pass, held until asked for.

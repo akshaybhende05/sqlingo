@@ -1481,14 +1481,14 @@ lessons['17']={ short:'INSERT, UPDATE, DELETE', where:'Part VI · <b>INSERT, UPD
   <h2 class="title">INSERT, UPDATE, DELETE, changing the data</h2>
   <p class="lead">These commands change data: INSERT adds rows, UPDATE edits them, DELETE removes them. Unlike SELECT, these commands change things for real. This chapter has a safety lesson: one missing word can rewrite a whole table.</p>
   <hr class="rule">
-  <p class="body">To keep your learning data safe, everything below runs against a private scratch table called <code class="inl">demo</code>, not the real customers or restaurants. The cell just below creates a fresh <code class="inl">demo</code> each time you open this chapter, so you can add, edit and delete freely and never break the other lessons. Re-run it any time to reset.</p>
+  <p class="body">To keep your learning data safe, everything below runs against a private scratch table called <code class="inl">demo</code>, not the real customers or restaurants. The cell just below creates a fresh <code class="inl">demo</code> each time you open this chapter. So you can add, edit, and delete freely. You will never break the other lessons. Re-run it any time to reset.</p>
   ${ed("DROP TABLE IF EXISTS demo;\nCREATE TABLE demo (id INTEGER PRIMARY KEY, name TEXT, city TEXT, active INTEGER);\nINSERT INTO demo VALUES (1, 'Ravi', 'Mumbai', 1), (2, 'Sita', 'Delhi', 1), (3, 'Amit', 'Pune', 0);\nSELECT * FROM demo;",true)}
 
   <div class="sec-num">17.1</div><h3 class="section-h">INSERT, adding rows</h3>
-  <p class="body"><b>INSERT INTO</b> names the table and columns, then <b>VALUES</b> gives the data. Listing the columns explicitly is a good habit, it keeps the values matched to the right places even if the table changes later.</p>
+  <p class="body"><b>INSERT INTO</b> names the table and columns, then <b>VALUES</b> gives the data. Listing the columns explicitly is a good habit. It keeps the values matched to the right places, even if the table changes later.</p>
   <div class="ex"><div class="ex-tag">Add one row, then look</div><div class="code"><span class="k">INSERT INTO</span> demo (id, name, city, active)
 <span class="k">VALUES</span> (4, <span class="s">'Neha'</span>, <span class="s">'Mumbai'</span>, 1);
-<span class="k">SELECT</span> * <span class="k">FROM</span> demo;</div><div class="ex-note">Run it and the new row appears. Run it again and you get a "UNIQUE constraint" error, because id 4 already exists and id is the primary key. Reset with the cell above.</div></div>
+<span class="k">SELECT</span> * <span class="k">FROM</span> demo;</div><div class="ex-note">Run it and the new row appears. Run it again and you get a "UNIQUE constraint" error. This happens because id 4 already exists, and id is the primary key. Reset with the cell above.</div></div>
   ${ed("INSERT INTO demo (id, name, city, active) VALUES (4, 'Neha', 'Mumbai', 1);\nSELECT * FROM demo;")}
   <div class="ex"><div class="ex-tag">Several rows at once</div><div class="code"><span class="k">INSERT INTO</span> demo (id, name, city, active) <span class="k">VALUES</span>
   (5, <span class="s">'Kiran'</span>, <span class="s">'Delhi'</span>, 1),
@@ -1497,7 +1497,7 @@ lessons['17']={ short:'INSERT, UPDATE, DELETE', where:'Part VI · <b>INSERT, UPD
   ${ed("INSERT INTO demo (id, name, city, active) VALUES (5, 'Kiran', 'Delhi', 1), (6, 'Meera', 'Pune', 0);\nSELECT * FROM demo;")}
 
   <div class="sec-num">17.2</div><h3 class="section-h">UPDATE, and the most important word in this chapter</h3>
-  <p class="body"><b>UPDATE</b> changes existing rows. <b>SET</b> says which columns to change, and <b>WHERE</b> says which rows. That WHERE is not optional in spirit, leave it off and UPDATE changes <b>every row in the table</b>.</p>
+  <p class="body"><b>UPDATE</b> changes existing rows. <b>SET</b> says which columns to change, and <b>WHERE</b> says which rows. That WHERE is not optional in spirit. If you leave it off, UPDATE changes <b>every row in the table</b>.</p>
   <div class="ex"><div class="ex-tag">Correct: one row, because of WHERE</div><div class="code"><span class="k">UPDATE</span> demo <span class="k">SET</span> active = 1 <span class="k">WHERE</span> id = 3;
 <span class="k">SELECT</span> * <span class="k">FROM</span> demo;</div><div class="ex-note">Only Amit (id 3) is switched to active. Everyone else is untouched, because the WHERE pinned the change to one row.</div></div>
   ${ed("UPDATE demo SET active = 1 WHERE id = 3;\nSELECT * FROM demo;")}
@@ -1507,14 +1507,14 @@ lessons['17']={ short:'INSERT, UPDATE, DELETE', where:'Part VI · <b>INSERT, UPD
   </ul></div>
 
   <div class="sec-num">17.3</div><h3 class="section-h">DELETE, removing rows (same danger)</h3>
-  <p class="body"><b>DELETE FROM</b> removes rows, and it obeys WHERE just like UPDATE, with the same warning. No WHERE means the whole table is emptied.</p>
+  <p class="body"><b>DELETE FROM</b> removes rows. DELETE FROM obeys WHERE just like UPDATE does, with the same warning. No WHERE means the whole table is emptied.</p>
   <div class="ex"><div class="ex-tag">Delete only the inactive ones</div><div class="code"><span class="k">DELETE FROM</span> demo <span class="k">WHERE</span> active = 0;
 <span class="k">SELECT</span> * <span class="k">FROM</span> demo;</div><div class="ex-note">Removes just the rows where active is 0. The same select-first habit applies: preview with a SELECT before you delete.</div></div>
   ${ed("DELETE FROM demo WHERE active = 0;\nSELECT * FROM demo;")}
-  <p class="aside">A professional habit worth adopting from day one: on real data, wrap risky changes in a transaction (<code class="inl" style="font-size:12px">BEGIN; ... COMMIT;</code>, or <code class="inl" style="font-size:12px">ROLLBACK;</code> to undo). We touch on transactions in the final chapter. For now, the one-line rule is: never run an UPDATE or DELETE whose WHERE you have not double-checked.</p>
+  <p class="aside">Here is a professional habit worth adopting from day one: on real data, wrap risky changes in a transaction (<code class="inl" style="font-size:12px">BEGIN; ... COMMIT;</code>, or <code class="inl" style="font-size:12px">ROLLBACK;</code> to undo). We touch on transactions in the final chapter. For now, the one-line rule is: never run an UPDATE or DELETE whose WHERE you have not double-checked.</p>
 
   <div class="sec-num">Recap</div><h3 class="section-h">Write with care</h3>
-  <p class="body">INSERT adds rows (name the columns, comma-separate multiple value groups), UPDATE edits them, DELETE removes them. UPDATE and DELETE without a WHERE affect the entire table, so treat WHERE as mandatory and preview with a SELECT first. Reading is forgiving; writing is not.</p>
+  <p class="body">INSERT adds rows (name the columns, comma-separate multiple value groups), UPDATE edits them, DELETE removes them. UPDATE and DELETE without a WHERE affect the entire table. So treat WHERE as mandatory, and preview with a SELECT first. Reading is forgiving; writing is not.</p>
 
   <div class="sec-num">Practice</div><h3 class="section-h">Your turn, five questions</h3>
   <p class="body">These run on a fresh isolated scratch table (couriers: Ravi/Mumbai/active, Sita/Delhi/active, Amit/Pune/inactive) that resets on every check, so experiment freely. You will see the table as it looks after your statement.</p>
@@ -1548,9 +1548,9 @@ lessons['18']={ short:'CREATE, ALTER, DROP', where:'Part VI · <b>CREATE, ALTER,
   id <span class="k">INTEGER</span> <span class="k">PRIMARY KEY</span>,
   email <span class="k">TEXT</span> <span class="k">NOT NULL</span> <span class="k">UNIQUE</span>,
   active <span class="k">INTEGER</span> <span class="k">DEFAULT</span> 1
-);</div><div class="ex-note">id uniquely identifies each row; email must be present and cannot repeat; active fills in as 1 if you do not specify it. Constraints keep bad data out at the door, which is far better than cleaning it up later.</div></div>
+);</div><div class="ex-note">id uniquely identifies each row; email must be present and cannot repeat; active fills in as 1 if you do not specify it. Constraints stop bad data from being saved in the first place, which is far better than cleaning it up later.</div></div>
   ${ed("DROP TABLE IF EXISTS members;\nCREATE TABLE members (id INTEGER PRIMARY KEY, email TEXT NOT NULL UNIQUE, active INTEGER DEFAULT 1);\nSELECT name FROM pragma_table_info('members');")}
-  <p class="body">Two more constraints round out the set. <b>CHECK</b> enforces a custom rule on a value, and <b>FOREIGN KEY</b> ties a column to another table's ${term('primary_key','primary key')}, so you cannot store a reference that does not exist. This is how the database itself guarantees that every order really does point at a real customer.</p>
+  <p class="body">Two more constraints complete the set. <b>CHECK</b> enforces a custom rule on a value. <b>FOREIGN KEY</b> ties a column to another table's ${term('primary_key','primary key')}. This means you cannot store a reference that does not exist. This is how the database itself guarantees that every order really does point at a real customer.</p>
   <div class="ex"><div class="ex-tag">Example</div><div class="code"><span class="k">CREATE TABLE</span> reviews (
   id <span class="k">INTEGER</span> <span class="k">PRIMARY KEY</span>,
   restaurant_id <span class="k">INTEGER</span>,
@@ -1572,12 +1572,12 @@ lessons['18']={ short:'CREATE, ALTER, DROP', where:'Part VI · <b>CREATE, ALTER,
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>DELETE vs DROP vs TRUNCATE.</b> DELETE removes rows (table stays), DROP removes the whole table, and TRUNCATE (in other databases) quickly empties a table. Reach for the right one.</li>
     <li><b>DROP is irreversible.</b> No WHERE, no undo. On real systems, back up first and use IF EXISTS to avoid errors in scripts.</li>
-    <li><b>Constraints reject bad writes.</b> Inserting a duplicate into a UNIQUE column, or a NULL into a NOT NULL column, fails with an error. That is the constraint doing its job, not a bug.</li>
+    <li><b>Constraints reject bad writes.</b> Inserting a duplicate into a UNIQUE column, or a NULL into a NOT NULL column, fails with an error. That is the constraint working correctly, not a bug.</li>
     <li><b>SQLite ALTER is limited.</b> It mainly adds or renames. Dropping or heavily changing a column often means rebuilding the table, unlike larger databases.</li>
   </ul></div>
 
   <div class="sec-num">Recap</div><h3 class="section-h">Designing the container</h3>
-  <p class="body">CREATE TABLE defines columns and their types, and constraints (PRIMARY KEY, NOT NULL, UNIQUE, DEFAULT) bake in the rules. ALTER TABLE reshapes an existing table, usually adding a column. DROP TABLE removes the whole thing, permanently. This is the structure layer beneath all the querying you have learned.</p>
+  <p class="body">CREATE TABLE defines columns and their types. Constraints, such as PRIMARY KEY, NOT NULL, UNIQUE, and DEFAULT, build the rules directly into the table. ALTER TABLE reshapes an existing table, usually adding a column. DROP TABLE removes the whole thing, permanently. This is what defines the tables you have been querying all along.</p>
 
   <div class="sec-num">Practice</div><h3 class="section-h">Your turn, five questions</h3>
   <p class="body">These run on an isolated scratch schema that resets each check. Column checks look at the table's structure afterwards.</p>
@@ -1591,9 +1591,9 @@ lessons['18']={ short:'CREATE, ALTER, DROP', where:'Part VI · <b>CREATE, ALTER,
 lessons['18b']={ short:'Constraints', where:'Part VI · <b>Constraints</b>', render:()=>`
   <div class="eyebrow">Part VI · Chapter 18b</div>
   <h2 class="title">Constraints, rules the database enforces</h2>
-  <p class="lead">A constraint is a rule you attach to a column so the database refuses any data that breaks it. Constraints keep bad data out at the source, instead of trusting every app to check first.</p>
+  <p class="lead">A constraint is a rule you attach to a column so the database refuses any data that breaks it. Constraints stop bad data before it is ever saved, instead of trusting every app to check first.</p>
   <hr class="rule">
-  <p class="body">You have already met PRIMARY KEY. This chapter covers the everyday constraints you set when you create a table: NOT NULL, UNIQUE, CHECK, DEFAULT and FOREIGN KEY. Everything below runs on a private scratch table called <code class="inl">cdemo</code>, so you can safely try breaking the rules. Run the cell to create the table, and re-run it any time to reset.</p>
+  <p class="body">You have already learned about PRIMARY KEY. This chapter covers the everyday constraints you set when you create a table: NOT NULL, UNIQUE, CHECK, DEFAULT and FOREIGN KEY. Everything below runs on a private scratch table called <code class="inl">cdemo</code>, so you can safely try breaking the rules. Run the cell to create the table, and re-run it any time to reset.</p>
   ${ed("DROP TABLE IF EXISTS cdemo;\nCREATE TABLE cdemo (\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL,\n  email TEXT UNIQUE,\n  rating REAL CHECK (rating >= 0 AND rating <= 5),\n  status TEXT DEFAULT 'active'\n);\nINSERT INTO cdemo (id, name, email, rating) VALUES (1, 'Aarav', 'aarav@x.com', 4.5);\nSELECT * FROM cdemo;",true)}
 
   <div class="sec-num">1</div><h3 class="section-h">NOT NULL, a value is required</h3>
@@ -1615,7 +1615,7 @@ lessons['18b']={ short:'Constraints', where:'Part VI · <b>Constraints</b>', ren
   <div class="sec-num">5</div><h3 class="section-h">FOREIGN KEY, a value must exist in another table</h3>
   <p class="body">A FOREIGN KEY ties one table to another: a child row must point to a real parent row. SQLite only enforces this when foreign keys are switched on with <code class="inl">PRAGMA foreign_keys = ON</code>.</p>
   ${ed("PRAGMA foreign_keys = ON;\nDROP TABLE IF EXISTS child;\nDROP TABLE IF EXISTS parent;\nCREATE TABLE parent (id INTEGER PRIMARY KEY, name TEXT);\nCREATE TABLE child (id INTEGER PRIMARY KEY, parent_id INTEGER,\n  FOREIGN KEY (parent_id) REFERENCES parent(id));\nINSERT INTO parent VALUES (1, 'A');\nINSERT INTO child VALUES (1, 99);\nSELECT * FROM child;")}
-  <p class="aside">The child row points at parent 99, which does not exist, so the insert is refused. Adding ON DELETE CASCADE to the foreign key would delete child rows automatically when their parent is deleted.</p>
+  <p class="aside">The child row points at parent 99, which does not exist. So the insert is refused. Adding ON DELETE CASCADE to the foreign key would delete child rows automatically when their parent is deleted.</p>
 
   <div class="sec-num">6</div><h3 class="section-h">Your turn</h3>
   <p class="body">Each question runs on a fresh <code class="inl">cdemo</code> when you check it.</p>
@@ -1629,19 +1629,19 @@ lessons['19']={ short:'VIEWs & INDEXes', where:'Part VI · <b>VIEWs &amp; INDEXe
   <hr class="rule">
 
   <div class="sec-num">19.1</div><h3 class="section-h">A VIEW is a saved query</h3>
-  <p class="body">If you keep writing the same join or filter, wrap it in a view. <b>CREATE VIEW</b> gives a name to a SELECT; from then on you query that name like a table, and the stored SELECT runs underneath.</p>
+  <p class="body">If you keep writing the same join or filter, wrap it in a view. <b>CREATE VIEW</b> gives a name to a SELECT. From then on, you query that name like a table, and the stored SELECT runs again each time you do.</p>
   <div class="ex"><div class="ex-tag">Example</div><div class="code"><span class="k">CREATE VIEW</span> mumbai_restaurants <span class="k">AS</span>
   <span class="k">SELECT</span> name, cuisine, rating <span class="k">FROM</span> restaurants <span class="k">WHERE</span> city = <span class="s">'Mumbai'</span>;
-<span class="k">SELECT</span> * <span class="k">FROM</span> mumbai_restaurants;</div><div class="ex-note">Create it once, then query the view whenever you like. It holds no data of its own, it just re-runs its SELECT, so it is always up to date with the underlying table.</div></div>
+<span class="k">SELECT</span> * <span class="k">FROM</span> mumbai_restaurants;</div><div class="ex-note">Create it once, then query the view whenever you like. It holds no data of its own. It just re-runs its SELECT each time. So it is always up to date with the underlying table.</div></div>
   ${ed("DROP VIEW IF EXISTS mumbai_restaurants;\nCREATE VIEW mumbai_restaurants AS SELECT name, cuisine, rating FROM restaurants WHERE city = 'Mumbai';\nSELECT * FROM mumbai_restaurants;",true)}
 
-  <div class="sec-num">19.2</div><h3 class="section-h">Views shine on complicated queries</h3>
-  <p class="body">The real value is hiding complexity. A join-and-aggregate you would hate to retype becomes a tidy name everyone on the team can use.</p>
+  <div class="sec-num">19.2</div><h3 class="section-h">Views are most useful for complicated queries</h3>
+  <p class="body">The real value is hiding complexity. A join-and-aggregate you would hate to retype becomes a short, clear name everyone on the team can use.</p>
   <div class="ex"><div class="ex-tag">Example</div><div class="code"><span class="k">CREATE VIEW</span> customer_spend <span class="k">AS</span>
   <span class="k">SELECT</span> c.name, <span class="k">SUM</span>(o.amount) <span class="k">AS</span> total
   <span class="k">FROM</span> customers c <span class="k">JOIN</span> orders o <span class="k">ON</span> c.id = o.customer_id
   <span class="k">GROUP BY</span> c.id;
-<span class="k">SELECT</span> * <span class="k">FROM</span> customer_spend <span class="k">ORDER BY</span> total <span class="k">DESC</span>;</div><div class="ex-note">Now "customer_spend" is a reusable building block. You can even filter and sort it like any table, as the ORDER BY shows. Remove a view with <code class="inl" style="font-size:12px">DROP VIEW name</code>.</div></div>
+<span class="k">SELECT</span> * <span class="k">FROM</span> customer_spend <span class="k">ORDER BY</span> total <span class="k">DESC</span>;</div><div class="ex-note">Now "customer_spend" is a reusable, named query. You can even filter and sort it like any table, as the ORDER BY shows. Remove a view with <code class="inl" style="font-size:12px">DROP VIEW name</code>.</div></div>
   ${ed("DROP VIEW IF EXISTS customer_spend;\nCREATE VIEW customer_spend AS SELECT c.name, SUM(o.amount) AS total FROM customers c JOIN orders o ON c.id = o.customer_id GROUP BY c.id;\nSELECT * FROM customer_spend ORDER BY total DESC;")}
 
   <div class="sec-num">19.3</div><h3 class="section-h">An INDEX makes lookups fast</h3>
@@ -1650,16 +1650,16 @@ lessons['19']={ short:'VIEWs & INDEXes', where:'Part VI · <b>VIEWs &amp; INDEXe
   ${ed("DROP INDEX IF EXISTS idx_restaurants_city;\nCREATE INDEX idx_restaurants_city ON restaurants (city);\nSELECT name FROM sqlite_master WHERE type = 'index' AND name = 'idx_restaurants_city';")}
 
   <div class="sec-num">19.4</div><h3 class="section-h">Indexes are not free</h3>
-  <p class="body">An index speeds up reads but has costs, so they are a trade, not a free win. Each index takes storage, and every INSERT, UPDATE or DELETE must also update the indexes, so writes get a little slower. The craft is indexing the columns you actually filter and join on, and not indexing everything blindly.</p>
+  <p class="body">An index speeds up reads but has costs, so they are a trade-off, not something free. Each index takes storage. Every INSERT, UPDATE, or DELETE must also update the indexes. So writes get a little slower. The skill is in indexing the columns you actually filter and join on, and not indexing everything blindly.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>A view stores no data.</b> It re-runs its query each time, so it always reflects the current tables. It is convenience, not a copy.</li>
     <li><b>Views are usually read-only.</b> You query them freely; writing through a view is limited and often not allowed. Treat them as saved SELECTs.</li>
     <li><b>Indexes trade write speed for read speed.</b> Do not reflexively index every column. Index what you search and join by.</li>
-    <li><b>You rarely "use" an index by name.</b> You create it, and the database chooses to use it automatically when it helps. It works in the background.</li>
+    <li><b>You rarely "use" an index by name.</b> You create it, and the database chooses to use it automatically when it helps. It works automatically, without you doing anything more.</li>
   </ul></div>
 
   <div class="sec-num">Recap</div><h3 class="section-h">Comfort and performance</h3>
-  <p class="body">A VIEW names and reuses a query, hiding complexity and staying live with its tables. An INDEX speeds up lookups on the columns you search or join by, at a small cost to writes and storage. Both are behind-the-scenes helpers that make a database nicer and faster to use without touching the data itself.</p>
+  <p class="body">A VIEW names and reuses a query, hiding complexity and always reflecting the current tables. An INDEX speeds up lookups on the columns you search or join by, at a small cost to writes and storage. Both are helpers that work automatically, making a database nicer and faster to use without touching the data itself.</p>
 
   <div class="sec-num">Practice</div><h3 class="section-h">Your turn, five questions</h3>
   <p class="body">These run on an isolated scratch state that resets each check, so creating and dropping is safe.</p>
@@ -1679,21 +1679,21 @@ lessons['20']={ short:'Types, comments, safety', where:'Part VI · <b>Types, com
   <div class="sec-num">20.1</div><h3 class="section-h">Data types, briefly</h3>
   <p class="body">Every column has a type describing what it stores. SQLite keeps a short list: <b>INTEGER</b> (whole numbers), <b>REAL</b> (decimals), <b>TEXT</b> (strings), <b>BLOB</b> (raw bytes), and NULL for absent values. You can inspect the type of any value with <code class="inl">typeof()</code>.</p>
   ${ed("SELECT name, typeof(name) AS name_type, rating, typeof(rating) AS rating_type FROM restaurants LIMIT 3",true)}
-  <p class="body">Bigger databases (PostgreSQL, MySQL, SQL Server) are stricter and richer: <code class="inl">VARCHAR</code> for bounded text, real <code class="inl">DATE</code> and <code class="inl">TIMESTAMP</code> types, <code class="inl">BOOLEAN</code>, precise <code class="inl">DECIMAL</code> for money, and more. SQLite is famously flexible about types; the others enforce them firmly. When you move to a production database, expect to declare types more carefully. You can convert with <b>CAST</b>:</p>
+  <p class="body">Bigger databases (PostgreSQL, MySQL, SQL Server) are stricter and richer: <code class="inl">VARCHAR</code> for bounded text, real <code class="inl">DATE</code> and <code class="inl">TIMESTAMP</code> types, <code class="inl">BOOLEAN</code>, precise <code class="inl">DECIMAL</code> for money, and more. SQLite is very flexible about types; the others enforce them firmly. When you move to a production database, expect to declare types more carefully. You can convert with <b>CAST</b>:</p>
   ${ed("SELECT name, rating, CAST(rating AS INTEGER) AS rating_whole FROM restaurants")}
 
   <div class="sec-num">20.2</div><h3 class="section-h">Comments, notes to humans</h3>
-  <p class="body">SQL ignores comments; they are for the people reading the query later (often you, months on). Use <code class="inl">--</code> for the rest of a line, or <code class="inl">/* ... */</code> for a block.</p>
+  <p class="body">SQL ignores comments; they are for the people reading the query later (often you, months later). Use <code class="inl">--</code> for the rest of a line, or <code class="inl">/* ... */</code> for a block.</p>
   <div class="ex"><div class="ex-tag">Example</div><div class="code"><span class="c">-- top-rated places, for the weekend feature</span>
 <span class="k">SELECT</span> name, rating
 <span class="k">FROM</span> restaurants
 <span class="k">WHERE</span> rating >= 4.5   <span class="c">-- our quality bar</span>
 <span class="k">ORDER BY</span> rating <span class="k">DESC</span>;
-<span class="c">/* could later add a city filter here */</span></div><div class="ex-note">The comments change nothing about the result. They explain intent, which is priceless on a complex query.</div></div>
+<span class="c">/* could later add a city filter here */</span></div><div class="ex-note">The comments change nothing about the result. They explain intent, which is very valuable on a complex query.</div></div>
   ${ed("-- top-rated places\nSELECT name, rating FROM restaurants\nWHERE rating >= 4.5   -- our quality bar\nORDER BY rating DESC;")}
 
   <div class="sec-num">20.3</div><h3 class="section-h">SQL injection, the one security idea to keep</h3>
-  <p class="body">This matters the moment SQL meets real user input, which for you, as a developer, is constantly. <b>SQL injection</b> is when user-supplied text is pasted straight into a query and the database mistakes part of that text for SQL commands. It is one of the oldest and most damaging web vulnerabilities.</p>
+  <p class="body">This matters as soon as SQL is used with real user input, which for you, as a developer, is constantly. <b>SQL injection</b> is when user-supplied text is pasted straight into a query and the database mistakes part of that text for SQL commands. It is one of the oldest and most damaging web vulnerabilities.</p>
   <div class="analogy"><div class="lab">The chai-table version</div><div class="txt">Imagine reading out a customer's written note as if it were your own instruction to the kitchen. If the note secretly says <b>"and also give away everything for free,"</b> and you read it aloud verbatim, the kitchen obeys. Injection is a query "reading aloud" untrusted text as if it were trusted commands.</div></div>
   <p class="body">The fix is simple and absolute: <b>never build queries by adding user input directly into a string.</b> Use <b>parameters</b> (also called bind variables or placeholders), where you write a placeholder and hand the value to the database separately, so it is always treated as data, never as code. In most languages that looks like a <code class="inl">?</code> or a named placeholder:</p>
   <div class="ex"><div class="ex-tag">The idea, in pseudo-code</div><div class="code"><span class="c">-- NEVER do this (input pasted directly into the string):</span>
@@ -1703,11 +1703,11 @@ lessons['20']={ short:'Types, comments, safety', where:'Part VI · <b>Types, com
 <span class="k">SELECT</span> * <span class="k">FROM</span> users <span class="k">WHERE</span> name = ?;
 <span class="c">-- then the code binds the value to the ? safely</span></div><div class="ex-note">This is a code-level habit rather than something you type into this editor, but it is the single most important safety rule in all of practical SQL. Every language and library gives you parameterised queries; use them, always, for anything that comes from a user.</div></div>
 
-  <div class="sec-num">20.4</div><h3 class="section-h">Safe habits to carry out the door</h3>
-  <p class="body">A short list worth making automatic. Preview UPDATE and DELETE with a matching SELECT before running them, and never omit the WHERE. Wrap risky changes in a transaction (<code class="inl">BEGIN; ... COMMIT;</code>, or <code class="inl">ROLLBACK;</code> to undo) so a mistake can be reversed. Back up before structural changes like DROP. Prefer explicit column lists over <code class="inl">SELECT *</code> in real code. And parameterise every query that touches user input, without exception.</p>
+  <div class="sec-num">20.4</div><h3 class="section-h">Safe habits to take with you</h3>
+  <p class="body">Here is a short list worth making automatic. Preview UPDATE and DELETE with a matching SELECT before running them, and never omit the WHERE. Wrap risky changes in a transaction (<code class="inl">BEGIN; ... COMMIT;</code>, or <code class="inl">ROLLBACK;</code> to undo). This way, a mistake can be reversed. Back up before structural changes like DROP. Prefer explicit column lists over <code class="inl">SELECT *</code> in real code. And parameterise every query that touches user input, without exception.</p>
 
   <div class="sec-num">Recap</div><h3 class="section-h">You have finished the handbook</h3>
-  <p class="body">From your very first SELECT to window functions, data changes, table design, and now the professional habits, you have covered the whole working core of SQL. Types describe your data, comments explain your intent, and safe habits, especially parameterised queries and a well-checked WHERE, keep you and your data out of trouble. The rest is practice on real problems, which you are now ready for. Well done.</p>
+  <p class="body">From your very first SELECT to window functions, data changes, table design, and now the professional habits, you have covered the whole working core of SQL. Types describe your data. Comments explain your intent. Safe habits, especially parameterised queries and a well-checked WHERE, keep you and your data out of trouble. The rest is practice on real problems, which you are now ready for. Well done.</p>
 
   <div class="sec-num">Practice</div><h3 class="section-h">Your turn, five questions</h3>
   <p class="body">A gentle final set, reinforcing comments, types, and casting.</p>
@@ -1770,7 +1770,7 @@ lessons['0b']={ short:'The SQL world', where:'Groundwork · <b>The SQL world &am
 lessons['21']={ short:'Built-in functions', where:'Part VII · <b>Built-in functions</b>', render:()=>`
   <div class="eyebrow">Part VII · Chapter 21</div>
   <h2 class="title">Built-in functions, reshaping values</h2>
-  <p class="lead">Databases ship with ready-made functions to transform values. For example, upper-casing text, rounding numbers, or pulling the year from a date. This chapter gathers the everyday ones, grouped by what they work on.</p>
+  <p class="lead">Databases ship with ready-made functions to transform values. For example, a function can upper-case text, round a number, or pull the year out of a date. This chapter gathers the everyday ones, grouped by what they work on.</p>
   <hr class="rule">
 
   <div class="sec-num">21.1</div><h3 class="section-h">String functions</h3>
@@ -1793,11 +1793,11 @@ lessons['21']={ short:'Built-in functions', where:'Part VII · <b>Built-in funct
        <span class="k">ROUND</span>(rating) <span class="k">AS</span> rounded,
        <span class="k">CAST</span>(rating <span class="k">AS</span> <span class="k">INTEGER</span>) <span class="k">AS</span> chopped,
        cost_for_two % 100 <span class="k">AS</span> remainder
-<span class="k">FROM</span> restaurants</div><div class="ex-note">Note the difference: ROUND(4.6) is 5, but CAST(4.6 AS INTEGER) is 4, casting to an integer truncates rather than rounds.</div></div>
+<span class="k">FROM</span> restaurants</div><div class="ex-note">Note the difference: ROUND(4.6) is 5, but CAST(4.6 AS INTEGER) is 4. Casting to an integer truncates rather than rounds.</div></div>
   ${ed("SELECT name, rating, ROUND(rating) AS rounded, CAST(rating AS INTEGER) AS chopped, cost_for_two % 100 AS remainder FROM restaurants",true)}
 
   <div class="sec-num">21.4</div><h3 class="section-h">Date functions</h3>
-  <p class="body">Dates are where dialects diverge the most. In SQLite, dates are text in YYYY-MM-DD form, and <b>strftime(format, date)</b> extracts parts of them. The <code class="inl">%Y</code> is the year, <code class="inl">%m</code> the month, <code class="inl">%d</code> the day.</p>
+  <p class="body">Dates are where dialects diverge the most. In SQLite, dates are text in YYYY-MM-DD form. <b>strftime(format, date)</b> extracts parts of them. The <code class="inl">%Y</code> is the year, <code class="inl">%m</code> the month, <code class="inl">%d</code> the day.</p>
   <div class="ex"><div class="ex-tag">Example</div><div class="code"><span class="k">SELECT</span> id, order_date,
        strftime(<span class="s">'%Y'</span>, order_date) <span class="k">AS</span> yr,
        strftime(<span class="s">'%m'</span>, order_date) <span class="k">AS</span> mon
@@ -1805,7 +1805,7 @@ lessons['21']={ short:'Built-in functions', where:'Part VII · <b>Built-in funct
   ${ed("SELECT id, order_date, strftime('%Y', order_date) AS yr, strftime('%m', order_date) AS mon FROM orders",true)}
 
   <div class="sec-num">21.5</div><h3 class="section-h">A function that works across a group</h3>
-  <p class="body">One especially handy aggregate-style string function: <b>GROUP_CONCAT</b> (called STRING_AGG in Postgres and SQL Server) combines a column's values from a group into a single comma-separated string. Perfect with GROUP BY.</p>
+  <p class="body">One especially handy aggregate-style string function: <b>GROUP_CONCAT</b> (called STRING_AGG in Postgres and SQL Server) combines a column's values from a group into a single comma-separated string. It works perfectly with GROUP BY.</p>
   <div class="ex"><div class="ex-tag">Example</div><div class="code"><span class="k">SELECT</span> city, <span class="k">GROUP_CONCAT</span>(name) <span class="k">AS</span> people
 <span class="k">FROM</span> customers <span class="k">GROUP BY</span> city</div><div class="ex-note">One row per city, with all that city's customer names collapsed into a single readable list.</div></div>
   ${ed("SELECT city, GROUP_CONCAT(name) AS people FROM customers GROUP BY city",true)}
@@ -1833,10 +1833,10 @@ lessons['22']={ short:'CTEs (WITH)', where:'Part VII · <b>CTEs (the WITH clause
   <h2 class="title">CTEs, naming a query with WITH</h2>
   <p class="lead">A CTE (the WITH clause) lets you name a query up front and use that name below, instead of deeply nested brackets. It is the single biggest readability upgrade in SQL.</p>
   <hr class="rule">
-  <p class="body">A CTE is essentially a ${term('subquery')} given a name and lifted to the top, so the main query reads cleanly. Same power as a subquery, but much easier to read, including for you later.</p>
+  <p class="body">A CTE is essentially a ${term('subquery')} given a name and written at the top, so the main query reads cleanly. It has the same power as a subquery, but it is much easier to read, including for you later.</p>
 
   <div class="sec-num">22.1</div><h3 class="section-h">Your first CTE</h3>
-  <p class="body">Recall the derived-table example from the subqueries chapter, per-customer spend, then filter the big spenders. Here it is as a CTE. Notice how the logic reads top to bottom instead of inside-out.</p>
+  <p class="body">Recall the derived-table example from the subqueries chapter: per-customer spend, then filter the big spenders. Here it is again, as a CTE. Notice how the logic reads top to bottom instead of inside-out.</p>
   <div class="qb"><div class="qb-title">Breaking it down</div>
     <div class="qb-row"><span class="qb-kw kw-a">WITH spend AS (...)</span><span class="qb-mean">define and name a query</span></div>
     <div class="qb-row"><span class="qb-kw kw-p">SELECT * FROM spend</span><span class="qb-mean">then use it like a table</span></div></div>
@@ -1844,7 +1844,7 @@ lessons['22']={ short:'CTEs (WITH)', where:'Part VII · <b>CTEs (the WITH clause
   <span class="k">SELECT</span> customer_id, <span class="k">SUM</span>(amount) <span class="k">AS</span> total
   <span class="k">FROM</span> orders <span class="k">GROUP BY</span> customer_id
 )
-<span class="k">SELECT</span> * <span class="k">FROM</span> spend <span class="k">WHERE</span> total > 1000</div><div class="ex-note">The WITH block builds a named result called spend; the query below treats it exactly like a table. Compare this to burying that SELECT inside a FROM clause, this is far easier to follow.</div></div>
+<span class="k">SELECT</span> * <span class="k">FROM</span> spend <span class="k">WHERE</span> total > 1000</div><div class="ex-note">The WITH block builds a named result called spend; the query below treats it exactly like a table. Compare this to putting that SELECT inside a FROM clause. This is far easier to follow.</div></div>
   ${ed("WITH spend AS (\n  SELECT customer_id, SUM(amount) AS total FROM orders GROUP BY customer_id\n)\nSELECT * FROM spend WHERE total > 1000",true)}
 
   <div class="sec-num">22.2</div><h3 class="section-h">Using a CTE with a join</h3>
@@ -1860,7 +1860,7 @@ lessons['22']={ short:'CTEs (WITH)', where:'Part VII · <b>CTEs (the WITH clause
   ${ed("WITH spend AS (\n  SELECT customer_id, SUM(amount) AS total FROM orders GROUP BY customer_id\n)\nSELECT c.name, spend.total\nFROM spend JOIN customers c ON c.id = spend.customer_id\nORDER BY spend.total DESC",true)}
 
   <div class="sec-num">22.3</div><h3 class="section-h">Multiple CTEs in one query</h3>
-  <p class="body">You can define several, separated by commas, and each can build on the last. This lets you break a complex problem into named, readable steps, a genuine game-changer for hard queries.</p>
+  <p class="body">You can define several, separated by commas. Each one can build on the last. This lets you break a complex problem into named, readable steps, which helps enormously on hard queries.</p>
   <div class="ex"><div class="ex-tag">Example</div><div class="code"><span class="k">WITH</span>
   per_city <span class="k">AS</span> (
     <span class="k">SELECT</span> city, <span class="k">AVG</span>(rating) <span class="k">AS</span> avg_rating
@@ -1869,17 +1869,17 @@ lessons['22']={ short:'CTEs (WITH)', where:'Part VII · <b>CTEs (the WITH clause
   good_cities <span class="k">AS</span> (
     <span class="k">SELECT</span> city <span class="k">FROM</span> per_city <span class="k">WHERE</span> avg_rating >= 4.4
   )
-<span class="k">SELECT</span> * <span class="k">FROM</span> good_cities</div><div class="ex-note">Step one computes each city's average; step two keeps the strong cities using step one. Reads like a recipe, top to bottom.</div></div>
+<span class="k">SELECT</span> * <span class="k">FROM</span> good_cities</div><div class="ex-note">Step one computes each city's average; step two keeps the strong cities using step one. It reads like a recipe, from top to bottom.</div></div>
   ${ed("WITH\n  per_city AS (SELECT city, AVG(rating) AS avg_rating FROM restaurants GROUP BY city),\n  good_cities AS (SELECT city FROM per_city WHERE avg_rating >= 4.4)\nSELECT * FROM good_cities",true)}
 
   <div class="sec-num">22.4</div><h3 class="section-h">Recursive CTEs, a peek</h3>
-  <p class="body">CTEs have an advanced superpower: with <b>WITH RECURSIVE</b>, a CTE can refer to itself, which lets SQL walk hierarchies (org charts, category trees) or generate sequences. This is advanced, and you will not need it soon, but it is worth knowing it exists. A tiny taste that counts 1 to 5:</p>
+  <p class="body">CTEs have an advanced capability: with <b>WITH RECURSIVE</b>, a CTE can refer to itself, which lets SQL walk hierarchies (org charts, category trees) or generate sequences. This is advanced. You will not need it soon. But it is worth knowing that it exists. Here is a tiny example that counts 1 to 5:</p>
   <div class="ex"><div class="ex-tag">Example</div><div class="code"><span class="k">WITH RECURSIVE</span> nums(n) <span class="k">AS</span> (
   <span class="k">SELECT</span> 1
   <span class="k">UNION ALL</span>
   <span class="k">SELECT</span> n + 1 <span class="k">FROM</span> nums <span class="k">WHERE</span> n < 5
 )
-<span class="k">SELECT</span> n <span class="k">FROM</span> nums</div><div class="ex-note">It starts at 1, then repeatedly adds 1 by referring to itself, stopping at 5. Do not worry about mastering this now, just recognise the shape when you meet it later.</div></div>
+<span class="k">SELECT</span> n <span class="k">FROM</span> nums</div><div class="ex-note">It starts at 1, then repeatedly adds 1 by referring to itself, stopping at 5. Do not worry about mastering this now, just recognise the shape when you see it later.</div></div>
   ${ed("WITH RECURSIVE nums(n) AS (\n  SELECT 1\n  UNION ALL\n  SELECT n + 1 FROM nums WHERE n < 5\n)\nSELECT n FROM nums")}
 
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
@@ -1890,7 +1890,7 @@ lessons['22']={ short:'CTEs (WITH)', where:'Part VII · <b>CTEs (the WITH clause
   </ul></div>
 
   <div class="sec-num">Recap</div><h3 class="section-h">Readable, step-by-step queries</h3>
-  <p class="body">WITH names a query so you can use it below like a table, turning nested, inside-out subqueries into clean top-to-bottom steps. Chain several with commas, join to them, and reach for WITH RECURSIVE for hierarchies later. Nothing a CTE does is impossible with subqueries, it just makes complex SQL much more readable.</p>
+  <p class="body">WITH names a query so you can use it below like a table. This turns nested, inside-out subqueries into clean top-to-bottom steps. Chain several with commas, and join to them. Reach for WITH RECURSIVE for hierarchies later. Nothing a CTE does is impossible with subqueries. A CTE just makes complex SQL much more readable.</p>
 
   <div class="sec-num">Practice</div><h3 class="section-h">Your turn, five questions</h3>
   ${q('q1','easy',"Using a CTE named <b>t</b> that holds each customer_id with its total order amount as <b>total</b>, select <b>everything</b> from t.", i=>sameRowsAnyOrder(i,"WITH t AS (SELECT customer_id, SUM(amount) AS total FROM orders GROUP BY customer_id) SELECT * FROM t"), "WITH t AS (SELECT customer_id, SUM(amount) AS total FROM orders GROUP BY customer_id) SELECT * FROM t", "WITH t AS (SELECT customer_id, SUM(amount) AS total FROM orders GROUP BY customer_id) SELECT * FROM t.")}
@@ -1922,31 +1922,32 @@ lessons['23']={ short:'Transactions & ACID', where:'Part VII · <b>Transactions 
   <div class="ex"><div class="ex-tag">Change your mind</div><div class="code"><span class="k">BEGIN</span>;
 <span class="k">UPDATE</span> demo <span class="k">SET</span> balance = 0 <span class="k">WHERE</span> id = 1;
 <span class="k">ROLLBACK</span>;
-<span class="k">SELECT</span> * <span class="k">FROM</span> demo;</div><div class="ex-note">Asha's balance is briefly set to 0, then ROLLBACK undoes it. The final SELECT shows the original 1000, untouched. This is the safety net that makes risky changes survivable.</div></div>
+<span class="k">SELECT</span> * <span class="k">FROM</span> demo;</div><div class="ex-note">Asha's balance is briefly set to 0, then ROLLBACK undoes it. The final SELECT shows the original 1000, untouched. This means you can always undo a risky change, which makes it safe to try things.</div></div>
   ${ed("BEGIN;\nUPDATE demo SET balance = 0 WHERE id = 1;\nROLLBACK;\nSELECT * FROM demo;")}
 
   <div class="sec-num">23.3</div><h3 class="section-h">ACID, the four guarantees</h3>
-  <p class="body">Transactions give relational databases four promises, remembered by the acronym <b>ACID</b>. This is a favourite interview topic, and worth understanding plainly.</p>
+  <p class="body">Transactions give relational databases four promises, remembered by the acronym <b>ACID</b>. Interviewers often ask about ACID, so it helps to understand it clearly.</p>
   <div class="qb"><div class="qb-title">ACID, in plain words</div>
     <div class="qb-row"><span class="qb-kw kw-p">Atomicity</span><span class="qb-mean">all steps happen, or none do. No half-finished transfers.</span></div>
     <div class="qb-row"><span class="qb-kw kw-p">Consistency</span><span class="qb-mean">the database moves from one valid state to another; rules and constraints always hold.</span></div>
     <div class="qb-row"><span class="qb-kw kw-a">Isolation</span><span class="qb-mean">concurrent transactions do not trip over each other; each sees a clean view.</span></div>
     <div class="qb-row"><span class="qb-kw kw-a">Durability</span><span class="qb-mean">once committed, it stays committed, even if the power dies a second later.</span></div></div>
-  <p class="body">These guarantees are a big part of why banks, shops and record systems run on relational databases. When correctness truly matters, ACID is the reason SQL is trusted. (Many NoSQL systems relax some of these, trading strict guarantees for scale, which is the core tension we touched on in the SQL-versus-NoSQL chapter.)</p>
+  <p class="body">These guarantees are a big part of why banks, shops and record systems run on relational databases. When correctness matters, ACID is why people trust SQL. (Many NoSQL systems relax some of these guarantees to gain scale. This is the same trade-off mentioned in the SQL-versus-NoSQL chapter.)</p>
 
   <div class="sec-num">23.4</div><h3 class="section-h">SAVEPOINT, a partial undo</h3>
-  <p class="body">Inside a big transaction you can drop a <b>SAVEPOINT</b>, a named marker, and later roll back <b>just to that marker</b> instead of undoing everything. Useful for long, multi-step operations. You will not need it often, but it is good to know it exists.</p>
-  <p class="aside">A note on SQLite here: it treats each statement as its own automatic transaction unless you open one with BEGIN, which is why the WHERE-discipline from the INSERT/UPDATE/DELETE chapter still matters. For anything important on a real database, wrap it in an explicit transaction so a mistake is one ROLLBACK away.</p>
+  <p class="body">Inside a big transaction you can create a <b>SAVEPOINT</b>, a named marker, and later roll back to <b>just that marker</b> instead of undoing everything. This is useful for long, multi-step operations. You will not need it often, but it is good to know it exists.</p>
+  <p class="aside">A note on SQLite: it treats each statement as its own automatic transaction, unless you open one with BEGIN. This is why the WHERE-discipline from the INSERT/UPDATE/DELETE chapter still matters. For anything important on a real database, wrap it in an explicit transaction so a mistake is one ROLLBACK away.</p>
 
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Forgetting to COMMIT.</b> Changes inside a transaction are not final until COMMIT. In some tools, closing the connection first silently rolls them back.</li>
-    <li><b>ROLLBACK undoes the whole transaction.</b> Everything since BEGIN goes, not just the last statement. Use SAVEPOINT if you need finer control.</li>
+    <li><b>ROLLBACK undoes the whole transaction.</b> Everything since BEGIN is undone, not just the last statement. Use SAVEPOINT if you need finer control.</li>
     <li><b>Transactions are not a substitute for WHERE.</b> A transaction lets you undo a mistake you notice; a correct WHERE stops you making it. Use both.</li>
     <li><b>Keep transactions short.</b> A transaction left open holds locks and blocks others. Do the work, commit promptly.</li>
   </ul></div>
 
   <div class="sec-num">Recap</div><h3 class="section-h">The whole course, complete</h3>
-  <p class="body">A transaction groups statements so they all succeed (COMMIT) or all undo (ROLLBACK), and ACID (Atomicity, Consistency, Isolation, Durability) is the set of guarantees that makes relational databases dependable. And with that, you have covered the full working span of SQL, from your first SELECT through joins, aggregation, windows, the whole data-management toolkit, functions, CTEs, and now transactions. You are now equipped to work with real databases. Congratulations on finishing.</p>
+  <p class="body">A transaction groups statements so they all succeed together (COMMIT) or all undo together (ROLLBACK). ACID stands for Atomicity, Consistency, Isolation, and Durability: the guarantees that make relational databases dependable.</p>
+  <p class="body">With this chapter, you have covered the whole practical range of SQL. You started with your first SELECT, then moved through joins, aggregation, window functions, the full data-management toolkit, built-in functions, CTEs, and now transactions. You are now ready to work with real databases. Congratulations on finishing.</p>
 
   <div class="sec-num">Practice</div><h3 class="section-h">Your turn, five questions</h3>
   <p class="body">These run on an isolated accounts table (Asha 1000, Bala 500) that resets each check. Write full transactions.</p>
@@ -1972,7 +1973,7 @@ lessons['24']={ short:'Command families', where:'Part VIII · <b>Command familie
     <div class="qb-row"><span class="qb-kw kw-r">DCL</span><span class="qb-mean"><b>Data Control Language</b>, controls permissions: GRANT, REVOKE.</span></div></div>
 
   <div class="sec-num">24.1</div><h3 class="section-h">DDL, defining the structure</h3>
-  <p class="body"><b>Data Definition Language</b> is about the shape of the database, the tables, columns and constraints themselves, not the rows inside. You met all of it in the CREATE/ALTER/DROP chapter. A quirk worth knowing: in most databases DDL statements <b>auto-commit</b>, meaning they cannot be rolled back like data changes can. TRUNCATE (empty a table fast) also lives here in databases that have it.</p>
+  <p class="body"><b>Data Definition Language</b> is about the shape of the database, the tables, columns and constraints themselves, not the rows inside. You met all of it in the CREATE/ALTER/DROP chapter. A quirk worth knowing: in most databases DDL statements <b>auto-commit</b>, meaning they cannot be rolled back like data changes can. TRUNCATE (empty a table fast) also belongs to this family, in databases that have it.</p>
   ${ed("DROP TABLE IF EXISTS demo24;\nCREATE TABLE demo24 (id INTEGER PRIMARY KEY, task TEXT);\nSELECT name FROM pragma_table_info('demo24');",true)}
 
   <div class="sec-num">24.2</div><h3 class="section-h">DML, changing the data</h3>
@@ -1980,7 +1981,7 @@ lessons['24']={ short:'Command families', where:'Part VIII · <b>Command familie
   ${ed("DROP TABLE IF EXISTS demo24;\nCREATE TABLE demo24 (id INTEGER PRIMARY KEY, task TEXT);\nINSERT INTO demo24 VALUES (1, 'Learn DML'), (2, 'Learn DDL');\nUPDATE demo24 SET task = 'Master DML' WHERE id = 1;\nSELECT * FROM demo24;")}
 
   <div class="sec-num">24.3</div><h3 class="section-h">DQL, asking questions</h3>
-  <p class="body"><b>Data Query Language</b> is really just SELECT, the reading you spent the whole first half of this course on. Many people fold it into DML, but the DQL label is common enough that it is worth recognising. Everything from WHERE to JOIN to window functions is DQL at heart.</p>
+  <p class="body"><b>Data Query Language</b> is really just SELECT: the reading skill you practiced through the whole first half of this course. Many people group it under DML, but the DQL label is common enough that it is worth recognising. Everything from WHERE to JOIN to window functions is part of DQL.</p>
   ${ed("SELECT name, rating FROM restaurants ORDER BY rating DESC LIMIT 3;")}
 
   <div class="sec-num">24.4</div><h3 class="section-h">TCL, controlling transactions</h3>
@@ -1988,12 +1989,12 @@ lessons['24']={ short:'Command families', where:'Part VIII · <b>Command familie
   ${ed("DROP TABLE IF EXISTS demo24;\nCREATE TABLE demo24 (id INTEGER PRIMARY KEY, task TEXT);\nINSERT INTO demo24 VALUES (1, 'original');\nBEGIN;\nUPDATE demo24 SET task = 'changed' WHERE id = 1;\nROLLBACK;\nSELECT * FROM demo24;")}
 
   <div class="sec-num">24.5</div><h3 class="section-h">DCL, controlling access</h3>
-  <p class="body"><b>Data Control Language</b> governs <b>who may do what</b>: <code class="inl">GRANT</code> gives a user permission (say, to read a table), <code class="inl">REVOKE</code> takes it away. These matter on multi-user server databases like MySQL, PostgreSQL and SQL Server. SQLite, being a single file with no user accounts, does not have them, so there is nothing to run here, but you should know the family exists.</p>
+  <p class="body"><b>Data Control Language</b> governs <b>who may do what</b>: <code class="inl">GRANT</code> gives a user permission (say, to read a table), <code class="inl">REVOKE</code> takes it away. These matter on multi-user server databases like MySQL, PostgreSQL and SQL Server. SQLite is a single file with no user accounts, so it does not have these commands. There is nothing to run here, but you should know that this family exists.</p>
   <div class="ex"><div class="ex-tag">What it looks like (server databases)</div><div class="code"><span class="k">GRANT</span> <span class="k">SELECT</span> <span class="k">ON</span> orders <span class="k">TO</span> analyst_user;
 <span class="k">REVOKE</span> <span class="k">SELECT</span> <span class="k">ON</span> orders <span class="k">FROM</span> analyst_user;</div><div class="ex-note">Give the analyst read access to orders, then take it away. Access control is a big topic in production databases; this is the entry point.</div></div>
 
   <div class="sec-num">Recap</div><h3 class="section-h">One tidy mental map</h3>
-  <p class="body">DDL shapes the tables (CREATE/ALTER/DROP), DML changes the rows (INSERT/UPDATE/DELETE), DQL reads them (SELECT), TCL wraps changes safely (BEGIN/COMMIT/ROLLBACK), and DCL controls who is allowed (GRANT/REVOKE). Every statement in SQL fits into one of these five, and you have now used four of them hands-on.</p>
+  <p class="body">DDL shapes the tables (CREATE/ALTER/DROP). DML changes the rows (INSERT/UPDATE/DELETE). DQL reads them (SELECT). TCL wraps changes safely (BEGIN/COMMIT/ROLLBACK). DCL controls who is allowed (GRANT/REVOKE). Every statement in SQL fits into one of these five, and you have now used four of them yourself.</p>
 `};
 
 lessons['25']={ short:'Normalization & design', where:'Part VIII · <b>Normalization &amp; design</b>', render:()=>`
@@ -2003,8 +2004,8 @@ lessons['25']={ short:'Normalization & design', where:'Part VIII · <b>Normaliza
   <hr class="rule">
 
   <div class="sec-num">25.1</div><h3 class="section-h">The problem: one big flat table</h3>
-  <p class="body">Imagine cramming everything into a single table, each order repeating the customer's name and city and the restaurant's details. That redundancy causes three classic <b>anomalies</b>: an <b>update anomaly</b> (change a customer's city and you must fix it in every one of their order rows, miss one and the data contradicts itself), an <b>insertion anomaly</b> (you cannot add a new restaurant until someone orders from it), and a <b>deletion anomaly</b> (delete the last order for a customer and you accidentally erase the customer entirely).</p>
-  <div class="analogy"><div class="lab">The chai-table version</div><div class="txt">It is the difference between writing a customer's full address on <b>every single</b> order slip, versus writing it once in a register and just noting the customer number on each slip. The register approach means one change updates everything, and nothing can silently disagree.</div></div>
+  <p class="body">Imagine cramming everything into a single table, each order repeating the customer's name and city and the restaurant's details. That redundancy causes three classic <b>anomalies</b>. An <b>update anomaly</b> happens when you change a customer's city: you must fix it in every one of their order rows, and if you miss one, the data contradicts itself. An <b>insertion anomaly</b> means you cannot add a new restaurant until someone orders from it. A <b>deletion anomaly</b> means deleting the last order for a customer accidentally erases the customer entirely.</p>
+  <div class="analogy"><div class="lab">The chai-table version</div><div class="txt">It is the difference between writing a customer's full address on <b>every single</b> order slip, versus writing it once in a register and just noting the customer number on each slip. The register approach means one change updates everything, so the data can never end up in conflict.</div></div>
 
   <div class="sec-num">25.2</div><h3 class="section-h">Keys, the anchors of a design</h3>
   <p class="body">Design revolves around keys. A ${term('primary_key','primary key')} uniquely identifies each row (our <code class="inl">id</code> columns). A ${term('foreign_key','foreign key')} points at another table's primary key (orders.customer_id). A <b>composite key</b> is a primary key made of more than one column together. A <b>candidate key</b> is any column that could serve as the primary key; a <b>surrogate key</b> is an artificial id (like our auto id) chosen instead of a <b>natural key</b> (a real-world unique value such as an email).</p>
@@ -2018,59 +2019,59 @@ lessons['25']={ short:'Normalization & design', where:'Part VIII · <b>Normaliza
   <p class="body">A simple way to remember 2NF and 3NF: every non-key fact should depend on <b>the key, the whole key, and nothing but the key</b>. If a column really describes something else, it belongs in that something else's own table.</p>
 
   <div class="sec-num">25.4</div><h3 class="section-h">Seeing it break, then fixing it</h3>
-  <p class="body">Here is a deliberately bad, denormalized table: order data with the customer and restaurant names repeated inline. Notice Aarav Sharma and his city repeat across rows, ready to drift out of sync.</p>
+  <p class="body">Here is a deliberately bad, denormalized table: order data with the customer and restaurant names repeated inline. Notice Aarav Sharma and his city repeat across rows. If one row is later updated and another is missed, the values stop matching.</p>
   ${ed("DROP TABLE IF EXISTS bad_orders;\nCREATE TABLE bad_orders (order_id INTEGER, customer_name TEXT, customer_city TEXT, restaurant_name TEXT, amount INTEGER);\nINSERT INTO bad_orders VALUES\n (1, 'Aarav Sharma', 'Mumbai', 'Dominos', 520),\n (2, 'Aarav Sharma', 'Mumbai', 'Subway', 360),\n (8, 'Aarav Sharma', 'Mumbai', 'Dominos', 500);\nSELECT * FROM bad_orders;",true)}
-  <p class="body">The normalized fix is exactly the schema this whole course uses: pull customers into their own table, restaurants into theirs, and let <code class="inl">orders</code> reference them by id. Each fact lives once.</p>
+  <p class="body">The normalized fix is exactly the schema this whole course uses: pull customers into their own table, restaurants into theirs, and let <code class="inl">orders</code> reference them by id. Each fact is stored only once.</p>
   ${ed("SELECT o.id, c.name, c.city, r.name AS restaurant, o.amount\nFROM orders o\nJOIN customers c ON o.customer_id = c.id\nJOIN restaurants r ON o.restaurant_id = r.id\nWHERE o.customer_id = 1;")}
 
   <div class="sec-num">25.5</div><h3 class="section-h">Relationships and the many-to-many trick</h3>
   <p class="body">Tables relate in three shapes: <b>one-to-one</b>, <b>one-to-many</b> (one customer, many orders, the common case), and <b>many-to-many</b>. A many-to-many (many customers order from many restaurants) cannot be stored directly; you use a <b>junction table</b> in the middle. Our <code class="inl">orders</code> table is precisely that junction, each row linking one customer to one restaurant. You have been using a textbook normalized design the entire time.</p>
 
   <div class="sec-num">25.6</div><h3 class="section-h">When to break the rules on purpose</h3>
-  <p class="body">Normalization is the default, but not a religion. <b>Denormalization</b> is the deliberate reintroduction of some redundancy to make reads faster, storing a precomputed total, say, so you do not recompute it on every query. It is a considered performance trade, done knowingly, not the accidental mess of a badly designed table. Normalize first; denormalize later only with a measured reason. (There are stricter forms beyond 3NF, like BCNF, but 3NF covers the vast majority of real designs.)</p>
+  <p class="body">Normalization is the default approach, but it is not a strict rule to follow no matter what. <b>Denormalization</b> is the deliberate reintroduction of some redundancy to make reads faster. For example, you might store a precomputed total so you do not recompute it on every query. It is a considered performance trade, done knowingly, not the accidental mess of a badly designed table. Normalize first; denormalize later only with a measured reason. (There are stricter forms beyond 3NF, like BCNF, but 3NF covers the vast majority of real designs.)</p>
 
   <div class="sec-num">Recap</div><h3 class="section-h">Store each fact once</h3>
-  <p class="body">Normalization organises columns so every fact is stored in exactly one place, preventing update, insertion and deletion anomalies. Keys anchor the design, 1NF/2NF/3NF are the practical checklist ("the key, the whole key, and nothing but the key"), junction tables handle many-to-many, and denormalization is a deliberate, measured exception for speed. The customers/restaurants/orders schema you have used throughout is a clean, normalized example.</p>
+  <p class="body">Normalization organises columns so every fact is stored in exactly one place, preventing update, insertion and deletion anomalies. Keys are the starting point for the design. 1NF, 2NF, and 3NF form the practical checklist: the key, the whole key, and nothing but the key. Junction tables handle many-to-many relationships. Denormalization is a deliberate, measured exception, used only for speed. The customers/restaurants/orders schema you have used throughout is a clean, normalized example.</p>
 `};
 
 lessons['26']={ short:'Best practices & scaling', where:'Part VIII · <b>Best practices &amp; scaling</b>', render:()=>`
   <div class="eyebrow">Part VIII · Chapter 26</div>
   <h2 class="title">Best practices and scaling</h2>
-  <p class="lead">You already know the language. This final chapter is about using it well: writing SQL that is readable, correct, and fast, and understanding what happens as the data grows large.</p>
+  <p class="lead">You already know the language. This chapter is about using it well. It covers writing SQL that is readable, correct, and fast. It also covers what happens as your data grows large.</p>
   <hr class="rule">
 
   <div class="sec-num">26.1</div><h3 class="section-h">Writing SQL people can trust</h3>
-  <p class="body">Good SQL is boring SQL, clear and predictable. A short checklist worth internalising:</p>
+  <p class="body">Good SQL is clear, simple, and predictable. Here is a short checklist worth remembering:</p>
   <div class="qb"><div class="qb-title">Everyday habits</div>
     <div class="qb-row"><span class="qb-kw kw-p">Name your columns</span><span class="qb-mean">prefer explicit columns over SELECT * in real code, so results are stable and you fetch only what you need.</span></div>
     <div class="qb-row"><span class="qb-kw kw-p">Always WHERE first</span><span class="qb-mean">on UPDATE and DELETE, write the WHERE before the change, and preview it with a SELECT.</span></div>
-    <div class="qb-row"><span class="qb-kw kw-a">Alias and format</span><span class="qb-mean">short table aliases, aligned clauses, and comments on the non-obvious bits. Future you will thank you.</span></div>
+    <div class="qb-row"><span class="qb-kw kw-a">Alias and format</span><span class="qb-mean">short table aliases, aligned clauses, and comments on the non-obvious bits. This makes it easier for you later.</span></div>
     <div class="qb-row"><span class="qb-kw kw-a">Constrain at the source</span><span class="qb-mean">use NOT NULL, UNIQUE, FOREIGN KEY, CHECK so the database rejects bad data itself.</span></div>
     <div class="qb-row"><span class="qb-kw kw-r">Parameterise input</span><span class="qb-mean">never insert user input directly into a query string; use placeholders. This is the injection defence from chapter 20.</span></div></div>
 
   <div class="sec-num">26.2</div><h3 class="section-h">Performance, the big levers</h3>
-  <p class="body">A handful of ideas cover most real-world speed. <b>Index</b> the columns you filter, join and sort on (chapter 19), that is the single biggest lever. Keep conditions <b>sargable</b>: <code class="inl">WHERE city = 'Mumbai'</code> can use an index, but wrapping the column in a function like <code class="inl">WHERE LOWER(city) = 'mumbai'</code> often cannot. Think in <b>sets, not loops</b>: one query that joins and groups beats fetching ids then looping a query per id (the dreaded "N+1"). And do not haul back more than you need, select the columns that matter and <code class="inl">LIMIT</code> large results.</p>
+  <p class="body">A handful of ideas cover most real-world speed. <b>Index</b> the columns you filter, join, and sort on (chapter 19). This is the single most effective change you can make. Keep conditions <b>sargable</b>: <code class="inl">WHERE city = 'Mumbai'</code> can use an index, but wrapping the column in a function like <code class="inl">WHERE LOWER(city) = 'mumbai'</code> often cannot. Think in <b>sets, not loops</b>: one query that joins and groups beats fetching ids and then running a separate query for each one (this is called the N+1 problem). Also, do not fetch more data than you need. Select only the columns that matter, and use <code class="inl">LIMIT</code> on large results.</p>
 
   <div class="sec-num">26.3</div><h3 class="section-h">EXPLAIN, seeing what the database actually does</h3>
-  <p class="body">You do not have to guess whether a query is efficient, ask. <b>EXPLAIN</b> (in SQLite, <code class="inl">EXPLAIN QUERY PLAN</code>) shows the database's plan: whether it scans the whole table or jumps via an index. Run the two cells and compare, one before an index, one after.</p>
+  <p class="body">You do not have to guess whether a query is efficient. You can ask the database directly. <b>EXPLAIN</b> (in SQLite, <code class="inl">EXPLAIN QUERY PLAN</code>) shows the database's plan: whether it scans the whole table or jumps via an index. Run the two examples below and compare them: one before adding an index, one after.</p>
   ${ed("EXPLAIN QUERY PLAN\nSELECT * FROM orders WHERE customer_id = 1;",true)}
   ${ed("CREATE INDEX IF NOT EXISTS idx_orders_customer ON orders (customer_id);\nEXPLAIN QUERY PLAN\nSELECT * FROM orders WHERE customer_id = 1;")}
   <p class="aside">Look for the word SCAN versus SEARCH. SCAN reads every row; SEARCH USING INDEX jumps straight to matches. On tiny tables the optimiser may still scan (it is cheap enough), but on large tables that difference is the gap between instant and painfully slow. EXPLAIN is how you check rather than hope.</p>
 
   <div class="sec-num">26.4</div><h3 class="section-h">Integrity and safety, briefly</h3>
-  <p class="body">Correctness is a feature. Lean on <b>constraints</b> to keep data valid, wrap multi-step changes in <b>transactions</b> so a failure cannot leave things half-done, and grant each application or user the <b>least privilege</b> it needs (a reporting tool should probably only SELECT). None of this is glamorous, and all of it saves you at 2am.</p>
+  <p class="body">Correctness is a feature. Rely on <b>constraints</b> to keep data valid. Wrap multi-step changes in <b>transactions</b>, so a failure cannot leave things half-done. Grant each application or user the <b>least privilege</b> it needs: for example, a reporting tool should probably only be allowed to use SELECT. None of this is glamorous work, but all of it prevents serious problems later.</p>
 
   <div class="sec-num">26.5</div><h3 class="section-h">Scaling, when the data gets big</h3>
-  <p class="body">When one database starts to strain, these are the moves, roughly in the order teams reach for them:</p>
+  <p class="body">When one database is no longer fast enough, here are the common next steps, roughly in the order teams try them:</p>
   <div class="qb"><div class="qb-title">Ways to scale</div>
     <div class="qb-row"><span class="qb-kw kw-p">Index & tune</span><span class="qb-mean">first, always: the right indexes and better queries fix most "slow database" problems cheaply.</span></div>
     <div class="qb-row"><span class="qb-kw kw-p">Scale up (vertical)</span><span class="qb-mean">a bigger machine, more CPU/RAM. Simple, but has a ceiling and gets expensive.</span></div>
-    <div class="qb-row"><span class="qb-kw kw-a">Caching</span><span class="qb-mean">keep hot results in fast storage (often a key-value store like Redis) so the database is asked less.</span></div>
+    <div class="qb-row"><span class="qb-kw kw-a">Caching</span><span class="qb-mean">keep hot results in fast storage (often a key-value store like Redis), so fewer requests reach the database.</span></div>
     <div class="qb-row"><span class="qb-kw kw-a">Read replicas</span><span class="qb-mean">copies that serve reads, spreading load; the primary handles writes.</span></div>
     <div class="qb-row"><span class="qb-kw kw-a">Connection pooling</span><span class="qb-mean">reuse a set of connections instead of opening one per request, avoiding a common bottleneck.</span></div>
-    <div class="qb-row"><span class="qb-kw kw-r">Partitioning / sharding</span><span class="qb-mean">split one huge table or database across pieces (by date, by region, by id range). Powerful, and the most complex.</span></div></div>
-  <p class="body">A grounding truth: most applications never need the exotic end of this list. A well-indexed, well-queried single database on a decent machine takes you remarkably far. Reach for sharding when you have measured a real need, not before. And recall the NoSQL discussion, sometimes the right scaling answer is a different tool for one specific job, alongside your SQL database rather than instead of it.</p>
+    <div class="qb-row"><span class="qb-kw kw-r">Partitioning / sharding</span><span class="qb-mean">split one huge table or database across pieces (by date, by region, by id range). This is powerful, but it is the most complex option.</span></div></div>
+  <p class="body">Here is the important point: most applications never need the exotic end of this list. A well-indexed, well-queried single database on a decent machine is enough for almost all real-world needs. Reach for sharding when you have measured a real need, not before. Also recall the NoSQL discussion from earlier: sometimes the right scaling answer is a different tool for one specific job, used alongside your SQL database rather than instead of it.</p>
 
   <div class="sec-num">Recap</div><h3 class="section-h">The end of the handbook</h3>
-  <p class="body">Write SQL that is explicit, safe, and readable; index what you search and use EXPLAIN to verify; protect data with constraints and transactions and parameterised queries; and scale by tuning first, then adding hardware, caching, replicas and, only when truly needed, partitioning. That is not just SQL syntax, it is the judgement to use it well. You have now been through the entire handbook, from your first SELECT to production craft. Go build something with it.</p>
+  <p class="body">Write SQL that is explicit, safe, and readable. Index what you search, and use EXPLAIN to verify it. Protect data with constraints, transactions, and parameterised queries. Scale by tuning first, then adding hardware, caching, and replicas. Reach for partitioning only when it is truly needed. That is not just SQL syntax. It is the judgement to use SQL well. You have now been through the entire handbook, from your first SELECT to writing production-ready SQL. Go build something with it.</p>
 `};

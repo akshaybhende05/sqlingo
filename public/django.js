@@ -190,19 +190,19 @@ lessons['00'] = {
   short: 'What is Django?', where: 'Groundwork · <b>What is Django, and why a &quot;framework&quot; at all?</b>', render: () => `
   <div class="eyebrow">Groundwork · Chapter 00</div>
   <h2 class="title">What is Django, and why a "framework" at all?</h2>
-  <p class="lead">Django is a full-featured Python web ${term('framework', 'framework')}: batteries included, opinionated, and built to get a complete, working web application running fast.</p>
+  <p class="lead">Django is a full-featured Python web ${term('framework', 'framework')}. It comes with most of what a web application needs already built in, and it is built to get a complete, working application running quickly.</p>
   <hr class="rule">
-  <p class="body">Without a framework, building TastyGo's backend from raw Python would mean writing your own URL-matching logic, your own database connection handling, your own HTML templating, your own admin interface, your own security protections, all before writing a single line of actual TastyGo-specific logic. Django provides all of that already, solved and battle-tested, so you focus on what makes TastyGo TastyGo.</p>
+  <p class="body">Without a framework, building TastyGo's backend from raw Python would mean writing your own URL-matching logic, your own database connection handling, and your own HTML templates. It would also mean writing your own admin interface and your own security protections, all before writing a single line of actual TastyGo-specific logic. Django already provides all of this, built and tested by many other projects, so you can focus on what makes TastyGo TastyGo.</p>
   <div class="analogy"><div class="lab">The plain-language version</div><div class="txt">Building a restaurant from raw materials means sourcing your own wood, forging your own nails, building your own tables. A framework is closer to leasing a fully fitted-out restaurant space: kitchen, tables, and utilities already there, so you focus on the food and the menu, exactly what makes your restaurant yours.</div></div>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Assuming a framework does everything for you.</b> Django removes a huge amount of repetitive infrastructure work, but your application's actual logic and design are still entirely up to you.</li>
-    <li><b>Fighting the framework's conventions.</b> Django is "opinionated," it has a preferred way of doing things; working with that grain is far smoother than working against it.</li>
+    <li><b>Fighting the framework's conventions.</b> Django is "opinionated": it has a preferred way of doing things. Working the way Django expects is far easier than working around it.</li>
   </ul></div>
   <div class="sec-num">0.1</div><h3 class="section-h">Recap</h3>
-  <p class="body">Django is a batteries-included Python web framework, providing URL routing, database access, templating, an admin interface, and security defaults out of the box, so you build application-specific logic instead of infrastructure.</p>
+  <p class="body">Django is a full-featured Python web framework. It already provides URL routing, database access, templating, an admin interface, and security defaults, so you build application-specific logic instead of infrastructure.</p>
   ${qMC('q1', 'easy', 'What does a framework like Django primarily provide?',
-    ['Nothing, it is just documentation', 'Pre-built structure and tools (routing, database access, templating, admin) so you don\'t solve those problems from scratch', 'A replacement for learning Python itself'],
-    1, 'A framework\'s core value is solving common, repetitive infrastructure problems once, well, so every project built on it doesn\'t have to solve them again from a blank file.')}
+    ['Nothing, it is just documentation', 'Pre-built structure and tools (routing, database access, templating, admin) so you do not solve those problems from scratch', 'A replacement for learning Python itself'],
+    1, 'A framework\'s core value is solving common, repetitive infrastructure problems once, so every project built on it does not have to solve them again from a blank file.')}
 `
 };
 
@@ -210,7 +210,7 @@ lessons['0b'] = {
   short: "Django's toolkit", where: 'Groundwork · <b>Django&#39;s toolkit: manage.py, apps, and project structure</b>', render: () => `
   <div class="eyebrow">Groundwork · Chapter 0b</div>
   <h2 class="title">Django's toolkit: manage.py, apps, and project structure</h2>
-  <p class="lead">A new Django project has a predictable shape, worth knowing before diving into any one piece of it.</p>
+  <p class="lead">A new Django project has a predictable shape. It helps to know this shape before you look closely at any one piece of it.</p>
   <hr class="rule">
   <pre class="code">tastygo/
     manage.py            # command-line tool for running/managing the project
@@ -221,7 +221,7 @@ lessons['0b'] = {
         models.py         # this app's data
         views.py          # this app's request-handling logic
         urls.py           # this app's own URL patterns</pre>
-  <p class="body"><code class="inl">manage.py</code> is the command-line entry point for nearly everything: running the dev server, creating migrations, creating an admin user. A Django "project" is the whole site; each "app" inside it is a self-contained feature area (orders, restaurants, accounts), which keeps a growing codebase organized rather than one giant tangle of files.</p>
+  <p class="body"><code class="inl">manage.py</code> is the command-line entry point for nearly everything: running the dev server, creating migrations, creating an admin user. A Django "project" is the whole site. Each "app" inside it is a self-contained feature area, such as orders, restaurants, or accounts. This keeps a growing codebase organized, rather than one giant tangle of files.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Confusing a Django "project" with a Django "app."</b> A project is the whole site; an app is one feature area within it. One project can, and usually does, contain several apps.</li>
     <li><b>Cramming everything into one giant app.</b> Splitting by feature area (orders, restaurants, accounts) keeps each app focused and easier to reason about as the project grows.</li>
@@ -238,9 +238,9 @@ lessons['0i'] = {
   short: 'Meet the project', where: 'Groundwork · <b>Meet the project: building TastyGo&#39;s backend in Django</b>', render: () => `
   <div class="eyebrow">Groundwork · Chapter 0i</div>
   <h2 class="title">Meet the project: building TastyGo's backend in Django</h2>
-  <p class="lead">Same TastyGo used across every CareerLadder course. This time, you're designing the actual Django project that would power it.</p>
+  <p class="lead">This course uses the same TastyGo example as every CareerLadder course. This time, you are designing the actual Django project that would power it.</p>
   <hr class="rule">
-  <p class="body">TastyGo's Django project will have three apps mirroring exactly the tables you already know from SQLingo: <code class="inl">customers</code>, <code class="inl">restaurants</code>, and <code class="inl">orders</code>. Each chapter ahead builds one real piece of this: models mapping to those tables, views handling requests about them, templates displaying them, and eventually an admin panel for managing them, all without writing raw SQL by hand, the ORM (chapter 09 onward) generates it for you.</p>
+  <p class="body">TastyGo's Django project will have three apps mirroring exactly the tables you already know from SQLingo: <code class="inl">customers</code>, <code class="inl">restaurants</code>, and <code class="inl">orders</code>. Each chapter ahead builds one real piece of this: models that map to those tables, views that handle requests about them, and templates that display them. Eventually, this also includes an admin panel for managing them. All of this happens without writing raw SQL by hand: the ORM (covered from chapter 09 onward) generates it for you.</p>
   <div class="sec-num">0.1</div><h3 class="section-h">Recap</h3>
   <p class="body">TastyGo's Django backend mirrors the same customers/restaurants/orders structure from SQLingo, giving you a concrete, familiar target to build toward chapter by chapter.</p>
   ${qMC('q1', 'easy', "TastyGo's Django project will have apps for which three areas?", ['Frontend, backend, and database', 'customers, restaurants, and orders', 'Models, views, and templates'], 1, 'These mirror the exact same three tables taught in SQLingo, giving this course a familiar, consistent target throughout.')}
@@ -251,14 +251,14 @@ lessons['01'] = {
   short: 'Projects vs. apps', where: 'Part I · <b>Projects vs. apps</b>', render: () => `
   <div class="eyebrow">Part I · Chapter 01</div>
   <h2 class="title">Projects vs. apps</h2>
-  <p class="lead">Deciding how to split a Django project into apps is one of the first real design decisions you'll make.</p>
+  <p class="lead">Deciding how to split a Django project into apps is one of the first real design decisions you will make.</p>
   <hr class="rule">
   <div class="qb"><div class="qb-title">A reasonable split for TastyGo</div>
     <div class="qb-row"><span class="qb-kw kw-p">accounts</span><span class="qb-mean">customer sign-up, login, profile</span></div>
     <div class="qb-row"><span class="qb-kw kw-a">restaurants</span><span class="qb-mean">restaurant listings, menus, ratings</span></div>
     <div class="qb-row"><span class="qb-kw kw-r">orders</span><span class="qb-mean">placing, tracking, and refunding orders</span></div>
   </div>
-  <p class="body">Each app can (and should) be reasonably self-contained: <code class="inl">orders</code> needing to reference a restaurant or a customer is normal and expected, but an app that reaches deep into unrelated logic across the whole project is usually a sign the split needs rethinking.</p>
+  <p class="body">Each app can (and should) be reasonably self-contained: <code class="inl">orders</code> needing to reference a restaurant or a customer is normal and expected, but an app that depends heavily on unrelated logic across the whole project is usually a sign the split needs rethinking.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Splitting apps too finely.</b> An app per model is usually overkill; group closely related functionality together.</li>
     <li><b>One giant "core" app holding everything.</b> This defeats the entire purpose of splitting into apps in the first place.</li>
@@ -266,7 +266,7 @@ lessons['01'] = {
   <div class="sec-num">1.1</div><h3 class="section-h">Recap</h3>
   <p class="body">Split a project into apps by feature area, each reasonably self-contained, neither too fine-grained nor one giant catch-all.</p>
   ${qScenario('q1', 'med', 'TastyGo wants to add restaurant-owner-facing tools (managing their own menu, seeing their own orders). Would you add this to the existing "restaurants" app, or create a new app? Explain your reasoning.',
-    'A reasonable answer: create a new app (e.g., "restaurant_portal" or "dashboard") rather than folding it into "restaurants," since it represents a distinct feature area (owner-facing tools) with different views, permissions, and templates than the customer-facing restaurant listings, even though it relates to the same underlying data. Keeping them separate keeps each app\'s views and permissions logic focused and easier to reason about.')}
+    'A reasonable answer: create a new app (for example, "restaurant_portal" or "dashboard") rather than adding it to "restaurants." This owner-facing feature is a distinct area, with different views, permissions, and templates than the customer-facing restaurant listings, even though it uses the same underlying data. Keeping them separate keeps each app\'s views and permissions logic focused and easier to understand.')}
 `
 };
 
@@ -274,7 +274,7 @@ lessons['02'] = {
   short: 'settings.py', where: 'Part I · <b>settings.py and configuration</b>', render: () => `
   <div class="eyebrow">Part I · Chapter 02</div>
   <h2 class="title">settings.py and configuration</h2>
-  <p class="lead">Every project-wide decision, which database to use, which apps are installed, security settings, lives in one file.</p>
+  <p class="lead">Every project-wide decision is stored in one file: which database to use, which apps are installed, and security settings.</p>
   <hr class="rule">
   <pre class="code">INSTALLED_APPS = [
     "django.contrib.admin",
@@ -291,16 +291,16 @@ DATABASES = {
 }
 
 DEBUG = True   # never True in production, chapter 28</pre>
-  <p class="body"><code class="inl">INSTALLED_APPS</code> tells Django which apps (yours and built-in ones like the admin) are actually active. <code class="inl">DATABASES</code> configures which real database engine to connect to, exactly what the Fundamentals course's "what a database actually is" chapter was preparing you for, this is where you'd plug in PostgreSQL, MySQL, or SQLite.</p>
+  <p class="body"><code class="inl">INSTALLED_APPS</code> tells Django which apps (yours and built-in ones like the admin) are actually active. <code class="inl">DATABASES</code> configures which real database engine to connect to. This is exactly what the Fundamentals course's "what a database actually is" chapter was preparing you for. This is where you would plug in PostgreSQL, MySQL, or SQLite.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
-    <li><b>Forgetting to add a new app to INSTALLED_APPS.</b> An app that exists as a folder but isn't registered here won't have its models recognized by migrations, or its admin registered.</li>
+    <li><b>Forgetting to add a new app to INSTALLED_APPS.</b> An app that exists as a folder but is not registered here will not have its models recognized by migrations, or its admin registered.</li>
     <li><b>Leaving DEBUG = True in production.</b> This can leak sensitive internal information (like full stack traces) to real users; covered in depth in chapter 28.</li>
   </ul></div>
   <div class="sec-num">2.1</div><h3 class="section-h">Recap</h3>
   <p class="body">settings.py centralizes project-wide configuration: installed apps, database connection, and security-relevant flags like DEBUG.</p>
   ${qMC('q1', 'easy', 'What happens if you create a new Django app but forget to add it to INSTALLED_APPS?',
-    ['Nothing, it works exactly the same either way', "Django won't recognize its models for migrations or register it properly, even though the folder exists", 'The project fails to start entirely'],
-    1, 'INSTALLED_APPS is what actually activates an app within the project; without it, Django doesn\'t know to look at that app\'s models, admin registrations, or other functionality.')}
+    ['Nothing, it works exactly the same either way', "Django will not recognize its models for migrations or register it properly, even though the folder exists", 'The project fails to start entirely'],
+    1, 'INSTALLED_APPS is what actually activates an app within the project. Without it, Django does not know to look at that app\'s models, admin registrations, or other functionality.')}
 `
 };
 
@@ -310,7 +310,7 @@ lessons['03'] = {
   <h2 class="title">The MTV pattern</h2>
   <p class="lead">Django organizes every request around three roles: Model, Template, View, each with one clear job.</p>
   <hr class="rule">
-  <svg viewBox="0 0 620 220" class="diagram" role="img" aria-label="Request flows to the URL router, to a view, which asks a model for data, then renders a template, returning a response">
+  <svg viewBox="0 0 620 220" class="diagram" role="img" aria-label="A request flows to the URL router, then to a view. The view asks a model for data, then renders a template, which returns the response.">
     <rect x="10" y="90" width="110" height="50" rx="8" fill="var(--rose-soft)" stroke="var(--rose)"/><text x="65" y="120" text-anchor="middle" font-size="10" fill="#7a251c">Browser request</text>
     <rect x="170" y="90" width="110" height="50" rx="8" fill="var(--amber-soft)" stroke="var(--amber)"/><text x="225" y="115" text-anchor="middle" font-size="10" fill="#7a4b0a">URL router</text><text x="225" y="128" text-anchor="middle" font-size="9" fill="#7a4b0a">(urls.py)</text>
     <rect x="330" y="90" width="110" height="50" rx="8" fill="var(--teal-soft)" stroke="var(--teal)"/><text x="385" y="120" text-anchor="middle" font-size="10" fill="var(--teal-deep)">View</text>
@@ -322,16 +322,16 @@ lessons['03'] = {
     </g>
     <defs><marker id="arrDJ1" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="var(--ink-faint)"/></marker></defs>
   </svg>
-  <p class="body">The URL router (urls.py) picks a view based on the request path. The view asks the Model layer for whatever data it needs, then hands that data to a Template, which renders it into real HTML sent back as the response. Each piece only does its own job: models don't format HTML, templates don't query the database directly.</p>
+  <p class="body">The URL router (urls.py) picks a view based on the request path. The view asks the Model layer for whatever data it needs. It then hands that data to a Template, which renders it into real HTML. That HTML becomes the response sent back to the browser. Each piece only does its own job: models do not format HTML, and templates do not query the database directly.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Putting database queries directly inside a template.</b> Templates are for presentation only; data-fetching belongs in the view.</li>
-    <li><b>Confusing Django's MTV with the more commonly known MVC pattern.</b> They're closely related; Django's "View" plays the role most other frameworks call a "Controller," and Django's "Template" plays the role most call a "View."</li>
+    <li><b>Confusing Django's MTV with the more commonly known MVC pattern.</b> They are closely related. Django's "View" plays the role that most other frameworks call a "Controller." Django's "Template" plays the role that most other frameworks call a "View."</li>
   </ul></div>
   <div class="sec-num">3.1</div><h3 class="section-h">Recap</h3>
-  <p class="body">MTV splits responsibility cleanly: Models hold and query data, Views contain request-handling logic, Templates render the final HTML, connected by URL routing that decides which view handles which request.</p>
+  <p class="body">MTV splits responsibility cleanly. Models hold and query data. Views contain request-handling logic. Templates render the final HTML. URL routing decides which view handles which request.</p>
   ${qMC('q1', 'easy', 'In Django\'s MTV pattern, which piece is responsible for actually querying the database?',
     ['The Template', 'The Model (via the ORM)', 'The URL router'],
-    1, 'Models, through the ORM, are where data access lives; views call into models to get data, and templates only render whatever the view already gathered.')}
+    1, 'Models, through the ORM, are responsible for data access. Views call into models to get data. Templates only render whatever the view already gathered.')}
 `
 };
 
@@ -344,13 +344,13 @@ lessons['04'] = {
   <pre class="code">$ python manage.py runserver
 Watching for file changes with StatReloader
 Starting development server at http://127.0.0.1:8000/</pre>
-  <p class="body">This dev server is deliberately simple and not meant for real users, exactly the "dev environment" concept from the Fundamentals course: fast to restart, forgiving, and never what you'd actually deploy. The DevOps course later covers what does run Django in production (a real WSGI/ASGI server, often behind a reverse proxy like nginx).</p>
+  <p class="body">This dev server is deliberately simple and not meant for real users. This is exactly the "dev environment" concept from the Fundamentals course: fast to restart, forgiving, and never what you would actually deploy. The DevOps course later covers what does run Django in production: a real WSGI or ASGI server, often behind a reverse proxy like nginx.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
-    <li><b>Using <code class="inl">runserver</code> in production.</b> It's explicitly documented as unsuitable for real traffic; it lacks the performance and security hardening a real deployment needs.</li>
+    <li><b>Using <code class="inl">runserver</code> in production.</b> It is explicitly documented as unsuitable for real traffic. It lacks the performance and security hardening that a real deployment needs.</li>
   </ul></div>
   <div class="sec-num">4.1</div><h3 class="section-h">Recap</h3>
-  <p class="body"><code class="inl">runserver</code> is a simple, convenient local development server, never meant for production traffic, which uses a proper WSGI/ASGI server instead.</p>
-  ${qMC('q1', 'easy', 'Why shouldn\'t Django\'s runserver be used to serve real production traffic?',
+  <p class="body"><code class="inl">runserver</code> is a simple, convenient local development server. It is never meant for production traffic, which instead uses a proper WSGI or ASGI server.</p>
+  ${qMC('q1', 'easy', 'Why should Django\'s runserver not be used to serve real production traffic?',
     ['It is actually fine for production', 'It is deliberately simple, meant for local development, and lacks the performance/security a real deployment needs', 'It cannot serve HTML at all'],
     1, 'runserver is explicitly built for convenience during development, not for the performance or security hardening real production traffic requires.')}
 `
@@ -369,12 +369,12 @@ urlpatterns = [
     path("restaurants/", views.restaurant_list),
     path("restaurants/nearby/", views.nearby_restaurants),
 ]</pre>
-  <p class="body">Django checks each pattern in order and uses the first one that matches the request's path. A request for <code class="inl">/restaurants/nearby/</code> matches the second pattern; note that if it were listed before a broader pattern that could also match it, order would matter a great deal.</p>
+  <p class="body">Django checks each pattern in order and uses the first one that matches the request's path. A request for <code class="inl">/restaurants/nearby/</code> matches the second pattern. If a broader pattern that could also match it were listed first instead, the order would matter a great deal.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Ordering a broad, catch-all pattern before a more specific one.</b> Since Django stops at the first match, a broad pattern listed first can silently "steal" requests meant for a more specific pattern listed after it.</li>
   </ul></div>
   <div class="sec-num">5.1</div><h3 class="section-h">Recap</h3>
-  <p class="body">urlpatterns is an ordered list of path-to-view mappings, checked top to bottom; the first matching pattern wins.</p>
+  <p class="body">urlpatterns is an ordered list of path-to-view mappings, checked top to bottom. The first matching pattern wins.</p>
   ${qMC('q1', 'easy', 'If a broad pattern like path("restaurants/<str:name>/") is listed before path("restaurants/nearby/"), what happens to a request for /restaurants/nearby/?',
     ['Django always finds the most specific match automatically, so this is fine', 'The broad pattern matches first and "nearby" gets treated as the name parameter, likely not reaching the intended view', 'Django raises an error for ambiguous patterns'],
     1, 'Since Django checks patterns in order and stops at the first match, a broader pattern listed earlier can unintentionally capture a request meant for a more specific pattern listed later.')}
@@ -385,7 +385,7 @@ lessons['06'] = {
   short: 'Path converters', where: 'Part II · <b>Path converters and dynamic URLs</b>', render: () => `
   <div class="eyebrow">Part II · Chapter 06</div>
   <h2 class="title">Path converters and dynamic URLs</h2>
-  <p class="lead">Most real URLs aren't fixed text, they contain a variable part, like which specific order you're looking at.</p>
+  <p class="lead">Most real URLs are not fixed text. They contain a variable part, like which specific order you are looking at.</p>
   <hr class="rule">
   <pre class="code">urlpatterns = [
     path("orders/<int:order_id>/", views.order_detail),
@@ -400,14 +400,14 @@ def order_detail(request, order_id):
     <div class="qb-row"><span class="qb-kw kw-a">&lt;str:x&gt;</span><span class="qb-mean">matches any non-slash text</span></div>
     <div class="qb-row"><span class="qb-kw kw-r">&lt;slug:x&gt;</span><span class="qb-mean">matches URL-friendly text (letters, numbers, hyphens, underscores)</span></div>
   </div>
-  <p class="body">The converted value is passed directly into the view function as a parameter with that same name, already the right Python type, so <code class="inl">order_id</code> arrives as a real int, not a string you'd need to convert yourself.</p>
+  <p class="body">The converted value is passed directly into the view function as a parameter with that same name, already the right Python type. This means <code class="inl">order_id</code> arrives as a real int, not a string you would need to convert yourself.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Using &lt;str:x&gt; when &lt;int:x&gt; is more correct.</b> &lt;int:x&gt; also validates the URL actually contains digits, rejecting non-numeric input before it ever reaches your view.</li>
   </ul></div>
   <div class="sec-num">6.1</div><h3 class="section-h">Recap</h3>
-  <p class="body">Path converters (&lt;int:x&gt;, &lt;str:x&gt;, &lt;slug:x&gt;) capture a variable part of the URL, validate its shape, and pass it into the view already converted to the right Python type.</p>
+  <p class="body">Path converters (&lt;int:x&gt;, &lt;str:x&gt;, &lt;slug:x&gt;) capture a variable part of the URL and validate its shape. They pass it into the view already converted to the right Python type.</p>
   ${qScenario('q1', 'med', 'Write a urls.py pattern for viewing a specific restaurant by its numeric id, at a path like /restaurants/42/, mapped to a view called restaurant_detail.',
-    'path("restaurants/<int:restaurant_id>/", views.restaurant_detail) — using <int:...> both validates that the URL segment is actually numeric and passes it into the view function as restaurant_id, already converted to a Python int.')}
+    'path("restaurants/<int:restaurant_id>/", views.restaurant_detail). Using <int:...> validates that the URL segment is actually numeric, and passes it into the view function as restaurant_id, already converted to a Python int.')}
 `
 };
 
@@ -415,22 +415,22 @@ lessons['07'] = {
   short: 'Named URLs & reverse()', where: 'Part II · <b>Named URLs and reverse()</b>', render: () => `
   <div class="eyebrow">Part II · Chapter 07</div>
   <h2 class="title">Named URLs and reverse()</h2>
-  <p class="lead">Hard-coding a URL path as a string everywhere it's used is fragile. Naming a URL pattern lets you refer to it by name instead.</p>
+  <p class="lead">Hard-coding a URL path as a string everywhere it is used is fragile. Naming a URL pattern lets you refer to it by name instead.</p>
   <hr class="rule">
   <pre class="code">path("orders/<int:order_id>/", views.order_detail, name="order-detail")
 
 # elsewhere, instead of hard-coding "/orders/42/":
 from django.urls import reverse
 url = reverse("order-detail", args=[42])</pre>
-  <p class="body">If the actual URL structure ever changes (say, <code class="inl">/orders/&lt;id&gt;/</code> becomes <code class="inl">/order/&lt;id&gt;/details/</code>), every place using <code class="inl">reverse("order-detail", ...)</code> keeps working automatically, since it looks the path up by name rather than assuming it stays fixed text forever.</p>
+  <p class="body">If the actual URL structure ever changes (say, <code class="inl">/orders/&lt;id&gt;/</code> becomes <code class="inl">/order/&lt;id&gt;/details/</code>), every place using <code class="inl">reverse("order-detail", ...)</code> keeps working automatically. This is because it looks the path up by name, rather than assuming the path stays fixed text forever.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Hard-coding URL strings throughout templates and views.</b> This breaks silently the moment a URL pattern changes; named URLs with reverse() (or the equivalent {% url %} template tag) avoid this entirely.</li>
   </ul></div>
   <div class="sec-num">7.1</div><h3 class="section-h">Recap</h3>
-  <p class="body">Naming a URL pattern and using reverse() (or {% url %} in templates) to generate links to it means URL structure can change in one place without breaking every reference to it.</p>
+  <p class="body">Naming a URL pattern and using reverse() (or {% url %} in templates) generates links to it. This means the URL structure can change in one place, without breaking every reference to it.</p>
   ${qMC('q1', 'med', 'Why prefer reverse("order-detail", args=[42]) over hard-coding the string "/orders/42/" throughout the codebase?',
     ['reverse() is always faster to type', 'If the URL pattern\'s actual path ever changes, every reverse() call keeps working automatically, while hard-coded strings would all silently break', 'Hard-coded strings are not valid Python'],
-    1, 'Named URLs decouple "what this page is called" from "what its exact path currently is," so a later path change doesn\'t require hunting down every hard-coded reference.')}
+    1, 'Named URLs decouple "what this page is called" from "what its exact path currently is," so a later path change does not require hunting down every hard-coded reference.')}
 `
 };
 
@@ -438,7 +438,7 @@ lessons['08'] = {
   short: "Including app URLs", where: 'Part II · <b>Including an app&#39;s URLs</b>', render: () => `
   <div class="eyebrow">Part II · Chapter 08</div>
   <h2 class="title">Including an app's URLs</h2>
-  <p class="lead">Each app typically owns its own urls.py, and the project's top-level urls.py simply includes them, keeping URL routing organized the same way apps organize everything else.</p>
+  <p class="lead">Each app typically owns its own urls.py. The project's top-level urls.py simply includes them, keeping URL routing organized the same way apps organize everything else.</p>
   <hr class="rule">
   <pre class="code"># tastygo/urls.py (project-level)
 from django.urls import path, include
@@ -468,7 +468,7 @@ lessons['09'] = {
   short: 'Defining a model', where: 'Part III · <b>Defining a model</b>', render: () => `
   <div class="eyebrow">Part III · Chapter 09</div>
   <h2 class="title">Defining a model</h2>
-  <p class="lead">A ${term('model', 'model')} is a Python class where each attribute becomes a database column, the ORM's bridge between your code and a real table.</p>
+  <p class="lead">A ${term('model', 'model')} is a Python class where each attribute becomes a database column. The ORM uses this class to connect your code to a real table.</p>
   <hr class="rule">
   <pre class="code">from django.db import models
 
@@ -480,10 +480,10 @@ class Restaurant(models.Model):
 
     def __str__(self):
         return self.name</pre>
-  <p class="body">This should look immediately familiar: it's the exact same <code class="inl">restaurants</code> table from SQLingo, just declared as a Python class instead of a <code class="inl">CREATE TABLE</code> statement. A migration (Part IV) is what actually turns this class definition into a real table.</p>
+  <p class="body">This should look immediately familiar: it is the exact same <code class="inl">restaurants</code> table from SQLingo, just declared as a Python class instead of a <code class="inl">CREATE TABLE</code> statement. A migration (Part IV) is what actually turns this class definition into a real table.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
-    <li><b>Forgetting <code class="inl">__str__</code>.</b> Without it, objects display as an unhelpful "Restaurant object (1)" everywhere, including the admin panel; defining it costs one line and helps constantly.</li>
-    <li><b>Defining a model but never running a migration for it.</b> The Python class alone doesn't create the table; a migration (chapter 13-14) has to actually apply that change to the database.</li>
+    <li><b>Forgetting <code class="inl">__str__</code>.</b> Without it, objects display as an unhelpful "Restaurant object (1)" everywhere, including the admin panel. Defining it costs one line and helps constantly.</li>
+    <li><b>Defining a model but never running a migration for it.</b> The Python class alone does not create the table. A migration (chapter 13-14) has to actually apply that change to the database.</li>
   </ul></div>
   <div class="sec-num">9.1</div><h3 class="section-h">Recap</h3>
   <p class="body">A model class, subclassing models.Model, defines fields that become database columns. Migrations (covered next in Part IV) turn that definition into a real table.</p>
@@ -502,7 +502,7 @@ lessons['10'] = {
   short: 'Field types & options', where: 'Part III · <b>Field types and options</b>', render: () => `
   <div class="eyebrow">Part III · Chapter 10</div>
   <h2 class="title">Field types and options</h2>
-  <p class="lead">Beyond the field type itself, options control validation and database-level constraints, directly echoing the "constraints" idea from SQLingo.</p>
+  <p class="lead">Beyond the field type itself, options control validation and database-level constraints, directly matching the "constraints" idea from SQLingo.</p>
   <hr class="rule">
   <pre class="code">class Order(models.Model):
     amount = models.IntegerField()
@@ -515,13 +515,13 @@ lessons['10'] = {
     <div class="qb-row"><span class="qb-kw kw-r">default=...</span><span class="qb-mean">value used automatically if none is provided</span></div>
   </div>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
-    <li><b>Confusing null and blank.</b> null is about the database column; blank is about form validation. A field can allow one without the other, and text fields conventionally use blank=True rather than null=True, to avoid two different ways of representing "empty."</li>
+    <li><b>Confusing null and blank.</b> null is about the database column; blank is about form validation. A field can allow one without the other. Text fields conventionally use blank=True rather than null=True, to avoid two different ways of representing "empty."</li>
   </ul></div>
   <div class="sec-num">10.1</div><h3 class="section-h">Recap</h3>
-  <p class="body">null=True permits NULL at the database level; blank=True permits an empty value in form validation, two related but distinct concerns.</p>
+  <p class="body">null=True permits NULL at the database level. blank=True permits an empty value in form validation. These are two related but distinct concerns.</p>
   ${qMC('q1', 'med', 'What is the difference between null=True and blank=True on a Django model field?',
     ['They are exactly the same option under two names', 'null=True controls whether NULL is allowed in the database column; blank=True controls whether the field can be empty in form validation', 'blank=True is only relevant for numeric fields'],
-    1, 'null is a database-level concern (can this column store NULL), while blank is a validation-level concern (can a form submit this field empty); they are related but independently configurable.')}
+    1, 'null is a database-level concern: can this column store NULL. blank is a validation-level concern: can a form submit this field empty. They are related, but independently configurable.')}
 `
 };
 
@@ -529,7 +529,7 @@ lessons['11'] = {
   short: 'Querying with the ORM', where: 'Part III · <b>Querying with the ORM</b>', render: () => `
   <div class="eyebrow">Part III · Chapter 11</div>
   <h2 class="title">Querying with the ORM</h2>
-  <p class="lead">The ${term('orm', 'ORM')} translates Python method calls into real SQL, run against a real database, no raw SQL required for most everyday queries.</p>
+  <p class="lead">The ${term('orm', 'ORM')} translates Python method calls into real SQL, run against a real database. No raw SQL is required for most everyday queries.</p>
   <hr class="rule">
   <svg viewBox="0 0 600 130" class="diagram" role="img" aria-label="Python ORM call translates into a real SQL query sent to the database">
     <rect x="10" y="35" width="230" height="60" rx="8" fill="var(--teal-soft)" stroke="var(--teal)"/><text x="125" y="60" text-anchor="middle" font-size="10" fill="var(--teal-deep)">Restaurant.objects.filter(</text><text x="125" y="76" text-anchor="middle" font-size="10" fill="var(--teal-deep)">city="Mumbai", rating__gte=4.5)</text>
@@ -541,9 +541,9 @@ lessons['11'] = {
 Restaurant.objects.get(id=1)          # exactly one, or raises an error
 Restaurant.objects.exclude(city="Delhi")
 Restaurant.objects.filter(city="Mumbai").order_by("-rating")</pre>
-  <p class="body">A ${term('queryset', 'QuerySet')} is "lazy," <code class="inl">.filter()</code> doesn't hit the database immediately; it builds up a query that only actually runs once you use the result (looping over it, converting to a list, and so on). This lets you chain several filters together before Django builds one final, efficient SQL query.</p>
+  <p class="body">A ${term('queryset', 'QuerySet')} is "lazy." <code class="inl">.filter()</code> does not hit the database immediately. It builds up a query that only actually runs once you use the result, for example by looping over it or converting it to a list. This lets you chain several filters together before Django builds one final, efficient SQL query.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
-    <li><b>Using .get() when a query might return zero or multiple rows.</b> .get() raises an error unless exactly one row matches; use .filter() (returning a QuerySet, possibly empty) when that's not guaranteed.</li>
+    <li><b>Using .get() when a query might return zero or multiple rows.</b> .get() raises an error unless exactly one row matches. Use .filter() (returning a QuerySet, possibly empty) when that is not guaranteed.</li>
     <li><b>Assuming .filter() immediately queries the database.</b> QuerySets are lazy, useful to know when reasoning about performance.</li>
   </ul></div>
   <div class="sec-num">11.1</div><h3 class="section-h">Recap</h3>
@@ -552,7 +552,7 @@ Restaurant.objects.filter(city="Mumbai").order_by("-rating")</pre>
     ['.get() is broken and should never be used', '.get() expects exactly one matching row and raises an error if zero or more than one exist; .filter() always returns a QuerySet, even if empty', 'They are functionally identical'],
     1, '.get() is specifically for "there should be exactly one," raising DoesNotExist or MultipleObjectsReturned otherwise; .filter() makes no such assumption.')}
   ${qScenario('q2', 'med', 'Write an ORM query returning all restaurants in "Pune" with a rating of at least 4.0, ordered by rating, highest first.',
-    'Restaurant.objects.filter(city="Pune", rating__gte=4.0).order_by("-rating") — the leading "-" on "rating" reverses the default ascending order to descending (highest first).')}
+    'Restaurant.objects.filter(city="Pune", rating__gte=4.0).order_by("-rating"). The leading "-" on "rating" reverses the default ascending order to descending (highest first).')}
 `
 };
 
@@ -577,7 +577,7 @@ lessons['12'] = {
 # following the relationship in Python:
 order.customer.name
 customer.order_set.all()   # every order this customer has placed</pre>
-  <p class="body"><code class="inl">on_delete</code> decides what happens to an Order if its Customer is deleted; <code class="inl">CASCADE</code> deletes the order too, matching the referential integrity concerns from SQLingo's own foreign key chapter.</p>
+  <p class="body"><code class="inl">on_delete</code> decides what happens to an Order if its Customer is deleted. <code class="inl">CASCADE</code> deletes the order too, matching the referential integrity concerns from SQLingo's own foreign key chapter.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Forgetting on_delete entirely.</b> Django requires it explicitly, precisely because silently picking a default behaviour for something this consequential would be risky.</li>
     <li><b>Choosing CASCADE without thinking it through.</b> Deleting a customer and silently deleting all their historical orders may not actually be the right business behaviour; SET_NULL or PROTECT are sometimes more appropriate.</li>
@@ -594,7 +594,7 @@ lessons['13'] = {
   short: 'What migrations are', where: 'Part IV · <b>What migrations are, and why</b>', render: () => `
   <div class="eyebrow">Part IV · Chapter 13</div>
   <h2 class="title">What migrations are, and why</h2>
-  <p class="lead">A ${term('migration', 'migration')} is Django's answer to a simple problem: your models describe the database you want, but something has to actually make the real database match.</p>
+  <p class="lead">A ${term('migration', 'migration')} is Django's answer to a simple problem. Your models describe the database you want, but something has to actually make the real database match.</p>
   <hr class="rule">
   <svg viewBox="0 0 600 130" class="diagram" role="img" aria-label="Model change generates a migration file, which is applied to update the real database schema">
     <rect x="10" y="35" width="170" height="60" rx="8" fill="var(--teal-soft)" stroke="var(--teal)"/><text x="95" y="60" text-anchor="middle" font-size="10" fill="var(--teal-deep)">Change a model</text><text x="95" y="76" text-anchor="middle" font-size="9" fill="var(--teal-deep)">(models.py)</text>
@@ -603,7 +603,7 @@ lessons['13'] = {
     <g stroke="var(--ink-faint)" stroke-width="2" fill="none" marker-end="url(#arrDJ4)"><path d="M180,65 L219,65"/><path d="M390,65 L429,65"/></g>
     <defs><marker id="arrDJ4" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="var(--ink-faint)"/></marker></defs>
   </svg>
-  <p class="body">Migration files are checked into version control alongside your code, so every environment, your machine, a teammate's, staging, production, applies the exact same sequence of schema changes in the exact same order, keeping every database's actual structure in sync with what the code expects.</p>
+  <p class="body">Migration files are checked into version control alongside your code. This means every environment, your machine, a teammate's, staging, production, applies the exact same sequence of schema changes in the exact same order. This keeps every database's actual structure in sync with what the code expects.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Changing a model and forgetting to generate/apply a migration.</b> The Python class and the real database silently disagree until a migration catches them up, which can cause confusing runtime errors.</li>
     <li><b>Not committing migration files to version control.</b> Without them, nobody else (or no other environment) can reproduce the same schema changes.</li>
@@ -630,12 +630,12 @@ Migrations for 'orders':
 $ python manage.py migrate
 Applying orders.0004_order_notes... OK</pre>
   <div class="qb"><div class="qb-title">Two distinct steps</div>
-    <div class="qb-row"><span class="qb-kw kw-p">makemigrations</span><span class="qb-mean">looks at your model changes and generates a migration file describing them (doesn't touch the database yet)</span></div>
+    <div class="qb-row"><span class="qb-kw kw-p">makemigrations</span><span class="qb-mean">looks at your model changes and generates a migration file describing them (does not touch the database yet)</span></div>
     <div class="qb-row"><span class="qb-kw kw-r">migrate</span><span class="qb-mean">actually applies pending migration files to the real database</span></div>
   </div>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Running makemigrations and assuming the database already changed.</b> It only generates the file; migrate is the step that actually applies it.</li>
-    <li><b>Running migrate without makemigrations first, after a model change.</b> There's no migration file yet describing the new change, so nothing new gets applied.</li>
+    <li><b>Running migrate without makemigrations first, after a model change.</b> There is no migration file yet describing the new change, so nothing new gets applied.</li>
   </ul></div>
   <div class="sec-num">14.1</div><h3 class="section-h">Recap</h3>
   <p class="body">makemigrations generates a migration file from model changes; migrate applies pending migration files to the real database. Neither replaces the other.</p>
@@ -651,16 +651,16 @@ lessons['15'] = {
   <h2 class="title">Changing a model safely</h2>
   <p class="lead">Some model changes are simple for Django to figure out automatically; others need a decision only you can make.</p>
   <hr class="rule">
-  <p class="body">Adding a brand-new field with no default value is exactly this kind of case: existing rows already have no value for it, so Django needs to know what to fill in for them. Running <code class="inl">makemigrations</code> for such a change interactively asks you to either supply a one-time default, or provide a callable/value in the field itself.</p>
+  <p class="body">Adding a brand-new field with no default value is exactly this kind of case. Existing rows already have no value for it, so Django needs to know what to fill in for them. Running <code class="inl">makemigrations</code> for such a change interactively asks you to either supply a one-time default, or provide a callable or value in the field itself.</p>
   <pre class="code">You are trying to add a non-nullable field 'notes' to order
-without a default; we can't do that (the database needs
+without a default; we cannot do that (the database needs
 something to populate existing rows).
 Please select a fix:
  1) Provide a one-off default now
  2) Quit and add a default in models.py</pre>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Adding a required field with no default to a table that already has real data.</b> This is exactly the scenario above, Django cannot invent a sensible value for existing rows on its own.</li>
-    <li><b>Renaming a field and expecting Django to know that's what happened.</b> Without extra care, Django may interpret it as removing the old field and adding an unrelated new one, potentially losing data; a genuine rename needs to be handled explicitly.</li>
+    <li><b>Renaming a field and expecting Django to know that is what happened.</b> Without extra care, Django may interpret it as removing the old field and adding an unrelated new one, potentially losing data. A real rename needs to be handled explicitly.</li>
   </ul></div>
   <div class="sec-num">15.1</div><h3 class="section-h">Recap</h3>
   <p class="body">Adding a required field to a table with existing data needs a default, since existing rows need some real value for it. Renaming fields needs explicit care to avoid Django treating it as an unrelated remove-and-add.</p>
@@ -676,13 +676,13 @@ lessons['16'] = {
   <p class="lead">A handful of migration mistakes account for the vast majority of real production incidents involving schema changes.</p>
   <hr class="rule">
   <div class="gotcha"><div class="lab">The big ones</div><ul>
-    <li><b>Deleting a column that's still in use.</b> Removing a field's migration drops the real database column; if any still-running code expects it, this causes immediate errors.</li>
+    <li><b>Deleting a column that is still in use.</b> Removing a field's migration drops the real database column; if any still-running code expects it, this causes immediate errors.</li>
     <li><b>Running migrations without a backup, on a production database with real data.</b> A migration that goes wrong partway through can leave a database in an inconsistent state.</li>
     <li><b>Large table migrations locking the table during business hours.</b> Changing a column type on a huge table can take real time and, on some databases, lock it for reads/writes while it runs.</li>
   </ul></div>
-  <p class="body">This is exactly the "risk-based testing" and "dev/staging/production" thinking from the QA and Fundamentals courses applied to schema changes specifically: test a migration thoroughly on staging with realistic data volume first, and have a rollback plan before ever running one against production.</p>
+  <p class="body">This is exactly the "risk-based testing" and "dev/staging/production" thinking from the QA and Fundamentals courses, applied to schema changes specifically. Test a migration thoroughly on staging with realistic data volume first, and have a rollback plan before ever running one against production.</p>
   <div class="sec-num">16.1</div><h3 class="section-h">Recap</h3>
-  <p class="body">The riskiest migrations remove or fundamentally change something still in use, or run against a large, live production table without a tested plan and a rollback path.</p>
+  <p class="body">The riskiest migrations remove or fundamentally change something still in use. They can also run against a large, live production table without a tested plan and a rollback path.</p>
   ${qMC('q1', 'med', 'Why is testing a migration on staging with realistic data volume important before running it on production?',
     ['Staging and production always behave identically regardless of data volume', 'A migration\'s behaviour and duration (and risk of locking a table) can depend heavily on how much real data exists, which staging with unrealistic data might not reveal', 'Migrations never behave differently based on data volume'],
     1, 'Some migrations are fast and safe on a small staging dataset but slow or lock-prone on a much larger production table; testing with realistic volume is what actually reveals that risk in advance.')}
@@ -693,15 +693,15 @@ lessons['17'] = {
   short: 'Function-based views', where: 'Part V · <b>Function-based views</b>', render: () => `
   <div class="eyebrow">Part V · Chapter 17</div>
   <h2 class="title">Function-based views</h2>
-  <p class="lead">A ${term('view', 'view')} is where request-handling logic actually lives. The simplest form is just a regular Python function.</p>
+  <p class="lead">A ${term('view', 'view')} is the place where request-handling logic actually goes. The simplest form is just a regular Python function.</p>
   <hr class="rule">
   <pre class="code">from django.shortcuts import render, get_object_or_404
 
 def restaurant_detail(request, restaurant_id):
     restaurant = get_object_or_404(Restaurant, id=restaurant_id)
     return render(request, "restaurant_detail.html", {"restaurant": restaurant})</pre>
-  <p class="body">Every view takes <code class="inl">request</code> as its first parameter (plus any URL-captured values, like <code class="inl">restaurant_id</code>), and must return an HttpResponse of some kind, <code class="inl">render()</code> is a shortcut that renders a template with the given context and wraps it in a response for you.</p>
-  <p class="body"><code class="inl">get_object_or_404</code> looks a record up and automatically returns a proper 404 response (rather than crashing with an unhandled error) if it doesn't exist, directly echoing the HTTP status code chapter from the QA and Fundamentals courses.</p>
+  <p class="body">Every view takes <code class="inl">request</code> as its first parameter, plus any URL-captured values, like <code class="inl">restaurant_id</code>. It must return an HttpResponse of some kind. <code class="inl">render()</code> is a shortcut that renders a template with the given context and wraps it in a response for you.</p>
+  <p class="body"><code class="inl">get_object_or_404</code> looks a record up and automatically returns a proper 404 response, rather than crashing with an unhandled error, if the record does not exist. This directly matches the HTTP status code chapter from the QA and Fundamentals courses.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Forgetting a view must always return a response.</b> A view function that falls through without returning anything raises an error.</li>
     <li><b>Using Model.objects.get() directly instead of get_object_or_404.</b> This raises an unhandled 500-style error for a missing record instead of a proper, expected 404.</li>
@@ -719,7 +719,7 @@ lessons['18'] = {
   short: 'Class-based views', where: 'Part V · <b>Class-based views</b>', render: () => `
   <div class="eyebrow">Part V · Chapter 18</div>
   <h2 class="title">Class-based views</h2>
-  <p class="lead">For common patterns, listing objects, showing one object's detail, Django provides ready-made view classes, directly building on this Developer track's Python course's OOP chapters.</p>
+  <p class="lead">For common patterns, such as listing objects or showing one object's detail, Django provides ready-made view classes. These directly build on this Developer track's Python course's OOP chapters.</p>
   <hr class="rule">
   <pre class="code">from django.views.generic import ListView, DetailView
 
@@ -731,12 +731,12 @@ class RestaurantListView(ListView):
 class RestaurantDetailView(DetailView):
     model = Restaurant
     template_name = "restaurant_detail.html"</pre>
-  <p class="body">These classes already know how to fetch the right data and render a template, following the exact inheritance pattern taught in the Python course: you're overriding or setting a small number of attributes on a well-tested parent class, rather than writing the whole request-handling flow yourself.</p>
+  <p class="body">These classes already know how to fetch the right data and render a template. This follows the exact inheritance pattern taught in the Python course: you are overriding or setting a small number of attributes on a well-tested parent class, rather than writing the whole request-handling flow yourself.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
-    <li><b>Reaching for a class-based view when a simple function would be clearer.</b> For genuinely simple, one-off logic, a function-based view can be easier to read; class-based views shine for common, repeatable patterns.</li>
+    <li><b>Reaching for a class-based view when a simple function would be clearer.</b> For simple, one-off logic, a function-based view can be easier to read. Class-based views work best for common, repeatable patterns.</li>
   </ul></div>
   <div class="sec-num">18.1</div><h3 class="section-h">Recap</h3>
-  <p class="body">Class-based generic views (ListView, DetailView, and others) implement common request-handling patterns for you; you customize by setting attributes or overriding specific methods, not rewriting the whole view.</p>
+  <p class="body">Class-based generic views (ListView, DetailView, and others) implement common request-handling patterns for you. You customize them by setting attributes or overriding specific methods, not by rewriting the whole view.</p>
   ${qMC('q1', 'med', 'What is the main advantage of using ListView instead of writing a function-based view that does the same thing?',
     ['ListView is always faster at runtime', 'ListView already implements the common "fetch a list of objects and render a template" pattern, so you only configure a few attributes instead of writing that logic yourself', 'Function-based views cannot fetch lists of objects'],
     1, 'Class-based generic views exist specifically to avoid re-writing very common patterns from scratch; you configure them rather than reimplement the underlying logic.')}
@@ -758,9 +758,9 @@ lessons['19'] = {
     city = request.GET.get("city", "")
     results = Restaurant.objects.filter(city__icontains=city)
     return render(request, "search.html", {"results": results})</pre>
-  <p class="body">A response can be <code class="inl">render()</code> (rendered HTML), <code class="inl">JsonResponse</code> (for JSON APIs, foreshadowing FastAPI), or a bare <code class="inl">HttpResponse</code>, but a view must always return one of these, exactly as the client-server chapter from the Fundamentals course described: every request gets an answer.</p>
+  <p class="body">A response can be <code class="inl">render()</code> (rendered HTML), <code class="inl">JsonResponse</code> (for JSON APIs, which previews FastAPI), or a bare <code class="inl">HttpResponse</code>. A view must always return one of these. This matches exactly what the client-server chapter from the Fundamentals course described: every request gets an answer.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
-    <li><b>Reading form data from request.GET on a POST request.</b> Submitted form data lives in request.POST, not request.GET; mixing these up is a common early bug.</li>
+    <li><b>Reading form data from request.GET on a POST request.</b> Submitted form data is stored in request.POST, not request.GET. Mixing these up is a common early bug.</li>
   </ul></div>
   <div class="sec-num">19.1</div><h3 class="section-h">Recap</h3>
   <p class="body">The request object carries the method, submitted data, and the current user. A view must return a response object of some kind, whether rendered HTML, JSON, or a bare HTTP response.</p>
@@ -791,13 +791,13 @@ def place_order(request):
         else:
             return render(request, "order_form.html", {"form": form})
     return render(request, "order_form.html", {"form": OrderForm()})</pre>
-  <p class="body"><code class="inl">form.is_valid()</code> runs all the field-level validation at once (type checks, min/max, required fields), and <code class="inl">form.cleaned_data</code> gives back validated, correctly-typed Python values, never raw, unchecked request data.</p>
+  <p class="body"><code class="inl">form.is_valid()</code> runs all the field-level validation at once: type checks, min/max, and required fields. <code class="inl">form.cleaned_data</code> then gives back validated, correctly-typed Python values, never raw, unchecked request data.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Using request.POST data directly without validating it through a Form.</b> This skips type checking and validation entirely, exactly the kind of unvalidated-input risk the QA and Fundamentals security chapters warned about.</li>
     <li><b>Forgetting to handle the invalid case.</b> Re-rendering the form with its errors (rather than silently failing) is what lets the user actually fix their mistake.</li>
   </ul></div>
   <div class="sec-num">20.1</div><h3 class="section-h">Recap</h3>
-  <p class="body">A Form class validates and type-converts submitted data. Always check form.is_valid() before trusting form.cleaned_data, and re-render the form with errors if it's not.</p>
+  <p class="body">A Form class validates and type-converts submitted data. Always check form.is_valid() before trusting form.cleaned_data, and re-render the form with errors if it is not valid.</p>
   ${qMC('q1', 'med', 'Why use form.cleaned_data instead of reading request.POST directly?',
     ['They contain exactly the same data either way', 'cleaned_data holds data that has already been validated and correctly type-converted by the form, unlike raw request.POST', 'request.POST is only available for GET requests'],
     1, 'cleaned_data is only populated after successful validation, and values are converted to their proper Python types (e.g. actual ints, not strings), unlike the raw, unvalidated request.POST.')}
@@ -825,7 +825,7 @@ lessons['21'] = {
     <div class="qb-row"><span class="qb-kw kw-r">{% tag %}</span><span class="qb-mean">logic: loops, conditionals, template inheritance</span></div>
   </div>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
-    <li><b>Trying to do heavy logic (complex calculations, database writes) inside a template.</b> Templates are deliberately limited; that logic belongs in the view, keeping presentation and logic cleanly separated, exactly the MTV pattern from chapter 03.</li>
+    <li><b>Trying to do heavy logic (complex calculations, database writes) inside a template.</b> Templates are deliberately limited; that logic belongs in the view. This keeps presentation and logic cleanly separated, exactly matching the MTV pattern from chapter 03.</li>
   </ul></div>
   <div class="sec-num">21.1</div><h3 class="section-h">Recap</h3>
   <p class="body">{{ }} outputs values; {% %} handles logic like loops and conditionals. Templates are deliberately limited to keep presentation logic simple and separate from view logic.</p>
@@ -859,15 +859,15 @@ lessons['22'] = {
 {% block content %}
   &lt;h1&gt;Restaurants&lt;/h1&gt;
 {% endblock %}</pre>
-  <p class="body">Every page extending <code class="inl">base.html</code> automatically gets the shared nav and layout, and only needs to fill in its own <code class="inl">{% block content %}</code>, changing the shared layout once updates every page that extends it.</p>
+  <p class="body">Every page extending <code class="inl">base.html</code> automatically gets the shared nav and layout. It only needs to fill in its own <code class="inl">{% block content %}</code>. Changing the shared layout once updates every page that extends it.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Copy-pasting the same header/nav HTML into every template.</b> This is exactly the duplication template inheritance solves; a later design change would otherwise need updating in every single file.</li>
   </ul></div>
   <div class="sec-num">22.1</div><h3 class="section-h">Recap</h3>
   <p class="body">{% extends %} and {% block %} let child templates inherit shared layout from a base template, overriding only the specific sections that differ.</p>
   ${qMC('q1', 'easy', 'What is the main benefit of {% extends "base.html" %} across many templates?',
-    ['It makes pages load faster', 'Shared layout (nav, header, footer) lives in one place, so changing it updates every template that extends it', 'It replaces the need for CSS entirely'],
-    1, 'Template inheritance centralizes shared layout in a base template, avoiding duplicated HTML and letting one change propagate everywhere it\'s used.')}
+    ['It makes pages load faster', 'Shared layout (nav, header, footer) is defined in one place, so changing it updates every template that extends it', 'It replaces the need for CSS entirely'],
+    1, 'Template inheritance centralizes shared layout in a base template, avoiding duplicated HTML and letting one change propagate everywhere it is used.')}
 `
 };
 
@@ -884,12 +884,12 @@ lessons['23'] = {
         "restaurant": restaurant,
         "similar_restaurants": similar,
     })</pre>
-  <p class="body">The template can use <code class="inl">{{ restaurant.name }}</code> and loop over <code class="inl">similar_restaurants</code>, but it has no way to reach anything not explicitly passed in this dictionary, reinforcing MTV's separation: the view decides exactly what data is available, the template only decides how to display it.</p>
+  <p class="body">The template can use <code class="inl">{{ restaurant.name }}</code> and loop over <code class="inl">similar_restaurants</code>, but it has no way to reach anything not explicitly passed in this dictionary. This reinforces MTV's separation: the view decides exactly what data is available, and the template only decides how to display it.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
-    <li><b>Assuming a template can access anything the view has access to.</b> Only what's explicitly included in the context dictionary is visible; forgetting to pass something is a very common source of a template silently rendering blank.</li>
+    <li><b>Assuming a template can access anything the view has access to.</b> Only what is explicitly included in the context dictionary is visible. Forgetting to pass something is a very common source of a template silently rendering blank.</li>
   </ul></div>
   <div class="sec-num">23.1</div><h3 class="section-h">Recap</h3>
-  <p class="body">The context dictionary is the entire, explicit interface between a view and its template; nothing else the view has access to is automatically visible to it.</p>
+  <p class="body">The context dictionary is the entire, explicit interface between a view and its template. Nothing else the view has access to is automatically visible to it.</p>
   ${qMC('q1', 'easy', 'If a view forgets to include "similar_restaurants" in the context dictionary, but the template references {{ similar_restaurants }}, what happens?',
     ['Django automatically finds it anyway', 'It renders as empty/nothing, since the template only sees what was explicitly passed in context', 'The page fails to load entirely'],
     1, 'Django templates silently render a missing variable as empty by default, rather than erroring, which is exactly why forgetting to pass something in context is such a common, easy-to-miss bug.')}
@@ -900,20 +900,20 @@ lessons['24'] = {
   short: 'Static files', where: 'Part VI · <b>Static files</b>', render: () => `
   <div class="eyebrow">Part VI · Chapter 24</div>
   <h2 class="title">Static files</h2>
-  <p class="lead">CSS, JavaScript, and images are "static," they don't change per-request, and Django (and later, a reverse proxy) treats them differently from dynamically rendered HTML.</p>
+  <p class="lead">CSS, JavaScript, and images are "static": they do not change per-request. Django, and later a reverse proxy, treats them differently from dynamically rendered HTML.</p>
   <hr class="rule">
   <pre class="code">&lt;!-- in a template --&gt;
 {% load static %}
 &lt;link rel="stylesheet" href="{% static 'css/tastygo.css' %}"&gt;
 &lt;img src="{% static 'images/logo.png' %}"&gt;</pre>
-  <p class="body">In development, Django can serve these files itself for convenience. In production, this is exactly where the Fundamentals course's "web server vs. application server" chapter applies directly: a real web server like nginx serves static files far more efficiently than Django itself should, while Django (the application server) focuses purely on dynamic logic.</p>
+  <p class="body">In development, Django can serve these files itself for convenience. In production, this is exactly where the Fundamentals course's "web server vs. application server" chapter applies directly. A real web server like nginx serves static files far more efficiently than Django itself should. Django, as the application server, focuses purely on dynamic logic.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Relying on Django to serve static files efficiently in production.</b> Django's own static file serving is meant for development convenience only; production setups hand this job to a dedicated web server or CDN.</li>
   </ul></div>
   <div class="sec-num">24.1</div><h3 class="section-h">Recap</h3>
-  <p class="body">Static files (CSS, JS, images) are referenced via {% static %} in templates. Development serves them directly; production hands this job to a dedicated web server, exactly the division of labour covered in the Fundamentals course.</p>
-  ${qMC('q1', 'med', 'Why shouldn\'t Django itself serve static files in production?',
-    ['Django cannot technically serve static files at all', 'A dedicated web server (like nginx) serves static files far more efficiently, letting Django focus purely on dynamic request logic', 'Static files don\'t work with the {% static %} tag in production'],
+  <p class="body">Static files (CSS, JS, images) are referenced via {% static %} in templates. Development serves them directly. Production hands this job to a dedicated web server, exactly matching the division of labour covered in the Fundamentals course.</p>
+  ${qMC('q1', 'med', 'Why should Django itself not serve static files in production?',
+    ['Django cannot technically serve static files at all', 'A dedicated web server (like nginx) serves static files far more efficiently, letting Django focus purely on dynamic request logic', 'Static files do not work with the {% static %} tag in production'],
     1, 'This mirrors the Fundamentals course\'s web-server-vs-application-server distinction directly: efficiently serving unchanging files is a web server\'s specialty, not the application server\'s.')}
 `
 };
@@ -935,13 +935,13 @@ admin.site.register(Restaurant)</pre>
       <tr><td>KFC</td><td>Bangalore</td><td>4.3</td></tr>
     </tbody>
   </table>
-  <p class="body">Three lines of code, and TastyGo staff already have a working, permission-aware interface for browsing and editing restaurant data, no custom HTML, forms, or views written by hand. This is enormously useful for internal tools and content management, though it's rarely the right interface for real customers.</p>
+  <p class="body">Three lines of code, and TastyGo staff already have a working, permission-aware interface for browsing and editing restaurant data. No custom HTML, forms, or views need to be written by hand. This is very useful for internal tools and content management, though it is rarely the right interface for real customers.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
-    <li><b>Exposing the admin panel to customers as their main interface.</b> It's built for trusted staff managing data, not designed as a customer-facing product experience.</li>
+    <li><b>Exposing the admin panel to customers as their main interface.</b> It is built for trusted staff managing data, not designed as a customer-facing product experience.</li>
     <li><b>Leaving the default admin URL and weak credentials in production.</b> The admin panel is a high-value target; strong credentials and access restrictions matter, covered further in chapter 26.</li>
   </ul></div>
   <div class="sec-num">25.1</div><h3 class="section-h">Recap</h3>
-  <p class="body">admin.site.register(Model) generates a full working admin interface for that model automatically, ideal for internal/staff data management, not intended as a customer-facing product surface.</p>
+  <p class="body">admin.site.register(Model) generates a full working admin interface for that model automatically. It is ideal for internal or staff data management, not intended as a customer-facing product surface.</p>
   ${qMC('q1', 'easy', 'What does admin.site.register(Restaurant) provide?',
     ['A customer-facing restaurant search page', 'An automatically generated, permission-aware interface for staff to view and edit Restaurant data', 'A REST API endpoint for restaurants'],
     1, 'The admin panel is generated directly from the model for internal data management, not a customer-facing feature or an API.')}
@@ -964,12 +964,12 @@ def my_orders(request):
     <div class="qb-row"><span class="qb-kw kw-p">@login_required</span><span class="qb-mean">authentication: is anyone actually logged in?</span></div>
     <div class="qb-row"><span class="qb-kw kw-r">filtering by request.user</span><span class="qb-mean">authorization: showing only this user's own orders, not everyone's</span></div>
   </div>
-  <p class="body"><code class="inl">@login_required</code> alone only checks that someone is logged in; it says nothing about which specific orders they should be allowed to see. That second check, filtering by <code class="inl">request.user</code>, is what actually prevents one customer from viewing another's private order history, exactly the QA course's security testing scenario.</p>
+  <p class="body"><code class="inl">@login_required</code> alone only checks that someone is logged in; it says nothing about which specific orders they should be allowed to see. That second check, filtering by <code class="inl">request.user</code>, is what actually prevents one customer from viewing another's private order history. This matches exactly the QA course's security testing scenario.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
-    <li><b>Assuming @login_required alone is enough security.</b> It only proves someone is logged in, not that they're allowed to see this specific data; a view still needs its own authorization logic.</li>
+    <li><b>Assuming @login_required alone is enough security.</b> It only proves someone is logged in, not that they are allowed to see this specific data. A view still needs its own authorization logic.</li>
   </ul></div>
   <div class="sec-num">26.1</div><h3 class="section-h">Recap</h3>
-  <p class="body">@login_required handles authentication (is someone logged in). Filtering data by request.user (or explicit permission checks) handles authorization (are they allowed to see this specific data), and both are needed together.</p>
+  <p class="body">@login_required handles authentication (is someone logged in). Filtering data by request.user (or explicit permission checks) handles authorization: are they allowed to see this specific data. Both are needed together.</p>
   ${qScenario('q1', 'hard', 'A view uses @login_required but queries Order.objects.all() instead of filtering by the logged-in customer. What security bug does this create, and how would you fix it?',
     'This lets any logged-in customer see every customer\'s orders, not just their own, an authorization bug: authentication (being logged in) was checked, but authorization (should this specific user see this specific data) was not. Fix: filter the queryset to Order.objects.filter(customer=request.user.customer) so each user only ever retrieves their own orders, regardless of what URL or parameters they might try.')}
 `
@@ -991,13 +991,13 @@ class RestaurantSerializer(serializers.ModelSerializer):
 class RestaurantViewSet(viewsets.ModelViewSet):
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer</pre>
-  <p class="body">A serializer converts model instances to and from JSON, directly building on the Python course's json.dumps/loads chapter, and a ViewSet bundles up the typical list/create/retrieve/update/delete operations for a model into ready-made API endpoints.</p>
-  <p class="body">This is deliberately a brief introduction: the FastAPI course, next in this Developer track, goes deep on building APIs, using a framework built for that job specifically from the ground up, rather than as an addition to a full web framework.</p>
+  <p class="body">A serializer converts model instances to and from JSON, directly building on the Python course's json.dumps/loads chapter. A ViewSet bundles the typical list, create, retrieve, update, and delete operations for a model into ready-made API endpoints.</p>
+  <p class="body">This is deliberately a brief introduction. The FastAPI course, next in this Developer track, covers building APIs in depth, using a framework built for that job specifically from the ground up, rather than as an addition to a full web framework.</p>
   <div class="gotcha"><div class="lab">Common trip-ups</div><ul>
     <li><b>Building a JSON API by hand-writing JsonResponse everywhere.</b> This works for something tiny, but DRF's serializers and ViewSets remove a large amount of repetitive boilerplate for anything more substantial.</li>
   </ul></div>
   <div class="sec-num">27.1</div><h3 class="section-h">Recap</h3>
-  <p class="body">Django REST Framework adds serializers (model &lt;-&gt; JSON conversion) and ViewSets (ready-made CRUD API endpoints) on top of Django, for when you need a real JSON API rather than rendered HTML.</p>
+  <p class="body">Django REST Framework adds serializers (model to JSON conversion) and ViewSets (ready-made CRUD API endpoints) on top of Django. Use it when you need a real JSON API, rather than rendered HTML.</p>
   ${qMC('q1', 'easy', 'What is the main job of a DRF serializer?',
     ['Rendering HTML templates', 'Converting model instances to and from JSON', 'Running database migrations'],
     1, 'A serializer is specifically the translation layer between Python model instances and the JSON representation an API sends and receives.')}
@@ -1021,7 +1021,7 @@ ALLOWED_HOSTS = ["tastygo.com"]
 SECRET_KEY = os.environ["DJANGO_SECRET_KEY"]  # from environment, never committed</pre>
   <div class="qb"><div class="qb-title">Why each one matters</div>
     <div class="qb-row"><span class="qb-kw kw-r">DEBUG = False</span><span class="qb-mean">stops detailed error pages (with internal code/settings) from ever reaching real users</span></div>
-    <div class="qb-row"><span class="qb-kw kw-p">ALLOWED_HOSTS</span><span class="qb-mean">rejects requests claiming to be for a domain this server doesn't actually serve</span></div>
+    <div class="qb-row"><span class="qb-kw kw-p">ALLOWED_HOSTS</span><span class="qb-mean">rejects requests claiming to be for a domain this server does not actually serve</span></div>
     <div class="qb-row"><span class="qb-kw kw-a">SECRET_KEY from environment</span><span class="qb-mean">keeps a sensitive value out of version control entirely</span></div>
   </div>
   <p class="body">This connects directly to the Fundamentals course's dev/staging/production chapter: the same codebase behaves differently depending on environment-specific settings like these, deliberately kept separate from the code itself.</p>
@@ -1059,7 +1059,7 @@ lessons['29'] = {
 
 /* ---------- cheat sheet ---------- */
 const CHEATS = {
-  '00': { note: 'Django is a batteries-included Python web framework: routing, database access, templating, admin, and security defaults, all provided.' },
+  '00': { note: 'Django is a full-featured Python web framework: routing, database access, templating, admin, and security defaults, all provided.' },
   '0b': { note: 'manage.py is the command-line entry point. A project is the whole site; apps are self-contained feature areas within it.' },
   '0i': { note: "TastyGo's Django project mirrors SQLingo's own tables: customers, restaurants, orders apps." },
   '01': { note: 'Split apps by feature area, self-contained but allowed to reference each other; avoid splitting too finely or dumping everything in one giant app.' },
@@ -1084,7 +1084,7 @@ const CHEATS = {
   '20': { code: 'form = OrderForm(request.POST)\nif form.is_valid():\n    form.cleaned_data   # validated, correctly-typed values' },
   '21': { code: '{{ variable }}   # output\n{% tag %}        # logic: loops, conditionals, inheritance' },
   '22': { code: '{% extends "base.html" %}\n{% block content %}...{% endblock %}   # shared layout, overridden per-page' },
-  '23': { code: 'render(request, "t.html", {"key": value})\n# template only sees exactly what\'s in this context dict' },
+  '23': { code: 'render(request, "t.html", {"key": value})\n# template only sees exactly what is in this context dict' },
   '24': { code: '{% static \'css/tastygo.css\' %}\n# dev: Django can serve it. production: a real web server (nginx) should.' },
   '25': { code: 'admin.site.register(Restaurant)\n# instant staff interface, generated from the model, not for customers' },
   '26': { code: '@login_required          # authentication: is anyone logged in?\nfilter(customer=request.user...)   # authorization: is it THEIR data?' },
